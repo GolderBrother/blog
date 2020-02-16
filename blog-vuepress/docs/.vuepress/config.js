@@ -95,6 +95,13 @@ module.exports = {
                         '/views/vue/vue-ts.md',
                     ],
                 },
+                {
+                    title: '前端算法学习指南',
+                    collapsable: false,
+                    children: [
+                        '/views/algorithms/sort.md',
+                    ],
+                },
             ],
         }
     },
