@@ -23,7 +23,7 @@ GitHub 可以说是你的技术名片，你在 GitHub 的贡献可以作为简�
 笔者也是最近裸辞并换了工作，最近在找工作过程中，笔者知道了：想通过社招获得好工作或者进大厂，一般都要有如下 4 点中的 1 - 2 个亮点才行。
 
 - 高学历，名校毕业
-- 工作年限足，经验丰富（但不是 1 年经验当 5 年用那种）
+- 工作年限足，经验丰富（但不是 1 年经验当 5 年用的那种）
 - 有开源与影响力，GitHub 的贡献或者经常写优质博客
 - 本身就有大厂的工作经历
 
@@ -39,9 +39,9 @@ GitHub 可以说是你的技术名片，你在 GitHub 的贡献可以作为简�
 
 如果没有这个亮点，估计在这互联网寒冬期间，笔者也很难有好公司的面试机会或者找到工作啊。
 
-![](https://upload-images.jianshu.io/upload_images/12890819-3d5f7eab1ea6bb27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![img](https://upload-images.jianshu.io/upload_images/12890819-3d5f7eab1ea6bb27.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-## 3. 如何经营好你的 GitHub ?
+## 3. 如何经营好你的 GitHub
 
 > 你能为他人提供什么样的价值。
 
