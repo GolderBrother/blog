@@ -13,5 +13,5 @@ features:
   details: 读万卷书，行万里路，遇见最好的自己。
 - title: 理财、投资
   details: 人人都应该懂点理财、投资知识，越早懂得越好。
-footer: MIT Licensed | Copyright © 2019-present GolderBrother
+footer: MIT Licensed | Copyright © 2020-present GolderBrother
 ---

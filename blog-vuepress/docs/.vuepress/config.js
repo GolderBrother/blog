@@ -102,6 +102,13 @@ module.exports = {
                         '/views/algorithms/sort.md',
                     ],
                 },
+                {
+                    title: '前端面试集锦',
+                    collapsable: false,
+                    children: [
+                        '/views/fe-intervie/web-safe.md',
+                    ],
+                },
             ],
         }
     },
