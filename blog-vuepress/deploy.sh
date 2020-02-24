@@ -15,6 +15,8 @@ cd docs/.vuepress/dist
 #创建.nojekyll 防止Github Pages build错误
 touch .nojekyll
 
+npm run build:md
+
 git init
 git add -A
 git commit -m 'deploy'

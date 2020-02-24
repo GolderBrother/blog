@@ -178,16 +178,3 @@ GitHub 可以说是你的技术名片，你在 GitHub 的贡献可以作为简�
 [GitHub 上能挖矿的神仙技巧 - 如何发现优秀开源项目](https://github.com/GolderBrother/blog/issues/45)，估计很多人都不知道的技巧，甚至很多高级工程师都不知道。
 
 ![](https://upload-images.jianshu.io/upload_images/12890819-9ca557f2b5950174.gif?imageMogr2/auto-orient/strip)
-
- 
- <comment/> 
- 
- 
- <comment/> 
- 
- 
- <comment/> 
- 
- 
- <comment/> 
- 
