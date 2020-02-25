@@ -103,6 +103,51 @@ const asyncLoadView = (viewUrl = "") => () =>
 
 上面的 `/* webpackChunkName: 'asyncView' */` 专业术语是 `魔法字符串`, 用来定义 webpack 编译后的代码块文件名称：`asyncView122.chunk.js`
 
+如果项目中 ```.vue```文件是以 ```template src``` 外部方式引入模板的：
+
+```vue
+<template src="./home.html"></template>
+```
+
+则需要改为在 ```.js``` 文件中导出 ```vue``` 中以 ```template``` 的方式引入模板, 否则webpack编译不通过
+
+如下例子：
+
+```js
+export default {
+  name: 'helloWorld',
+  template: require('./hello-world.html'),
+}
+```
+
+#### 然后还需要添加对html模板文件的编译
+
+1. 安装 **html-loader**
+
+```bash
+npm iinstall html-loader --save-dev or yarn add html-loader --dev
+```
+
+2. ```webpack```的```loader```添加如下配置
+
+```js
+// https://webpack.docschina.org/loaders/html-loader/
+{
+  test: /\.html$/i,
+  use: [
+    {
+      loader: 'html-loader',
+      options: {
+        // 禁用 es module 语法
+        esModule: false
+      }
+    }
+  ]
+}
+```
+
+因为配置了路由懒加载，所以需要单独对html文件进行解析，这样子就能正常解析```html```模板文件了
+
 ### 4、webpack 提供的 require.ensure()
 
 ```vue-router``` 配置路由，使用 ```webpack``` 的 ```require.ensure``` 技术，也可以实现按需加载。 
