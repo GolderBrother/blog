@@ -106,7 +106,7 @@ const asyncLoadView = (viewUrl = "") => () =>
 如果项目中 ```.vue```文件是以 ```template src``` 外部方式引入模板的：
 
 ```vue
-<template src="./home.html"></template>
+<template src="./hello-world.html"></template>
 ```
 
 则需要改为在 ```.js``` 文件中导出 ```vue``` 中以 ```template``` 的方式引入模板, 否则webpack编译不通过
@@ -125,7 +125,7 @@ export default {
 1. 安装 **html-loader**
 
 ```bash
-npm iinstall html-loader --save-dev or yarn add html-loader --dev
+npm install html-loader --save-dev or yarn add html-loader --dev
 ```
 
 2. ```webpack```的```loader```添加如下配置
