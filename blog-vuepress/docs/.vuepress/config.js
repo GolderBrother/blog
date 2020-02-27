@@ -107,7 +107,8 @@ module.exports = {
                     title: '前端面试集锦',
                     collapsable: false,
                     children: [
-                        '/views/fe-intervie/web-safe.md',
+                        '/views/fe-interview/web-safe.md',
+                        '/views/fe-interview/http&https.md'
                     ],
                 },
             ],
