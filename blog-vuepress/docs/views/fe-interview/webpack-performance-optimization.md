@@ -220,7 +220,7 @@ module.export = {
 
 [参考链接](http://webpack.wuhaolin.cn/4%E4%BC%98%E5%8C%96/4-9CDN%E5%8A%A0%E9%80%9F.html)
 
-## 2. 使用 Tree Shaking
+### 2. 使用 Tree Shaking
 
 `Tree Shaking` 正常工作的前提是，提交给 `Webpack` 的 `JavaScript` 代码必须采用了 `ES6` 的模块化语法，因为 `ES6` 模块化语法是静态的，可以进行静态分析。
 
