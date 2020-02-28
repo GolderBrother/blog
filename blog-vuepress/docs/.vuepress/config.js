@@ -108,7 +108,8 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/fe-interview/web-safe.md',
-                        '/views/fe-interview/http&https.md'
+                        '/views/fe-interview/http&https.md',
+                        '/views/fe-interview/webpack-performance-optimization.md'
                     ],
                 },
             ],
