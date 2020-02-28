@@ -82,18 +82,18 @@ module.exports = {
                     ],
                 },
                 {
-                    title: '测试文章',
-                    collapsable: false,
-                    children: [
-                        '/views/test/test.md',
-                    ],
-                },
-                {
                     title: 'Vue.js',
                     collapsable: false,
                     children: [
                         '/views/vue/vue-ts.md',
                         '/views/vue/vue-lazyload.md'
+                    ],
+                },
+                {
+                    title: '前端数据结构之美',
+                    collapsable: false,
+                    children: [
+                        '/views/data-structure/data-structure.md',
                     ],
                 },
                 {
