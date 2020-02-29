@@ -208,6 +208,34 @@ module.export = {
 
 采用这种方法优化后， `Webpack` 消耗的内存和 `CPU` 将会大大减少。
 
+### 11. 提升体验
+
+这里主要是介绍几款 webpack 插件来帮助大家提升构建体验，虽然说它们在提升构建效率上对你没有什么太大的帮助，但能让你在等待构建完成的过程中更加舒服。
+
+#### progress-bar-webpack-plugin
+
+[传送门](https://www.npmjs.com/package/progress-bar-webpack-plugin)
+
+这是一款能为你展示构建进度的 `Plugin`，它的使用方法和普通 `Plugin` 一样，也不需要传入什么配置。下图就是你加上它之后，在你的终端面板上的效果，在你的终端底部，将会有一个构建的进度条，可以让你清晰的看见构建的执行进度：
+
+![img](https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_jpg/meG6Vo0Mevh6Bs5M42uoQhs6aQ896lqv41n8GFsApwHEmtoTHuzQ9rQ7D87AuibYVKpqSbRcMQDR8xxSmcluKZA/640?wx_fmt=jpeg)
+
+#### webpack-build-notifier
+
+[传送门](https://www.npmjs.com/package/webpack-build-notifier)
+
+这是一款在你构建完成时，能够像`微信、Lark`这样的APP弹出消息的方式，提示你构建已经完成了。也就是说，当你启动构建时，就可以隐藏控制台面板，专心去做其他事情啦，到“点”了自然会来叫你，它的效果就是下面这样，同时还有提示音噢～
+
+#### webpack-dashboard
+
+[传送门](https://www.npmjs.com/package/webpack-dashboard)
+
+![img](https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_jpg/meG6Vo0Mevh6Bs5M42uoQhs6aQ896lqvLm1K6gKOIgfAzbKFqPfUGaTvFmbls8He24pn9oOpfP3ZBzvnEdOsUw/640?wx_fmt=jpeg)
+
+当然，如果你对 webpack 原始的构建输出不满意的话，也可以使用这样一款 Plugin 来优化你的输出界面，它的效果就是下面这样，这里我就直接上官图啦：
+
+![img](https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_jpg/meG6Vo0Mevh6Bs5M42uoQhs6aQ896lqvWDQewO01X1dssdPcrpbSRhZicmGwCtxsYZ1P9VY76Y9WYGGvp3Xdz5A/640?wx_fmt=jpeg)
+
 ## 优化输出质量
 
 ### 1. Webpack 实现 CDN 的接入
@@ -470,6 +498,85 @@ import get from 'lodash.get'
 }
 ```
 
+## 使用thread-loader加速构建
+
+**webpack4 强力推荐**
+
+webpack4 官方提供了一个 [thread loader](https://github.com/amireh/happypack#how-it-works)
+
+> 这个loader不要跟 `happypack` 混合使用，会出现编译失败的问题，webpack4官方已经强烈推荐此方法来替代 `happypack`
+
+把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker【worker pool】 池里运行，一个worker 就是一个nodeJS 进程【node.js proces】，每个单独进程处理时间上限为600ms，各个进程的数据交换也会限制在这个时间内。
+
+它的配置长这样：
+
+```js
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve("src"),
+        use: [
+          "thread-loader",
+          // your expensive loader (e.g babel-loader)
+        ]
+      }
+    ]
+  }
+}
+
+```
+
+下面是带有option的配置:
+
+```js
+use: [
+  {
+    loader: "thread-loader",
+    // loaders with equal options will share worker pools
+    // 设置同样option的loaders会共享
+    options: {
+      // worker的数量，默认是cpu核心数
+      workers: 2,
+
+      // 一个worker并行的job数量，默认为20
+      workerParallelJobs: 50,
+
+      // 添加额外的node js 参数
+      workerNodeArgs: ['--max-old-space-size=1024'],
+
+
+      // 允许重新生成一个dead work pool
+      // 这个过程会降低整体编译速度
+      // 开发环境应该设置为false
+      poolRespawn: false,
+
+
+      //空闲多少秒后，干掉work 进程
+      // 默认是500ms
+      // 当处于监听模式下，可以设置为无限大，让worker一直存在
+      poolTimeout: 2000,
+
+      // pool 分配给workder的job数量
+      // 默认是200
+      // 设置的越低效率会更低，但是job分布会更均匀
+      poolParallelJobs: 50,
+
+      // name of the pool
+      // can be used to create different pools with elsewise identical options
+      // pool 的名字
+      //
+      name: "my-pool"
+    }
+  },
+  // your expensive loader (e.g babel-loader)
+]
+```
+
+
 ## 参考资料
 
-书籍：《Webpack 深入浅出》
+- 书籍：`《Webpack 深入浅出》`
+- [Webpack优化——将你的构建效率提速翻倍](https://blog.csdn.net/QQ729533020/article/details/100589186)
