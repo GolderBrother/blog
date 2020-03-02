@@ -110,7 +110,8 @@ module.exports = {
                         '/views/fe-interview/web-safe.md',
                         '/views/fe-interview/http&https.md',
                         '/views/fe-interview/webpack-performance-optimization.md',
-                        '/views/fe-interview/webpack-principle.md'
+                        '/views/fe-interview/webpack-principle.md',
+                        '/views/fe-interview/webpack-HMR.md'
                     ],
                 },
             ],
