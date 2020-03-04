@@ -111,7 +111,8 @@ module.exports = {
                         '/views/fe-interview/http&https.md',
                         '/views/fe-interview/webpack-performance-optimization.md',
                         '/views/fe-interview/webpack-principle.md',
-                        '/views/fe-interview/webpack-HMR.md'
+                        '/views/fe-interview/webpack-HMR.md',
+                        '/views/fe-interview/chrome-start-process.md'
                     ],
                 },
             ],
