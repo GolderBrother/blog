@@ -14,7 +14,6 @@ export function copy() {
         addCopy(e)
     });
 }
-
 export function baiduTongJi(router, callback) {
     var _hmt = _hmt || [];
     // (function() {

@@ -114,8 +114,16 @@ module.exports = {
                         '/views/fe-interview/webpack-HMR.md',
                         '/views/fe-interview/chrome-start-process.md',
                         '/views/fe-interview/browser-cache.md',
+                        
                     ],
                 },
+                {
+                    title: 'js相关技巧',
+                    collapsable: false,
+                    children: [
+                        '/views/js/js-skills.md',
+                    ]
+                }
             ],
         }
     },
