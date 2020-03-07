@@ -82,6 +82,13 @@ module.exports = {
                     ],
                 },
                 {
+                    title: 'Javascript',
+                    collapsable: false,
+                    children: [
+                        '/views/js/js-skills.md',
+                    ]
+                },
+                {
                     title: 'Vue.js',
                     collapsable: false,
                     children: [
@@ -114,16 +121,10 @@ module.exports = {
                         '/views/fe-interview/webpack-HMR.md',
                         '/views/fe-interview/chrome-start-process.md',
                         '/views/fe-interview/browser-cache.md',
+                        '/views/fe-interview/send-content-to-browser.md',
                         
                     ],
                 },
-                {
-                    title: 'js相关技巧',
-                    collapsable: false,
-                    children: [
-                        '/views/js/js-skills.md',
-                    ]
-                }
             ],
         }
     },
