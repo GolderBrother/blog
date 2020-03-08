@@ -122,7 +122,8 @@ module.exports = {
                         '/views/fe-interview/chrome-start-process.md',
                         '/views/fe-interview/browser-cache.md',
                         '/views/fe-interview/send-content-to-browser.md',
-                        
+                        '/views/fe-interview/browser-render.md',
+                        '/views/fe-interview/browser-reflow&repain.md',
                     ],
                 },
             ],
