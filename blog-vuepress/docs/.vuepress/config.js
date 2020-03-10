@@ -124,6 +124,7 @@ module.exports = {
                         '/views/fe-interview/send-content-to-browser.md',
                         '/views/fe-interview/browser-render.md',
                         '/views/fe-interview/browser-reflow&repain.md',
+                        '/views/fe-interview/UDP&TCP-different.md',
                     ],
                 },
             ],
