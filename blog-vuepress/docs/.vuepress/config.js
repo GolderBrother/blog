@@ -125,7 +125,8 @@ module.exports = {
                         '/views/fe-interview/browser-render.md',
                         '/views/fe-interview/browser-reflow&repain.md',
                         '/views/fe-interview/renderEngine-createNewLayer.md',
-                        '/views/fe-interview/UDP&TCP-different.md'
+                        '/views/fe-interview/UDP&TCP-different.md',
+                        '/views/fe-interview/js-modules.md',
                     ],
                 },
             ],
