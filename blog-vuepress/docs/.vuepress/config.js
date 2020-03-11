@@ -127,6 +127,8 @@ module.exports = {
                         '/views/fe-interview/renderEngine-createNewLayer.md',
                         '/views/fe-interview/UDP&TCP-different.md',
                         '/views/fe-interview/js-modules.md',
+                        '/views/fe-interview/lazyMan.md',
+                        
                     ],
                 },
             ],
