@@ -130,6 +130,7 @@ module.exports = {
                         '/views/fe-interview/lazyMan.md',
                         '/views/fe-interview/handwriting-promise.md',
                         '/views/fe-interview/fetch&ajax-diference.md',
+                        '/views/fe-interview/browser-input-url.md',
                     ],
                 },
             ],
