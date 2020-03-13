@@ -131,6 +131,7 @@ module.exports = {
                         '/views/fe-interview/handwriting-promise.md',
                         '/views/fe-interview/fetch&ajax-diference.md',
                         '/views/fe-interview/browser-input-url.md',
+                        '/views/fe-interview/picture-optimization.md',
                     ],
                 },
             ],

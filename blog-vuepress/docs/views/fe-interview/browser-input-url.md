@@ -124,7 +124,7 @@ SSL 握手过程
 
 ![img](https://raw.githubusercontent.com/GolderBrother/blog/master/images/browser/1580315271559.jpg)
 
-其中，这个过程需要注意的是回流和重绘，关于**回流**和**重绘**，详细的可以看这篇文章[《浏览器相关原理(面试题)详细总结一》](https://juejin.im/post/5da18b1af265da5bb318ed07#heading-10)，这里就不说了～
+其中，这个过程需要注意的是回流和重绘，关于 **回流**和**重绘** ，详细的可以看这篇文章[《浏览器相关原理(面试题)详细总结一》](https://juejin.im/post/5da18b1af265da5bb318ed07#heading-10)，这里就不说了～
 
 ## 生成分层树
 
