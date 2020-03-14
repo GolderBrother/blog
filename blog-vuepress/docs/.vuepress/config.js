@@ -132,6 +132,7 @@ module.exports = {
                         '/views/fe-interview/fetch&ajax-diference.md',
                         '/views/fe-interview/browser-input-url.md',
                         '/views/fe-interview/picture-optimization.md',
+                        '/views/fe-interview/node-eventLoop.md',
                     ],
                 },
             ],

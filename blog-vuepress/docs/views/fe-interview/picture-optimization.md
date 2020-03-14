@@ -167,5 +167,4 @@ function preloadimages(arr) {
 - [智图主页](http://zhitu.tencent.com/)
   支持原图`png`转为`jpeg`和`webp`(目前不支持 bpg)，并提供各种压缩比压缩，目前在`tx`内部广泛使用。
   目前 bpg 格式图片也有部分公司在试用。这方面也可以尝试下。
-
- 
+   
