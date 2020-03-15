@@ -133,6 +133,7 @@ module.exports = {
                         '/views/fe-interview/browser-input-url.md',
                         '/views/fe-interview/picture-optimization.md',
                         '/views/fe-interview/node-eventLoop.md',
+                        '/views/fe-interview/browser-eventLoop.md',
                     ],
                 },
             ],
