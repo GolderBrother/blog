@@ -575,8 +575,11 @@ use: [
 ]
 ```
 
-
 ## 参考资料
 
 - 书籍：`《Webpack 深入浅出》`
 - [Webpack优化——将你的构建效率提速翻倍](https://blog.csdn.net/QQ729533020/article/details/100589186)
+
+## 最后
+
+欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~

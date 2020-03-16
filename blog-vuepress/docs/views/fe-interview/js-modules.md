@@ -240,3 +240,7 @@ Promise.all([
 
 注意：
 `export`只支持对象形式导出，不支持值的导出，`export default`命令用于指定模块的**默认输出**，只支持**值导出**，但是只能指定一个，本质上它就是输出一个叫做`default`的变量或方法。
+
+## 最后
+
+欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~

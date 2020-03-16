@@ -276,3 +276,7 @@ function sendError(err, req, res, file, etag) {
 ## 参考资料
 
 [谈谈浏览器缓存](https://github.com/LuckyWinty/fe-weekly-questions/issues/8)
+
+## 最后
+
+欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~

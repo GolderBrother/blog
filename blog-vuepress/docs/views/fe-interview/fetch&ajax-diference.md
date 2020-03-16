@@ -57,3 +57,7 @@ fetch(url)
 - 默认情况下, `fetch` 不会从服务端发送或接收任何 `cookies`, 如果站点依赖于用户 `session`，则会导致未经认证的请求（要发送 `cookies`，必须设置 `credentials` 选项）.
 - `fetch()` 不会接受跨域 `cookies`；你也不能使用 `fetch()` 建立起跨域会话。其他网站的 `Set-Cookie` 头部字段将会被无视。
 - `fetch` 不会发送 `cookies`。除非你使用了 `credentials` 的初始化选项。（自 2017 年 8 月 25 日以后，默认的 `credentials` 政策变更为 `same-origin`。`Firefox` 也在 61.0b13 版本中进行了修改）
+
+## 最后
+
+欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
