@@ -82,6 +82,13 @@ module.exports = {
                     ],
                 },
                 {
+                    title: 'css',
+                    collapsable: false,
+                    children: [
+                        '/views/css/css-skills1.md',
+                    ]
+                },
+                {
                     title: 'Javascript',
                     collapsable: false,
                     children: [
@@ -94,6 +101,28 @@ module.exports = {
                     children: [
                         '/views/vue/vue-ts.md',
                         '/views/vue/vue-lazyload.md'
+                    ],
+                },
+                {
+                    title: 'React.js',
+                    collapsable: false,
+                    children: [
+                        '/views/react/react-hooks.md',
+                    ],
+                },
+                {
+                    title: 'webpack',
+                    collapsable: false,
+                    children: [
+                        '/views/webpack/webpack1.md',
+                    ],
+                },
+                
+                {
+                    title: 'Node.js',
+                    collapsable: false,
+                    children: [
+                        '/views/node/node1.md',
                     ],
                 },
                 {
