@@ -125,6 +125,3 @@ A 收到 B 说知道了，就进入 ``FIN`_WAIT_2` 的状态，如果 B 直接�
 ## 最后
 
 欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
- 
- <comment/> 
- 

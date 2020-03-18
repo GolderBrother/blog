@@ -171,6 +171,3 @@ function preloadimages(arr) {
 ## 最后
 
 欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
- 
- <comment/> 
- 

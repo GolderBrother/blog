@@ -39,6 +39,3 @@ timer(定时器时间到了，才执行回调) -> poll(执行I/O相关的回调)
 ## 总结
 
 `setImmediate()`约等于`setTimeout(()=>{}, 0)`， 都是**异步执行**，不同的是`setTimeout`在`timer`阶段执行，而`setImmediate`是在`nodejs`的`check`阶段执行。如果`setTimeout`设置成`0`，那么他们的执行顺序是: 有可能前有可能后是不确定的。这是因为`setTimeout`设置为0也需要**1ms**才能执行（**浏览器是4ms**），而`event loop`的启动从`timer`, `I/O(poll)`,到 `check` 时间有可能多大于`1ms`，如果大于`1ms`，这时 `timeout` 是`1ms`，已经符合执行条件 `setTimeout` 会**立即执行**，然后接着执行 `check` 阶段的 `setImmediate` 。如果 `event loop` 启动后到了 `poll` 阶段，耗时小于`1ms`，比如用了`0.8ms`,那么这时 `settimeout` 是`1ms`，不符合条件跳到 `check` 阶段先执行`setImmediate`然后再执行 `setTimeout` 。如果这两个事件调用是在某个 `I/O` 类的函数中，那么他们的执行顺序就是**固定**的，不会出现在前后执行的不确定性。
- 
- <comment/> 
- 
