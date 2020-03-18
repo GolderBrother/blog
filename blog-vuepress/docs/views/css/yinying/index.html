@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSS3实现曲线阴影和翘边阴影</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+        outline: 0;
+      }
+      /*简易版reset*/
+
+      ul {
+        list-style: none;
+      }
+      /*取消列表样式*/
+
+      p {
+        font-size: 30px;
+        font-weight: bold;
+
+        margin: -30px 0 50px 0;
+
+        text-align: center;
+      }
+
+      .wrap {
+        width: 50%;
+        height: 300px;
+        margin: 80px auto;
+
+        background: #fff;
+      }
+      /*包块的宽高,背景色及居中对齐*/
+
+      .wrap h1 {
+        font-size: 30px;
+        line-height: 300px;
+
+        text-align: center;
+      }
+      /*设置字体大小,对齐方式及行高(垂直居中)*/
+
+      .effect {
+        position: relative;
+
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(0, 0, 0, 0.1) inset;
+
+        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(0, 0, 0, 0.1) inset;
+      }
+      /**
+       * 设置盒子外阴影和内阴影
+      -----------------------------------------------------------------------
+        可以使用十六进制颜色,若是需要用到透明度,建议用rgba
+          box-shadow:h-shadow v-shadow blur spread color inset
+         必需：h-shadow(水平)，v-shadow（垂直）
+         可选：blur（模糊距离），spread（阴影尺寸），color（阴影颜色），inset（内阴影）
+         浏览器兼容：IE9+、FireFox4、Chrome、Opera、Safari5.1.1
+
+         */
+
+      .effect:after,
+      .effect:before {
+        position: absolute;
+        z-index: -1;
+        top: 50%;
+        right: 30px;
+        bottom: 0;
+        left: 30px;
+
+        content: "";
+
+        border-radius: 100px/10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+
+        -ms-box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        -o-box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+      }
+      /**
+       * .追加盒子,产生曲线阴影的效果,应用after+before重叠阴影更加厚实,使用z-index调整位置
+       -----------------------------------------
+      :after 和 :before ，content添加内容，
+      浏览器兼容：对于IE8及更早版本中的：after，必须声明<!DOCTYPE>
+
+      border-radius:x/y(水平半径/垂直半径)
+       */
+
+      .box {
+        clear: both;
+        overflow: hidden;
+
+        width: 980px;
+        height: auto;
+        margin: 20px auto;
+      }
+      /**
+       * 主容器宽度固定,高度自适应..清除所有浮动且容器居中
+       */
+
+      .box li {
+        position: relative;
+
+        float: left;
+
+        width: 300px;
+        height: 300px;
+        margin: 20px 10px;
+
+        border: 2px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7),
+          0 0 60px rgba(0, 0, 0, 0.7) inset;
+
+        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7),
+          0 0 60px rgba(0, 0, 0, 0.7) inset;
+        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7),
+          0 0 60px rgba(0, 0, 0, 0.7) inset;
+      }
+      /**
+       * width:(300+10*2+2*2)*3 = 972 <980
+       * 增加阴影
+       */
+
+      .box li img {
+        display: block;
+
+        width: 290px;
+        height: 290px;
+        margin: 5px;
+      }
+      /**
+       * width:(290 + 5*2) = 300 == li.width
+       * height:(290+ 5*2) = 300 == li.height
+       */
+
+      .box li:before {
+        position: absolute;
+        z-index: -1;
+        bottom: 13px;
+        left: 20px;
+
+        width: 90%;
+        height: 80%;
+
+        content: "";
+        -webkit-transform: skew(-8deg) rotate(-4deg);
+        -ms-transform: skew(-8deg) rotate(-4deg);
+        transform: skew(-8deg) rotate(-4deg);
+
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+
+        -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+        -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      }
+
+      .box li:after {
+        position: absolute;
+        z-index: -2;
+        right: 20px;
+        bottom: 13px;
+
+        width: 90%;
+        height: 80%;
+
+        content: "";
+        -webkit-transform: skew(8deg) rotate(4deg);
+        -ms-transform: skew(8deg) rotate(4deg);
+        transform: skew(8deg) rotate(4deg);
+
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+
+        -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+        -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap effect">
+      <h1>啦啦啦德玛西亚!!!!</h1>
+    </div>
+    <p>这是曲线阴影效果!!!!</p>
+    <ul class="box">
+      <li><img src="./1.webp" alt="测试图片" /></li>
+      <li><img src="./2.webp" alt="测试图片" /></li>
+      <li><img src="./3.webp" alt="测试图片" /></li>
+    </ul>
+    <p>这是翘边阴影效果!!!!</p>
+  </body>
+</html>
