@@ -288,7 +288,3 @@ export default {
     ```js
         component: r => require.ensure([], () => r(require("@/components/about")), "demo-01")
     ```
-
- 
- <comment/> 
- 

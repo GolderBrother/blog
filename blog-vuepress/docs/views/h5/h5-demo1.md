@@ -125,7 +125,3 @@ document.body.addEventListener('touchmove', function(e) {
 ## 参考资料
 
 - [Safari CSS Reference](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html#//apple_ref/css/property/-webkit-overflow-scrolling)
-
- 
- <comment/> 
- 
