@@ -89,6 +89,14 @@ module.exports = {
                     ]
                 },
                 {
+
+                    title: '移动端h5',
+                    collapsable: false,
+                    children: [
+                        '/views/h5/h5-demo1.md',
+                    ]
+                },
+                {
                     title: 'Javascript',
                     collapsable: false,
                     children: [
@@ -117,7 +125,7 @@ module.exports = {
                         '/views/webpack/webpack1.md',
                     ],
                 },
-                
+
                 {
                     title: 'Node.js',
                     collapsable: false,
