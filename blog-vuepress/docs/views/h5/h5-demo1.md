@@ -393,7 +393,73 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 
 ## 页面生成为图片和二维码问题
 
+**表现**:
+
+在工作中有需要将页面生成图片或者二维码的需求。可能我们第一想到的，交给后端来生成更简单。但是这样我们需要把页面代码全部传给后端，网络性能消耗太大。
+
+**解决方案**:
+
+### 生成二维码
+
+使用 QRCode 生成二维码
+
+```js
+import QRCode from 'qrcode';
+// 使用 async 生成图片
+const options = {};
+const url = window.location.href;
+async url => {
+  try {
+    console.log(await QRCode.toDataURL(url, options))
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+
+将 `await QRCode.toDataURL(url, options)` 表达式的值 赋值给 图片 url 即可
+
+### 生成图片
+
+主要是使用 `htmlToCanvas` 生成 `canvas` 画布
+
+```js
+import html2canvas from 'html2canvas';
+
+html2canvas(document.body).then(function(canvas) {
+    document.body.appendChild(canvas);
+});
+
+```
+
+但是不单单在此处就完了，由于是 `canvas` 的原因。移动端生成出来的图片比较模糊。
+
+我们使用一个新的 `canvas` 方法多倍生成，放入一倍容器里面，达到更加清晰的效果，通过超链接下载图片 **下载文件简单实现，更完整的实现方式之后更新**
+
+```js
+const scaleSize = 2;
+const newCanvas = document.createElement("canvas");
+const target = document.querySelector('div');
+const width = parseInt(window.getComputedStyle(target).width);
+const height = parseInt(window.getComputedStyle(target).height);
+newCanvas.width = width * scaleSize;
+newCanvas.height = widthh * scaleSize;
+newCanvas.style.width = width + "px";
+newCanvas.style.height =width + "px";
+const context = newCanvas.getContext("2d");
+context.scale(scaleSize, scaleSize);
+html2canvas(document.querySelector('.demo'), { canvas: newCanvas }).then(function(canvas) {
+  // 简单的通过超链接设置下载功能
+  document.querySelector(".btn").setAttribute('href', canvas.toDataURL());
+}
+```
+
+> 这个根据需要设置 scaleSize 大小
+
+
 
 ## 参考资料
 
 - [Safari CSS Reference](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html#//apple_ref/css/property/-webkit-overflow-scrolling)
+
+<!-- https://juejin.im/post/5dfadb91e51d45584006e486 -->
