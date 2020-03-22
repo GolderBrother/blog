@@ -1,4 +1,4 @@
-# 移动端 H5 相关基础技术概览
+# 移动端 H5 和 Hybrid 相关基础技术概览
 
 先看下大纲吧~
 
@@ -321,7 +321,7 @@ if (+wechatVersion.replace(/\./g, "") >= 674 && +version[1] >= 12) {
 
 > `window.scrollTo(x-coord, y-coord)`，其中`window.scrollTo(0, clientHeight)`恢复成原来的视口
 
-## iPhone X系列安全区域适配问题
+## iPhone X 系列安全区域适配问题
 
 **表现**:
 
@@ -343,14 +343,17 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 
 `viewport-fit` 有 3 个值分别为：
 
-- `auto`：此值不影响初始布局视图端口，并且整个web页面都是可查看的。
+- `auto`：此值不影响初始布局视图端口，并且整个 web 页面都是可查看的。
 - `contain`：视图端口按比例缩放，以适合显示内嵌的最大矩形。
 - `cover`：视图端口被缩放以填充设备显示。强烈建议使用 safe area inset 变量，以确保重要内容不会出现在显示之外。
 
 #### 设置 viewport-fit 为 cover
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover"
+/>
 ```
 
 #### 增加适配层
@@ -359,22 +362,22 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 
 ```css
 /* 适配 iPhone X 顶部填充*/
-@supports (top: env(safe-area-inset-top)){
+@supports (top: env(safe-area-inset-top)) {
   body,
-  .header{
-      padding-top: constant(safe-area-inset-top, 40px);
-      padding-top: env(safe-area-inset-top, 40px);
-      padding-top: var(safe-area-inset-top, 40px);
+  .header {
+    padding-top: constant(safe-area-inset-top, 40px);
+    padding-top: env(safe-area-inset-top, 40px);
+    padding-top: var(safe-area-inset-top, 40px);
   }
 }
 /* 判断iPhoneX 将 footer 的 padding-bottom 填充到最底部 */
-@supports (bottom: env(safe-area-inset-bottom)){
-    body,
-    .footer{
-        padding-bottom: constant(safe-area-inset-bottom, 20px);
-        padding-bottom: env(safe-area-inset-bottom, 20px);
-        padding-top: var(safe-area-inset-bottom, 20px);
-    }
+@supports (bottom: env(safe-area-inset-bottom)) {
+  body,
+  .footer {
+    padding-bottom: constant(safe-area-inset-bottom, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-top: var(safe-area-inset-bottom, 20px);
+  }
 }
 ```
 
@@ -385,7 +388,7 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 
 其中 `var()` 用法为 `var( <custom-property-name> , <declaration-value>? )`，作用是在 `env()` 不生效的情况下，给出一个备用值。
 
-`constant()` 被 `css 2017-2018` 年为草稿阶段，是否已被标准化未知。而其他iOS 浏览器版本中是否有此函数未知，作为兼容处理而添加进去。
+`constant()` 被 `css 2017-2018` 年为草稿阶段，是否已被标准化未知。而其他 iOS 浏览器版本中是否有此函数未知，作为兼容处理而添加进去。
 
 #### 兼容性
 
@@ -404,17 +407,17 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 使用 QRCode 生成二维码
 
 ```js
-import QRCode from 'qrcode';
+import QRCode from "qrcode";
 // 使用 async 生成图片
 const options = {};
 const url = window.location.href;
 async url => {
   try {
-    console.log(await QRCode.toDataURL(url, options))
+    console.log(await QRCode.toDataURL(url, options));
   } catch (err) {
     console.error(err);
   }
-}
+};
 ```
 
 将 `await QRCode.toDataURL(url, options)` 表达式的值 赋值给 图片 url 即可
@@ -424,12 +427,11 @@ async url => {
 主要是使用 `htmlToCanvas` 生成 `canvas` 画布
 
 ```js
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 
 html2canvas(document.body).then(function(canvas) {
-    document.body.appendChild(canvas);
+  document.body.appendChild(canvas);
 });
-
 ```
 
 但是不单单在此处就完了，由于是 `canvas` 的原因。移动端生成出来的图片比较模糊。
@@ -454,12 +456,192 @@ html2canvas(document.querySelector('.demo'), { canvas: newCanvas }).then(functio
 }
 ```
 
-> 这个根据需要设置 scaleSize 大小
+> 这个根据需要设置 `scaleSize` 大小
 
+## 微信公众号分享问题
 
+**表现**:
+
+在**微信公众号 H5** 开发中，页面内部点击分享按钮调用 `SDK`，方法不生效。
+
+**解决方案**:
+
+添加一层蒙层，做分享引导。
+
+因为页面内部点击分享按钮无法直接调用，而分享功能需要点击右上角更多来操作。
+
+然后用户可能不知道通过右上角小标里面的功能分享。又想引导用户分享，这时应该怎么做呢？
+
+**技术无法实现的，从产品出发**。
+
+![img](https://user-gold-cdn.xitu.io/2019/12/20/16f1efa63207199b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+**如果技术上实现复杂，或者直接不能实现。不要强行钻牛角尖哦，学会怼产品，也是程序员必备的能力之一。**
+
+## H5 调用 SDK 相关解决方案
+
+**产生原因**：
+
+在 `Hybrid App` 中使用 `H5` 是最常见的不过了，刚接触的，肯定会很生疏模糊。不知道 H5 和 Hybrid 是怎么交互的。怎样同时支持 iOS 和 Android 呢？现在来谈谈 Hybrid 技术要点，**原生与 H5 的通信**。
+
+**解决方案**：
+
+![img](https://user-gold-cdn.xitu.io/2019/12/20/16f21bc7e4d19065?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+使用 `DSBridge` 同时支持 `iOS` 与 `Android`
+
+> 文档见参考资料
+
+### SDK 小组 提供方法
+
+1. 注册方法 `bridge.register`
+
+```js
+bridge.register("enterApp", function() {
+  broadcast.emit("ENTER_APP");
+});
+```
+
+2. 回调方法 `bridge.call`
+
+```js
+export const getSDKVersion = () => bridge.call("BLT.getSDKVersion");
+```
+
+### 事件监听与触发法
+
+```js
+const broadcast = {
+  on: function(name, fn, pluralable) {
+    this._on(name, fn, pluralable, false);
+  },
+  once: function(name, fn, pluralable) {
+    this._on(name, fn, pluralable, true);
+  },
+  _on: function(name, fn, pluralable, once) {
+    let eventData = broadcast.data;
+    let fnObj = { fn: fn, once: once };
+    if (pluralable && Object.prototype.hasOwnProperty.call(eventData, "name")) {
+      eventData[name].push(fnObj);
+    } else {
+      eventData[name] = [fnObj];
+    }
+    return this;
+  },
+  emit: function(name, data, thisArg) {
+    let fn, fnList, i, len;
+    thisArg = thisArg || null;
+    fnList = broadcast.data[name] || [];
+    for (i = 0, len = fnList.length; i < len; i++) {
+      fn = fnList[i].fn;
+      fn.apply(thisArg, [data, name]);
+      if (fnList[i].once) {
+        fnList.splice(i, 1);
+        i--;
+        len--;
+      }
+    }
+    return this;
+  },
+  data: {}
+};
+export default broadcast;
+```
+
+### 踩坑注意
+
+方法调用前，一定要判断 `SDK` 是否提供该方法 如果 `Android` 提供该方法，`iOS` 上调用就会出现一个方法**调用失败等弹窗**。 怎么解决呢？
+
+提供一个判断是否 `Android、iOS`。根据设备进行判断
+
+```js
+export const hasNativeMethod = (name) =>
+  return bridge.hasNativeMethod('BYJ.' + name)
+}
+
+export const getSDKVersion = function() {
+  if (hasNativeMethod('getSDKVersion')) {
+    bridge.call('BYJ.getSDKVersion')
+  }
+}
+```
+
+> 同一功能需要 iOS，Android 方法名相同，这样更好处理哦
+
+## H5 调试相关方案策略
+
+**表现**:
+
+调试代码一般就是为了**查看数据**和**定位 bug**。分为两种场景，一种是**开发和测试**时调试，一种是**生产环境**上调试。
+
+> 为什么有生产环境上调试呢？有些时候测试环境上没法复现这个 bug，测试环境和生产环境不一致，此时就需要紧急生产调试。
+
+在 `PC` 端开发时，我们可以直接掉出控制台，使用浏览器提供的工具操作`devtools`或者查看日志。但是在 `App` 内部我们怎么做呢？
+
+### 原理与解决方案
+
+#### 1. vconsole 控制台插件
+
+使用方法也很简单，如下：
+
+```js
+import Vconsole from "vconsole";
+new Vconsole();
+```
+
+![img](https://user-gold-cdn.xitu.io/2019/12/19/16f1d57bc648e216?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+有兴趣看看它实现的基本原理，我们关注的点应该在 vsconsole 如何打印出我们所有 log 的 [腾讯开源 vconsole](https://github.com/Tencent/vConsole/blob/dev/src/core/core.js)
+
+上述方法仅用于开发和测试。**生产环境中不允许出现，所以，使用时需要对环境进行判断**。
+
+```js
+import Vconsole from "vconsole";
+if (process.env.NODE_ENV !== "production") {
+  new Vconsole();
+}
+```
+
+#### 2. 代理 + spy-debugger
+
+操作稍微有点麻烦，不过我会详细写出，大致分为 4 个步骤
+
+1. 安装插件(全局安装)
+
+```sh
+sudo npm install spy-debugger -g
+```
+
+2. 手机与电脑置于同一 `wifi` 下，手机设置代理
+
+  设置手机的 `HTTP` 代理，代理 `IP` 地址设置为 `PC` 的 `IP` 地址，端口为 `spy-debugger` 的启动端口
+
+- `spy-debugger` 默认端口：`9888`
+
+- `Android` ：`设置 - WLAN - 长按选中网络 - 修改网络 - 高级 - 代理设置 - 手动`
+
+- `IOS` ：`设置 - Wi-Fi - 选中网络, 点击感叹号, HTTP 代理手动`
+
+3. 手机打开浏览器或者 `app` 中 `H5` 页面
+
+4. 打开桌面日志网站进行调试，点击 `npm` 控制台监听地址。查看抓包和 `H5` 页面结构
+
+**这种方式可以调试生成环境的页面，不需要修改代码，可以应付大多数调试需求**
+
+## 总结
+
+关于移动端 H5 的文章告一段落了，之后实践中遇到的问题都将在此文中更新。另外可以多关注下 [我的github](https://github.com/GolderBrother) 动态哦！
 
 ## 参考资料
 
 - [Safari CSS Reference](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html#//apple_ref/css/property/-webkit-overflow-scrolling)
-
-<!-- https://juejin.im/post/5dfadb91e51d45584006e486 -->
+- [MDN touch 事件](https://juejin.im/post/5dfadb91e51d45584006e486)
+- [MDN css var()](https://developer.mozilla.org/zh-CN/docs/Web/CSS/var)
+- [MDN css env()](https://developer.mozilla.org/zh-CN/docs/Web/CSS/env)
+- [csswg env() drafts](https://drafts.csswg.org/css-env-1/)
+- [fastclick 源码](https://github.com/ftlabs/fastclick/blob/master/lib/fastclick.js)
+- [DSBridge-Android](https://github.com/wendux/DSBridge-Android) & [DSBridge-iOS](https://github.com/wendux/DSBridge-IOS)
+- [qrcodejs 源码](https://github.com/wendux/DSBridge-IOS)
+- [html2canvas 源码](https://github.com/wendux/DSBridge-IOS)
+- [关于H5页面在iPhoneX适配](https://github.com/wendux/DSBridge-IOS)
+- [vant 相关文档](https://youzan.github.io/vant/#/zh-CN/button)
