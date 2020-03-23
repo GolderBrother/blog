@@ -100,7 +100,7 @@ module.exports = {
                     title: 'Javascript',
                     collapsable: false,
                     children: [
-                        '/views/js/js-skills.md',
+                        '/views/javascript/js-skills.md',
                     ]
                 },
                 {
