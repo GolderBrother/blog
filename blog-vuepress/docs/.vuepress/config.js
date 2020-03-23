@@ -101,6 +101,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/javascript/js-skills.md',
+                        '/views/javascript/js-utils.md',
                     ]
                 },
                 {
