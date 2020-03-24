@@ -145,4 +145,35 @@ export const isCreditCode = value => /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRT
 // 验证
 console.log(isCreditCode(`91350200MA31KB4599`));  // true
 ```
- 
+
+### 验证迅雷链接
+
+```js
+/**
+ *  @param { string } value
+ */
+export const isThunderLink = value => /^thunderx?:\/\/[a-zA-Z\d]+=$/g.test(value);
+
+console.log(isThunderLink(`thunderx://baidu=`)); // true
+```
+
+### 验证ed2k链接(宽松匹配)
+
+```js
+/**
+ *  @param { string } value
+ */
+export const ised2k = value => /^ed2k:\/\/\|file\|.+\|\/$/g.test(value);
+
+console.log(ised2k(`ed2k://|file|xxx|/`)); // true
+```
+
+### 验证磁力链接(宽松匹配)
+
+```js
+/**
+ *  @param { string } value
+ */
+export const isMagnet = value => /^magnet:\?xt=urn:btih:[0-9a-fA-F]{40,}.*$/g.test(value);
+
+```
