@@ -1088,6 +1088,92 @@ export function getLocalTime(i = 0, d) {
 console.log(getLocalTime(0, new Date())); // Wed Mar 25 2020 13:46:54 GMT+0800 (中国标准时间)
 ```
 
+### 时间格式化显示
+
+```js
+/**
+ * @param {Date|number|undefined} date 具体日期值
+ * @param {string} dateType 需要返回类型
+ * @return {string} dateText 返回为指定格式的日期字符串
+ */
+export function getFormatDate(date, dateType) {
+  dateType = dateType || "yyyy-mm-dd MM:mm:ss";
+  let dateObj = date ? new Date(date) : new Date();
+  let month = dateObj.getMonth() + 1;
+  let strDate = dateObj.getDate();
+  let hours = dateObj.getHours();
+  let minutes = dateObj.getMinutes();
+  let seconds = dateObj.getSeconds();
+  // 不够2位前面补0
+  month = String(month).padStart(2, 0);
+  strDate = String(strDate).padStart(2, 0);
+  hours = String(hours).padStart(2, 0);
+  minutes = String(minutes).padStart(2, 0);
+  seconds = String(seconds).padStart(2, 0);
+
+  let dateText =
+    dateObj.getFullYear() +
+    "年" +
+    (dateObj.getMonth() + 1) +
+    "月" +
+    dateObj.getDate() +
+    "日";
+  if (dateType === "yyyy-mm-dd") {
+    dateText =
+      dateObj.getFullYear() +
+      "-" +
+      String(dateObj.getMonth() + 1).padStart(2, 0) +
+      "-" +
+      String(dateObj.getDate()).padStart(2, 0);
+  }
+  if (dateType === "yyyy.mm.dd") {
+    dateText =
+      dateObj.getFullYear() +
+      "." +
+      String(dateObj.getMonth() + 1).padStart(2, 0) +
+      "." +
+      String(dateObj.getDate()).padStart(2, 0);
+  }
+  if (dateType === "yyyy-mm-dd MM:mm:ss") {
+    dateText =
+      dateObj.getFullYear() +
+      "-" +
+      month +
+      "-" +
+      strDate +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+  }
+  if (dateType === "mm-dd MM:mm:ss") {
+    dateText =
+      month + "-" + strDate + " " + hours + ":" + minutes + ":" + seconds;
+  }
+  if (dateType === "yyyy年mm月dd日 MM:mm:ss") {
+    dateText =
+      dateObj.getFullYear() +
+      "年" +
+      month +
+      "月" +
+      strDate +
+      "日" +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+  }
+  return dateText;
+}
+
+getFormatDate(); // "2020-03-26 06:00:54"
+getFormatDate(new Date(), `yyyy-mm-dd`); // "2020-03-26"
+```
+
 可以参考一篇文章[《前端的各种日期操作》](https://juejin.im/post/5e0a201ce51d4575eb4f38e7)
 
 ## 浏览器存储相关 storage 工具函数
@@ -1202,7 +1288,7 @@ cookieGet(`name`); // "golderbrother"
  * @param {String} key  属性
  */
 export const cookieRemove = key => {
-  if(!key) return;
+  if (!key) return;
   document.cookie = `${encodeURIComponent(key)}=;expires=${new Date()}`;
 };
 
@@ -1219,9 +1305,213 @@ cookieRemove();
 /**
  *  @param { number } num
  */
-export const formatMoney = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const formatMoney = num =>
+  num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 formatMoney(9999999); // "9,999,999"
+```
+
+### 截取字符串并加身略号
+
+```js
+export function subText(str, length) {
+  if (str.length === 0) {
+    return "";
+  }
+  if (str.length > length) {
+    return str.substr(0, length) + "...";
+  } else {
+    return str;
+  }
+}
+
+// subText(`截取字符串并加身略号`, 3) // "截取字..."
+```
+
+### 获取文件 base64 编码
+
+```js
+/**
+ * @param file
+ * @param format  指定文件格式
+ * @param size  指定文件大小(字节)
+ * @param formatMsg 格式错误提示
+ * @param sizeMsg   大小超出限制提示
+ * @returns {Promise<any>}
+ */
+export function fileToBase64String(
+  file,
+  format = ["jpg", "jpeg", "png", "gif"],
+  size = 20 * 1024 * 1024,
+  formatMsg = "文件格式不正确",
+  sizeMsg = "文件大小超出限制"
+) {
+  return new Promise((resolve, reject) => {
+    // 格式过滤
+    let suffix = file.type.split("/")[1].toLowerCase();
+    let inFormat = false;
+    for (let i = 0; i < format.length; i++) {
+      if (suffix === format[i]) {
+        inFormat = true;
+        break;
+      }
+    }
+    if (!inFormat) {
+      reject(formatMsg);
+    }
+    // 大小过滤
+    if (file.size > size) {
+      reject(sizeMsg);
+    }
+    // 转base64字符串
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      let res = fileReader.result;
+      resolve({ base64String: res, suffix: suffix });
+      reject("异常文件，请重新选择");
+    };
+  });
+}
+```
+
+### B 转换到 KB,MB,GB 并保留两位小数
+
+```js
+/**
+ * @param { number } fileSize
+ */
+export function formatFileSize(fileSize) {
+  let temp;
+  if (fileSize < 1024) {
+    return fileSize + "B";
+  } else if (fileSize < 1024 * 1024) {
+    temp = fileSize / 1024;
+    temp = temp.toFixed(2);
+    return temp + "KB";
+  } else if (fileSize < 1024 * 1024 * 1024) {
+    temp = fileSize / (1024 * 1024);
+    temp = temp.toFixed(2);
+    return temp + "MB";
+  } else {
+    temp = fileSize / (1024 * 1024 * 1024);
+    temp = temp.toFixed(2);
+    return temp + "GB";
+  }
+}
+```
+
+### base64 转 file
+
+```js
+/**
+ *  @param { base64 } base64
+ *  @param { string } filename 转换后的文件名
+ */
+export const base64ToFile = (base64, filename) => {
+  let arr = base64.split(",");
+  let mime = arr[0].match(/:(.*?);/)[1];
+  let suffix = mime.split("/")[1]; // 图片后缀
+  let bstr = atob(arr[1]);
+  let n = bstr.length;
+  let u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], `${filename}.${suffix}`, { type: mime });
+};
+```
+
+### base64 转 blob
+
+```js
+/**
+ *  @param { base64 } base64
+ */
+export const base64ToBlob = base64 => {
+  let arr = base64.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+```
+
+### blob 转 file
+
+```js
+/**
+ *  @param { blob } blob
+ *  @param { string } fileName
+ */
+export const blobToFile = (blob, fileName) => {
+  blob.lastModifiedDate = new Date();
+  blob.name = fileName;
+  return blob;
+};
+```
+
+### file 转 base64
+
+```js
+/**
+ * @param { * } file 图片文件
+ */
+export const fileToBase64 = file => {
+  let reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = function(e) {
+    return e.target.result;
+  };
+};
+```
+
+### 递归生成树形结构
+
+```js
+export function getTreeData(
+  data,
+  pid,
+  pidName = "parentId",
+  idName = "id",
+  childrenName = "children",
+  key
+) {
+  let arr = [];
+
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][pidName] == pid) {
+      data[i].key = data[i][idName];
+      data[i][childrenName] = getTreeData(
+        data,
+        data[i][idName],
+        pidName,
+        idName,
+        childrenName
+      );
+      arr.push(data[i]);
+    }
+  }
+
+  return arr;
+}
+```
+
+### 遍历树节点
+
+```js
+export function foreachTree(data, childrenName = "children", callback) {
+  for (let i = 0; i < data.length; i++) {
+    callback(data[i]);
+    if (data[i][childrenName] && data[i][childrenName].length > 0) {
+      foreachTree(data[i][childrenName], childrenName, callback);
+    }
+  }
+}
 ```
 
 未完待续...
