@@ -175,6 +175,13 @@ module.exports = {
                         '/views/fe-interview/setTimeout&setImmediate.md',
                     ],
                 },
+                {
+                    title: '前端必知必会的网络基础',
+                    collapsable: false,
+                    children: [
+                        '/views/network/http-interview.md',
+                    ],
+                }
             ],
         }
     },
