@@ -209,11 +209,13 @@ function sendError(err, req, res, file, etag) {
 
 ### 2.5 Push Cache
 
-`Push Cache` 是指 `HTTP2` 在 `server push` 阶段存在的缓存。这块的知识比较新，应用也还处于萌芽阶段，应用范围有限不代表不重要——`HTTP2` 是趋势、是未来。在它还未被推而广之的此时此刻，仍希望大家能对 `Push Cache` 的关键特性有所了解：
+`Push Cache` 是指 `HTTP2` 在 `server push` 阶段存在的缓存, 即**推送缓存**。这块的知识比较新，应用也还处于萌芽阶段，应用范围有限不代表不重要——`HTTP2` 是趋势、是未来。在它还未被推而广之的此时此刻，仍希望大家能对 `Push Cache` 的关键特性有所了解：
 
 - `Push Cache` 是缓存的最后一道防线。浏览器只有在 `Memory Cache`、`HTTP Cache` 和 `Service Worker Cache` 均未命中的情况下才会去询问 `Push Cache`。
 - `Push Cache` 是一种存在于会话阶段的缓存，当 session 终止时，缓存也随之释放。
 - 不同的页面只要共享了同一个 `HTTP2` 连接，那么它们就可以共享同一个 `Push Cache`。
+
+大家可以参考这篇[扩展文章](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/)
 
 ## 3. 请求流程
 
@@ -272,6 +274,45 @@ function sendError(err, req, res, file, etag) {
   res.end(err ? err.toString() : "Not Found");
 }
 ```
+
+## 缓存位置
+
+前面我们已经提到，当`强缓存`命中或者`协商缓存中服务器返回304`的时候，我们直接从缓存中获取资源。那这些资源究竟缓存在什么`位置`呢？
+
+浏览器中的缓存位置一共有四种，按`优先级从高到低`排列分别是：
+
+- Service Worker
+- Memory Cache
+- Disk Cache
+- Push Cache
+
+### Service Worker
+
+`Service Worker` 借鉴了 `Web Worker` 的 思路，即让 JS 运行在**主线程之外**，由于它脱离了浏览器的窗体，因此无法直接访问DOM。虽然如此，但它仍然能帮助我们完成很多有用的功能，比如**离线缓存、消息推送和网络代理**等功能。其中的离线缓存就是 `Service Worker Cache`。
+
+`Service Worker` 同时也是 `PWA` 的重要实现机制，关于它的细节和特性，我们将会在后面的 `PWA` 的分享中详细介绍。
+
+### Memory Cache 和 Disk Cache
+
+`Memory Cache`指的是**内存缓存**，从**效率上**讲它是**最快**的。但是从**存活时间**来讲又是**最短**的，当**渲染进程结束**后，内存缓存也就不存在了。
+
+`Disk Cache`就是存储在**磁盘**中的缓存(**硬盘**)，从**存取效率**上讲是比内存缓存**慢**的，但是他的优势在于**存储容量**和**存储时长**。稍微有些计算机基础的应该很好理解，就不展开了。
+
+好，现在问题来了，既然两者各有优劣，那浏览器如何决定将资源放进内存还是硬盘呢？主要策略如下：
+
+- **比较大**的JS、CSS文件会直接被丢进磁盘，反之丢进内存
+- 内存**使用率比较高**的时候，文件优先进入磁盘
+
+## 总结
+
+对浏览器的缓存机制来做个简要的总结:
+
+首先通过 `Cache-Control` **验证强缓存**是否可用
+
+- 如果强缓存可用，直接使用
+- 否则进入**协商缓存**即发送 HTTP 请求，服务器通过请求头中的`If-Modified-Since`或者`If-None-Match`这些条件请求字段检查资源是否更新
+  - 若资源更新，返回资源和`200`状态码
+  - 否则，返回`304`，告诉浏览器直接**从缓存获取资源**
 
 ## 参考资料
 
