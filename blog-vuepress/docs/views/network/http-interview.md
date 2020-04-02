@@ -788,6 +788,376 @@ GET / HTTP/1.1
 
 在源服务器的响应头中，会加上`Cache-Control`这个字段进行缓存控制字段，那么它的值当中可以加入`private`或者`public`表示是否允许代理服务器缓存，前者**禁止**，后者为**允许**。
 
+比如对于一些非常私密的数据，如果缓存到代理服务器，别人直接访问代理就可以拿到这些数据，是非常危险的，因此对于这些数据一般是不会允许代理服务器进行缓存的，将响应头部的`Cache-Control`设为`private`，而不是`public`。
+
+就像下面这样:
+
+```js
+Cache-control: private
+```
+
+##### proxy-revalidate
+
+`must-revalidate`的意思是**客户端**缓存过期就去源服务器获取，而`proxy-revalidate`则表示**代理服务器**的缓存过期后到源服务器获取。
+
+##### s-maxage
+
+`s`是`share`的意思，限定了缓存在**代理服务器**中可以**存放多久**(缓存时间)，和限制客户端缓存时间的`max-age`并不冲突。
+
+讲了这几个字段，我们不妨来举个小例子，源服务器在响应头中加入这样一个字段:
+
+```js
+Cache-Control: public, max-age=1000, s-maxage=2000
+
+```
+
+相当于源服务器说: 我这个响应是允许**代理服务器缓存**的，客户端缓存过期了到代理中拿，并且在客户端的**缓存时间**为 `1000 s`，在代理服务器中的**缓存时间**为 `2000 s`。
+
+#### 客户端的缓存控制
+
+##### max-stale 和 min-fresh
+
+在客户端的请求头中，可以加入这两个字段，来对代理服务器上的缓存进行**宽容**和**限制**操作。比如：
+
+```js
+max-stale: 5
+
+```
+
+表示客户端到代理服务器上拿缓存的时候，即使代理**缓存过期了也不要紧**，只要**过期时间在5秒之内**，还是可以从代理中获取的。
+
+又比如:
+
+```js
+min-fresh: 5
+
+```
+
+表示代理缓存需要一定的**新鲜度**，不要等到缓存刚好到期再拿，一定要在**到期前 5 秒之前**的时间拿，否则拿不到。
+
+##### only-if-cached
+
+这个字段加上后表示客户端只会接受**代理缓存**，而不会接受源服务器的响应。如果**代理缓存**无效，则直接返回`504（Gateway Timeout）`。
+
+以上便是缓存代理的内容，涉及的字段比较多，希望能好好回顾一下，加深理解。
+
+## 014: 什么是跨域？浏览器如何拦截响应？如何解决？
+
+在前后端分离的开发模式中，经常会遇到跨域问题，即 Ajax 请求发出去了，服务器也成功响应了，前端就是拿不到这个响应。接下来我们就来好好讨论一下这个问题。
+
+### 那什么是跨域
+
+咱们来回顾一下 `URI` 的组成:
+
+![img](https://user-gold-cdn.xitu.io/2020/3/22/170ffd7ac23846fe?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+浏览器遵循**同源政策**(`scheme(协议)`、`host(主机)`和`port(端口)`都相同则为同源)。非同源站点有这样一些限制:
+
+- 不能读取和修改对方的 DOM
+- 不读访问对方的 Cookie、IndexDB 和 LocalStorage
+- 限制 XMLHttpRequest 请求。(后面的话题着重围绕这个)
+
+当浏览器向目标 `URI` 发 `Ajax` 请求时，只要当前 `URL` 和目标 `URL` **不同源**，则产生**跨域**，被称为`跨域请求`。
+
+跨域请求的响应一般会被浏览器所拦截，注意，是**被浏览器拦截**，**响应其实是成功到达客户端**了。那这个拦截是如何发生呢？
+
+首先要知道的是，浏览器是多进程的，以 `Chrome` 为例，进程组成如下：
+
+![img](https://user-gold-cdn.xitu.io/2020/3/22/170ffd8131a4628f?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+**WebKit 渲染引擎**和**V8 引擎**都在渲染进程当中。
+
+当`xhr.send`被调用，即 `Ajax` 请求准备发送的时候，其实还只是在渲染进程的处理。为了防止黑客通过脚本触碰到系统资源，浏览器将每一个渲染进程装进了沙箱，并且为了防止 CPU 芯片一直存在的 `Spectre` 和 `Meltdown` 漏洞，采取了`站点隔离`的手段，给每一个不同的站点(一级域名不同)分配了沙箱，互不干扰。
+具体见[YouTube上Chromium安全团队的演讲视频](https://www.youtube.com/watch?v=dBuykrdhK-A&feature=emb_logo)。
+
+在沙箱当中的渲染进程是没有办法发送网络请求的，那怎么办？只能通过网络进程来发送。那这样就涉及到进程间通信(`IPC，Inter Process Communication`)了。接下来我们看看 chromium 当中进程间通信是如何完成的，在 chromium 源码中调用顺序如下:
+
+![img](https://user-gold-cdn.xitu.io/2020/3/22/170ffd924eaecb41?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+可能看了你会比较懵，如果想深入了解可以去看看 chromium 最新的源代码, [IPC源码地址](https://chromium.googlesource.com/chromium/src/+/refs/heads/master/ipc/)及[Chromium IPC源码解析文章](https://blog.csdn.net/Luoshengyang/article/details/47822689)。
+
+总的来说就是利用`Unix Domain Socket`套接字，配合事件驱动的高性能网络并发库`libevent`完成进程的 `IPC 过程`。
+
+好，现在数据传递给了浏览器主进程，主进程接收到后，才真正地发出相应的网络请求。
+
+在服务端处理完数据后，将响应返回，主进程检查到跨域，且没有`cors`(跨域资源共享)响应头，将响应体**全部丢掉**，并不会发送给渲染进程。这就达到了**拦截数据**的目的。
+
+接下来我们来说一说解决跨域问题的几种方案。
+
+### 浏览器限制跨域请求一般有两种方式 
+
+- 浏览器限制发起跨域请求 
+- 跨域请求可以正常发起，但是返回的结果被浏览器拦截了
+
+### CORS
+
+`CORS` 其实是 `W3C` 的一个标准，全称是**跨域资源共享**。它需要浏览器和服务器的共同支持，具体来说，**非 IE 和 IE10 以上**支持`CORS`，服务器需要附加特定的`响应头`，后面具体拆解。不过在弄清楚 `CORS` 的原理之前，我们需要清楚两个概念: **简单请求**和**非简单请求**。
+
+浏览器根据请求方法和请求头的特定字段，将请求做了一下分类，具体来说规则是这样，凡是满足下面条件的属于**简单请求**:
+
+- 请求方法为 `GET、POST` 或者 `HEAD`
+- 请求头的取值范围: `Accept、Accept-Language、Content-Language、Content-Type`(只限于三个值`application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain`)
+
+```js
+// 表单提交
+Content-Type: application/x-www-form-urlencoded
+// 文件上传
+Content-Type: multipart/form-data
+// 纯文本
+Content-Type: text/plain
+```
+
+浏览器画了这样一个圈，在这个**圈里面**的就是**简单请求**, **圈外面**的就是**非简单请求**，然后针对这两种不同的请求进行不同的处理。
+
+### 简单请求
+
+请求发出去之前，浏览器做了什么？
+
+它会自动在请求头当中，添加一个`Origin`字段，用来说明请求来自哪个源。服务器拿到请求之后，在回应时对应地添加`Access-Control-Allow-Origin`字段，如果`Origin`不在这个字段的范围中，那么浏览器就会将响应拦截。
+
+因此，`Access-Control-Allow-Origin`字段是服务器用来决定浏览器是否拦截这个响应，这是必需的字段。与此同时，其它一些可选的功能性的字段，用来描述如果不会拦截，这些字段将会发挥各自的作用。
+
+比方说访问掘金网站，我们打开控制台随便查看一条请求信息
+
+```js
+access-control-allow-origin: https://juejin.im
+```
+
+`Access-Control-Allow-Credentials`。这个字段是一个布尔值，表示是否允许发送 `Cookie`，对于跨域请求，浏览器对这个字段默认值设为 `false`，而如果需要拿到浏览器的 `Cookie`，需要添加这个响应头并设为`true`, 并且在前端也需要设置`withCredentials`属性:
+
+```http
+access-control-allow-credentials: true
+```
+
+```js
+let xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+```
+
+`Access-Control-Expose-Headers`。这个字段是给 `XMLHttpRequest` 对象赋能，让它不仅可以拿到基本的 6 个响应头字段（包括`Cache-Control、Content-Language、Content-Type、Expires、Last-Modified和Pragma`）, 还能拿到这个字段声明的响应头字段。比如这样设置:
+
+```js
+Access-Control-Expose-Headers: aaa
+```
+
+```js
+access-control-allow-headers: x-requested-with,content-type,Cache-Control,Pragma,Date,x-timestamp
+```
+
+那么在前端可以通过 `XMLHttpRequest.getResponseHeader('aaa')` 拿到 `aaa` 这个字段的值。
+
+### 非简单请求
+
+非简单请求相对而言会有些不同，体现在两个方面: **预检请求**和**响应字段**
+
+我们以 `PUT` 方法为例。
+
+```js
+var url = 'http://xxx.com';
+var xhr = new XMLHttpRequest();
+xhr.open('PUT', url, true);
+xhr.setRequestHeader('X-Custom-Header', 'xxx');
+xhr.send();
+
+```
+
+当这段代码执行后，首先会发送**预检请求**(`preflight request`)。这个**预检请求**的请求行和请求体是下面这个格式:
+
+```js
+OPTIONS / HTTP/1.1
+Origin: 当前地址
+Host: xxx.com
+Access-Control-Request-Method: PUT
+Access-Control-Request-Headers: X-Custom-Header
+
+```
+
+预检请求的方法是`OPTIONS`，同时会加上`Origin源地址`和`Host目标地址`，这很简单。同时也会加上两个关键的字段:
+
+- `Access-Control-Request-Method`, 列出 `CORS` 请求用到哪个**HTTP方法**
+- `Access-Control-Request-Headers`，指定 `CORS` 请求将要加上什么**请求头**
+
+预检请求的响应。如下面的格式:
+
+```js
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: X-Custom-Header
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 1728000
+Content-Type: text/html; charset=utf-8
+Content-Encoding: gzip
+Content-Length: 0
+
+```
+
+其中有这样几个关键的**响应头字段**:
+
+- `Access-Control-Allow-Origin`: 表示可以允许**请求的源**，可以填具体的源名，也可以填`*`表示**允许任意源请求**。
+- `Access-Control-Allow-Methods`: 表示允许的**请求方法列表**。
+- `Access-Control-Allow-Credentials`: 是否允许携带`cookie`。
+- `Access-Control-Allow-Headers`: 表示允许发送的**请求头字段**
+- `Access-Control-Max-Age`: 预检请求的**有效期**，在此期间，不用发出另外一条预检请求。
+
+在预检请求的响应返回后，如果请求不满足响应头的条件，则触发`XMLHttpRequest`的`onerror`方法，当然后面真正的`CORS请求`也不会发出去了。
+
+**CORS 请求的响应**。绕了这么一大转，到了真正的 `CORS` 请求就容易多了，现在它和简单请求的情况是一样的。浏览器自动加上`Origin`字段，服务端响应头返回`Access-Control-Allow-Origin`。可以参考以上简单请求部分的内容。
+
+### JSONP
+
+虽然`XMLHttpRequest`对象遵循同源政策，但是`script`标签不一样，它可以通过 `src` 填上**目标地址**从而发出 `GET` 请求，**实现跨域请求并拿到响应**。这也就是 `JSONP` 的原理，接下来我们就来封装一个 `JSONP`:
+
+```js
+const jsonp = ({ url, params, callbackName }) => {
+  const generateURL = () => {
+    let dataStr = '';
+    for(let key in params) {
+      dataStr += `${key}=${params[key]}&`;
+    }
+    dataStr += `callback=${callbackName}`;
+    return `${url.endsWith(`?`) : '' : '?'}${dataStr}`;
+  };
+  return new Promise((resolve, reject) => {
+    // 初始化回调函数名称
+    callbackName = callbackName || Math.random().toString.replace(',', '');
+    // 创建 script 元素并加入到当前文档中
+    const scriptEle = document.createElement('script');
+    scriptEle.src = generateURL();
+    document.body.appendChild(scriptEle);
+    // 绑定到 window 上，为了后面调用
+    window[callbackName] = (data) => {
+      resolve(data);
+      // script 执行完了，成为无用元素，需要清除
+      document.body.removeChild(scriptEle);
+    }
+  });
+}
+
+```
+
+当然在服务端也会有响应的操作, 以 `express` 为例:
+
+```js
+let express = require('express')
+let app = express()
+app.get('/', function(req, res) {
+  let { a, b, callback } = req.query
+  console.log(a); // 1
+  console.log(b); // 2
+  // 注意哦，返回给script标签，浏览器直接把这部分"字符串回调函数"执行
+  res.end(`${callback}('数据包xxx')`);
+})
+app.listen(3000)
+
+```
+
+然后前端这样简单地调用一下就好了:
+
+```js
+jsonp({
+  // 请求地址
+  url: 'http://localhost:3000',
+  params: { 
+    a: 1,
+    b: 2
+  }
+}).then(data => {
+  // 拿到数据进行处理
+  console.log(data); // 数据包
+})
+
+```
+
+和`CORS`相比，`JSONP` 最大的优势在于兼容性好，IE 低版本不能使用 `CORS` 但可以使用 `JSONP`，缺点也很明显，请求方法单一，**只支持 GET 请求**。
+
+### Nginx
+
+`Nginx` 是一种高性能的**反向代理服务器**，可以用来轻松**解决跨域问题**。
+
+`what`？反向代理？我给你看一张图你就懂了。
+
+![img](https://user-gold-cdn.xitu.io/2020/3/22/170ffd97d0b1cf15?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+**正向代理**帮助客户端**访问**客户端**自己访问不到**的服务器，然后将结果返回给客户端。
+
+反向代理拿到客户端的请求，将请求转发给其他的服务器，主要的场景是维持服务器集群的**负载均衡**，换句话说，**反向代理帮其它的服务器拿到请求**，然后**选择一个合适的服务器**，将**请求转交**给它。
+
+比如我们去银行办理业务，首先我们会去找个取号机，然后取出我们的号码以及对应的办理柜台，这个取号机就相当于上面说的`nginx`，它可以帮我们将业务分配到**合适的柜台**(当前最少人的，有空闲时间的)办理，这也就相当于**负载均衡**的作用。
+
+好了，那 Nginx 是如何来解决跨域的呢？
+
+比如说现在客户端的域名为`client.com`，服务器的域名为`server.com`，客户端向服务器发送 `Ajax` 请求，当然会跨域了，那这个时候让 Nginx 登场了，通过下面这个配置:
+
+```js
+server {
+  listen  80;
+  server_name  client.com;
+  location /api {
+    proxy_pass server.com;
+  }
+}
+```
+
+Nginx 相当于起了一个**跳板机**，这个**跳板机**的域名也是`client.com`，让客户端首先访问 `client.com/api`，这当然没有跨域，然后 `Nginx` 服务器作为反向代理，将**请求转发**给`server.com`，当响应返回时又将响应给到客户端，这就完成整个跨域请求的过程。
+
+其实还有一些不太常用的方式，大家了解即可，比如postMessage，当然WebSocket也是一种方式，但是已经不属于 HTTP 的范畴，另外一些奇技淫巧就不建议大家去死记硬背了，一方面从来不用，名字都难得记住，另一方面临时背下来，面试官也不会对你印象加分，因为看得出来是背的。当然没有背并不代表减分，把跨域原理和**前面三种主要的跨域方式**理解清楚，经得起更深一步的推敲，反而会让别人觉得你是一个靠谱的人。
+
+## 015: TLS1.2 握手的过程是怎样的？
+
+之前谈到了 HTTP 是明文传输的协议，传输保文对外完全透明，非常不安全，那如何进一步保证安全性呢？
+
+由此产生了 `HTTPS`，其实它并不是一个新的协议，而是在 HTTP 下面增加了一层 `SSL/TLS` 协议，简单的讲，`HTTPS = HTTP + SSL/TLS`。
+
+那什么是 `SSL/TLS` 呢？
+
+实际上以前是成为`SSL`, 现在是`TLS`
+
+`SSL` 即`安全套接层（Secure Sockets Layer）`，在 `OSI` 七层模型中处于会话层(第 5 层)。之前 `SSL` 出过三个大版本，当它发展到**第三个大版本**的时候才被标准化，成为 `TLS`（传输层安全，`Transport Layer Security`），并被当做 `TLS1.0` 的版本，准确地说，`TLS1.0 = SSL3.1`。
+
+现在主流的版本是 `TLS/1.2`, 之前的 `TLS1.0、TLS1.1` 都被认为是不安全的，在不久的将来会被完全淘汰。因此我们接下来主要讨论的是 `TLS1.2`, 当然在 `2018` 年推出了更加优秀的 `TLS1.3`，大大优化了 `TLS` 握手过程，这个我们放在下一节再去说。
+
+TLS 握手的过程比较复杂，写文章之前我查阅了大量的资料，发现对 `TLS` 初学者非常不友好，也有很多知识点说的含糊不清，可以说这个整理的过程是相当痛苦了。希望我下面的拆解能够帮你理解得更顺畅些吧!
+
+### 传统 RSA 握手
+
+先来说说传统的 `TLS` 握手，也是大家在网上经常看到的。可以参考这篇文章，[(传统RSA版本)`HTTPS`为什么让数据传输更安全](http://47.98.159.95/my_blog/browser-security/003.html)，其中也介绍到了对称加密和非对称加密的概念，建议大家去读一读，不再赘述。之所以称它为 `RSA` 版本，是因为它在`加解密pre_random`的时候采用的是 `RSA` 算法。
+
+#### TLS 1.2 握手过程
+
+现在我们来讲讲主流的 TLS 1.2 版本所采用的方式。
+
+![img](https://user-gold-cdn.xitu.io/2020/3/22/170ffd9b35c7a81b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+刚开始你可能会比较懵，先别着急，过一遍下面的流程再来看会豁然开朗。
+
+##### step 1: Client Hello
+
+首先，浏览器发送 `client_random、TLS版本、加密套件列表`。
+
+`client_random` 是什么？用来最终 `secret` 的一个参数。
+
+加密套件列表是什么？我举个例子，加密套件列表一般长这样子:
+
+```js
+TLS_ECDHE_WITH_AES_128_GCM_SHA256
+
+```
+
+意思是`TLS`握手过程中，使用`ECDHE`算法生成`pre_random`(**预随机数**，这个数后面会介绍)，128位的AES算法进行对称加密，在对称加密的过程中使用主流的GCM分组模式，因为对称加密中很重要的一个问题就是如何分组。最后一个是**哈希摘要**算法，采用SHA256算法。
+
+其中值得解释一下的是这个**哈希摘要**算法，试想一个这样的场景，服务端现在给客户端发消息来了，客户端并不知道此时的消息到底是服务端发的，还是中间人伪造的消息呢？现在引入这个哈希摘要算法，将服务端的证书信息通过**这个算法**生成一个摘要(可以理解为**比较短的字符串**)，用来**标识**这个服务端的**身份**，用私钥加密后把**加密后的标识**和**自己的公钥**传给客户端。客户端拿到这个**公钥来解密**，生成另外一份摘要。**两个摘要进行对比**，如果相同则能确认服务端的身份。这也就是所谓**数字签名**的原理。其中除了**哈希算法**，最重要的过程是**私钥加密，公钥解密**。
+
+##### step 2: Server Hello
+
+可以看到服务器一口气给客户端回复了非常多的内容。
+
+`server_random`也是最后生成`secret`的一个参数, 同时确认 `TLS` 版本、需要使用的**加密套件**和**自己的证书**，这都不难理解。那剩下的`server_params`是干嘛的呢？
+
+我们先埋个伏笔，现在你只需要知道，`server_random`到达了客户端。
+
+
+
 ## 参考资料
 
 - [encodeURI()和 encodeURIComponent() 区别](https://blog.csdn.net/qq_34629352/article/details/78959707)
