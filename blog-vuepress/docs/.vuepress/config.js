@@ -105,6 +105,13 @@ module.exports = {
                     ]
                 },
                 {
+                    title: 'Typescript',
+                    collapsable: false,
+                    children: [
+                        '/views/typescript/ts-demo.md',
+                    ]
+                },
+                {
                     title: 'Vue.js',
                     collapsable: false,
                     children: [
