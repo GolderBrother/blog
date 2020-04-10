@@ -18,17 +18,17 @@
 ### 1、未用懒加载，vue 中路由代码如下
 
 ```js
-import Vue from "vue";
-import Router from "vue-router";
-import HelloWorld from "@/components/HelloWorld";
+import Vue from 'vue';
+import Router from 'vue-router';
+import HelloWorld from '@/components/HelloWorld';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: "/",
-      name: "HelloWorld",
+      path: '/',
+      name: 'HelloWorld',
       component: HelloWorld
     }
   ]
@@ -40,17 +40,17 @@ export default new Router({
 方法如下：`component: resolve => (require(['需要加载的路由的地址']), resolve)`
 
 ```js
-import Vue from "vue";
-import Router from "vue-router";
+import Vue from 'vue';
+import Router from 'vue-router';
 /* 此处省去之前导入的HelloWorld模块 */
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: "/",
-      name: "HelloWorld",
-      component: resolve => require(["@/components/HelloWorld"], resolve)
+      path: '/',
+      name: 'HelloWorld',
+      component: resolve => require(['@/components/HelloWorld'], resolve)
     }
   ]
 });
@@ -61,21 +61,21 @@ export default new Router({
 方法如下：
 
 ```js
-const HelloWorld = () => import("需要加载的模块地址");
+const HelloWorld = () => import('需要加载的模块地址');
 ```
 
 ```js
-import Vue from "vue";
-import Router from "vue-router";
+import Vue from 'vue';
+import Router from 'vue-router';
 
 Vue.use(Router);
 
-const HelloWorld = () => import("@/components/HelloWorld");
+const HelloWorld = () => import('@/components/HelloWorld');
 export default new Router({
   routes: [
     {
-      path: "/",
-      name: "HelloWorld",
+      path: '/',
+      name: 'HelloWorld',
       component: HelloWorld
     }
   ]
@@ -84,7 +84,7 @@ export default new Router({
 
 import 不支持传入动态路径，但是可以传入 **半动态路径**
 
-webpack 编译 ```es6``` 动态引入 ```import() ```时不能传入变量，例如`dir='path/to/my/file.js;import(dir)` , 而要传入字符串 `import('path/to/my/file.js')`，这是因为 webpack 的现在的实现方式不能实现完全动态。
+webpack 编译 `es6` 动态引入 `import()`时不能传入变量，例如`dir='path/to/my/file.js;import(dir)` , 而要传入字符串 `import('path/to/my/file.js')`，这是因为 webpack 的现在的实现方式不能实现完全动态。
 
 这里有个 **hack** 方法：
 
@@ -97,30 +97,30 @@ webpack 编译 ```es6``` 动态引入 ```import() ```时不能传入变量，例
  * 异步加载页面
  * @param {*} viewUrl 页面路径
  */
-const asyncLoadView = (viewUrl = "") => () =>
+const asyncLoadView = (viewUrl = '') => () =>
   import(/* webpackChunkName: 'asyncView' */ `@views/${viewUrl}`);
 ```
 
 上面的 `/* webpackChunkName: 'asyncView' */` 专业术语是 `魔法字符串`, 用来定义 webpack 编译后的代码块文件名称：`asyncView122.chunk.js`
 
-如果项目中 ```.vue```文件是以 ```template src``` 外部方式引入模板的：
+如果项目中 `.vue`文件是以 `template src` 外部方式引入模板的：
 
 ```vue
 <template src="./hello-world.html"></template>
 ```
 
-则需要改为在 ```.js``` 文件中导出 ```vue``` 中以 ```template``` 的方式引入模板, 否则webpack编译不通过
+则需要改为在 `.js` 文件中导出 `vue` 中以 `template` 的方式引入模板, 否则 webpack 编译不通过
 
 如下例子：
 
 ```js
 export default {
   name: 'helloWorld',
-  template: require('./hello-world.html'),
-}
+  template: require('./hello-world.html')
+};
 ```
 
-#### 然后还需要添加对html模板文件的编译
+#### 然后还需要添加对 html 模板文件的编译
 
 1. 安装 **html-loader**
 
@@ -128,7 +128,7 @@ export default {
 npm install html-loader --save-dev or yarn add html-loader --dev
 ```
 
-2. ```webpack```的```loader```添加如下配置
+2. `webpack`的`loader`添加如下配置
 
 ```js
 // https://webpack.docschina.org/loaders/html-loader/
@@ -146,12 +146,12 @@ npm install html-loader --save-dev or yarn add html-loader --dev
 }
 ```
 
-因为配置了路由懒加载，所以需要单独对html文件进行解析，这样子就能正常解析```html```模板文件了
+因为配置了路由懒加载，所以需要单独对 html 文件进行解析，这样子就能正常解析`html`模板文件了
 
 ### 4、webpack 提供的 require.ensure()
 
-```vue-router``` 配置路由，使用 ```webpack``` 的 ```require.ensure``` 技术，也可以实现按需加载。 
-这种情况下，多个路由指定相同的 ```chunkName```，会合并打包成一个 js 文件。
+`vue-router` 配置路由，使用 `webpack` 的 `require.ensure` 技术，也可以实现按需加载。 
+这种情况下，多个路由指定相同的 `chunkName`，会合并打包成一个 js 文件。
 
 ```js
 /* 组件懒加载方案三: webpack提供的require.ensure() */
@@ -206,14 +206,14 @@ const router = new Router({
 </template>
 
 <script>
-import One from "./one";
+import One from './one';
 export default {
   components: {
-    "One-com": One
+    'One-com': One
   },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: 'Welcome to Your Vue.js App'
     };
   }
 };
@@ -230,14 +230,14 @@ export default {
 </template>
 
 <script>
-const One = () => import("./one");
+const One = () => import('./one');
 export default {
   components: {
-    "One-com": One
+    'One-com': One
   },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: 'Welcome to Your Vue.js App'
     };
   }
 };
@@ -256,11 +256,11 @@ export default {
 <script>
 export default {
   components: {
-    "One-com": resolve => (["./one"], resolve)
+    'One-com': resolve => (['./one'], resolve)
   },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: 'Welcome to Your Vue.js App'
     };
   }
 };
@@ -271,20 +271,24 @@ export default {
 
 ### 路由和组件的常用两种懒加载方式
 
-- 1、vue异步组件实现路由懒加载
+- 1、vue 异步组件实现路由懒加载
 
-    ```js
-        component：resolve=>(['需要加载的路由的地址'，resolve])
-    ```
+  ```js
+      component：resolve=>(['需要加载的路由的地址'，resolve])
+  ```
 
-- 2、es提出的import(推荐使用这种方式)
+- 2、es 提出的 import(推荐使用这种方式)
 
-    ```js
-        const HelloWorld = （）=>import('需要加载的模块地址')
-    ```
+  ```js
+      const HelloWorld = （）=>import('需要加载的模块地址')
+  ```
 
 - 3、webpack 提供的 require.ensure()
 
-    ```js
-        component: r => require.ensure([], () => r(require("@/components/about")), "demo-01")
-    ```
+  ```js
+  component: r => require.ensure([], () => r(require('@/components/about')), 'demo-01');
+  ```
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~

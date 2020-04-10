@@ -16,9 +16,9 @@ module.exports = {
         //如果项目源码中只有js文件，就不要写成/\jsx?$/，以提升正则表达式的性能
         test: /\.js$/,
         //babel-loader 支持缓存转换出的结果，通过 cacheDirectory 选项开启，一次编译到缓存中，后面直接走缓存
-        use: ["babel-loader?cacheDirectory"],
+        use: ['babel-loader?cacheDirectory'],
         // 指定编译文件目录：只对项目根目录下 src 目录中的文件采用 babel-loader
-        include: path.resolve(__dirname, "src")
+        include: path.resolve(__dirname, 'src')
       }
     ]
   }
@@ -38,7 +38,7 @@ webpack 官方文档中有提到，[传送门](https://www.webpackjs.com/loaders
 ```js
 module.exports = {
   resolve: {
-    modules: [path.resolve(__dirname, "node_modules")]
+    modules: [path.resolve(__dirname, 'node_modules')]
   }
 };
 ```
@@ -74,7 +74,7 @@ module.exports = {
     //使用 alias 将导入 react 的语句换成直接使用单独、完整的 react.min.js 文件，
     //减少耗时的递归解析操作
     alias: {
-      react: path.resolve(__dirname, "./node_modules/react/dist/react.min.js")
+      react: path.resolve(__dirname, './node_modules/react/dist/react.min.js')
     }
   }
 };
@@ -96,7 +96,7 @@ module.exports = {
 module.exports = {
   resolve: {
     //尽可能减少后缀尝试的可能性
-    extensions: ["js"]
+    extensions: ['js']
   }
 };
 ```
@@ -128,13 +128,13 @@ module.exports = {
   // mode: "development || "production",
   plugins: [
     new webpack.DllReferencePlugin({
-      context: path.join(__dirname, "..", "dll"),
-      manifest: require("../dll/dist/alpha-manifest.json") // eslint-disable-line
+      context: path.join(__dirname, '..', 'dll'),
+      manifest: require('../dll/dist/alpha-manifest.json') // eslint-disable-line
     }),
     new webpack.DllReferencePlugin({
-      scope: "beta",
-      manifest: require("../dll/dist/beta-manifest.json"), // eslint-disable-line
-      extensions: [".js", ".jsx"]
+      scope: 'beta',
+      manifest: require('../dll/dist/beta-manifest.json'), // eslint-disable-line
+      extensions: ['.js', '.jsx']
     })
   ]
 };
@@ -145,7 +145,7 @@ module.exports = {
 示例代码如下：
 
 ```js
-const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const plugins = [new HardSourceWebpackPlugin()];
 ```
@@ -224,7 +224,7 @@ module.export = {
 
 [传送门](https://www.npmjs.com/package/webpack-build-notifier)
 
-这是一款在你构建完成时，能够像`微信、Lark`这样的APP弹出消息的方式，提示你构建已经完成了。也就是说，当你启动构建时，就可以隐藏控制台面板，专心去做其他事情啦，到“点”了自然会来叫你，它的效果就是下面这样，同时还有提示音噢～
+这是一款在你构建完成时，能够像`微信、Lark`这样的 APP 弹出消息的方式，提示你构建已经完成了。也就是说，当你启动构建时，就可以隐藏控制台面板，专心去做其他事情啦，到“点”了自然会来叫你，它的效果就是下面这样，同时还有提示音噢～
 
 #### webpack-dashboard
 
@@ -277,9 +277,9 @@ module.export = {
 
 ```js
 // npm i -D uglifyjs-webpack-plugin
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
-  mode: "none",
+  mode: 'none',
   optimization: {
     minimize: true,
     minimizer: [new UglifyJsPlugin()],
@@ -333,7 +333,7 @@ splitChunks: {
 import(
   /* webpackChunkName: "my-chunk-name" */
   /* webpackMode: "lazy" */
-  "module"
+  'module'
 );
 
 // multiple possible targets
@@ -349,12 +349,12 @@ import(
 回归到实际业务场景，页面基本上都是通过路由的方式呈现，如果按照路由的方式实现**页面级的异步加载**，岂不是方便很多。例如，`react` 中可使用 `loadable` :
 
 ```js
-import React from "react";
-import { Route } from "react-router-dom";
-import { loadable } from "react-common-lib";
+import React from 'react';
+import { Route } from 'react-router-dom';
+import { loadable } from 'react-common-lib';
 
 const Test = loadable({
-  loader: () => import("./test")
+  loader: () => import('./test')
 });
 
 const AppRouter = () => (
@@ -384,7 +384,7 @@ const AppRouter = () => (
 
 #### 代码压缩
 
-代码压缩可以非常可观地减小资源打包体积，但是它的可操作性空间过小。可操作性低的意思是这一项不太容易出现在晋级评审的PPT上，如同 `CDN` 在网站性能优化的重要程度一样，重要但不归你做(或者傻瓜式配置)。
+代码压缩可以非常可观地减小资源打包体积，但是它的可操作性空间过小。可操作性低的意思是这一项不太容易出现在晋级评审的 PPT 上，如同 `CDN` 在网站性能优化的重要程度一样，重要但不归你做(或者傻瓜式配置)。
 
 它良好的模块化，以致于 `webpack` 就自作主张在生产环境中默认把这件事给做了。
 
@@ -392,12 +392,14 @@ const AppRouter = () => (
 
 ```js
 // 压缩前
-function sum (first, second) {
+function sum(first, second) {
   return first + second;
 }
 
 // 压缩后
-function s(x,y){return a+b}
+function s(x, y) {
+  return a + b;
+}
 ```
 
 #### 移除不必要的模块
@@ -410,7 +412,7 @@ function s(x,y){return a+b}
 
 ```js
 // 仅仅引入而未在代码中使用，该模块仍然会被打包
-import _ from 'lodash'
+import _ from 'lodash';
 ```
 
 对于这类问题总应该防患于未然，扼杀于摇篮中。eslint 的用武之地来了，它除了统一团队的代码风格以外，也用来提高团队的代码质量以及性能。
@@ -433,7 +435,7 @@ import _ from 'lodash'
 import DatePicker from 'antd/es/date-picker'; // for js
 import 'antd/es/date-picker/style/css'; // for css
 
-import get from 'lodash.get'
+import get from 'lodash.get';
 ```
 
 ### 02 Code Splitting: 按需加载，优化页面首次加载体积
@@ -442,7 +444,7 @@ import get from 'lodash.get'
 
 > 前端开发中的图片懒加载如何实现
 
-在屏幕可视区域外，对`img`标签自定义标签属性`data-src`来赋予图片的`src`地址，待滚动到`可视区域内`, 在将 `data-src` 值 替换成 `src` 值，也就是等到了**需要的时候**才去加载对应的图片，这样就达到 **图片懒加载** 效果 
+在屏幕可视区域外，对`img`标签自定义标签属性`data-src`来赋予图片的`src`地址，待滚动到`可视区域内`, 在将 `data-src` 值 替换成 `src` 值，也就是等到了**需要的时候**才去加载对应的图片，这样就达到 **图片懒加载** 效果
 
 通过 `Code Splitting` 可以只加载当前所需要的核心资源：
 
@@ -498,43 +500,41 @@ import get from 'lodash.get'
 }
 ```
 
-## 使用thread-loader加速构建
+## 使用 thread-loader 加速构建
 
 **webpack4 强力推荐**
 
 webpack4 官方提供了一个 [thread loader](https://github.com/amireh/happypack#how-it-works)
 
-> 这个loader不要跟 `happypack` 混合使用，会出现编译失败的问题，webpack4官方已经强烈推荐此方法来替代 `happypack`
+> 这个 loader 不要跟 `happypack` 混合使用，会出现编译失败的问题，webpack4 官方已经强烈推荐此方法来替代 `happypack`
 
-把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker【worker pool】 池里运行，一个worker 就是一个nodeJS 进程【node.js proces】，每个单独进程处理时间上限为600ms，各个进程的数据交换也会限制在这个时间内。
+把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker【worker pool】 池里运行，一个 worker 就是一个 nodeJS 进程【node.js proces】，每个单独进程处理时间上限为 600ms，各个进程的数据交换也会限制在这个时间内。
 
 它的配置长这样：
 
 ```js
-
 module.exports = {
   module: {
     rules: [
       {
         test: /\.js$/,
-        include: path.resolve("src"),
+        include: path.resolve('src'),
         use: [
-          "thread-loader",
+          'thread-loader'
           // your expensive loader (e.g babel-loader)
         ]
       }
     ]
   }
-}
-
+};
 ```
 
-下面是带有option的配置:
+下面是带有 option 的配置:
 
 ```js
 use: [
   {
-    loader: "thread-loader",
+    loader: 'thread-loader',
     // loaders with equal options will share worker pools
     // 设置同样option的loaders会共享
     options: {
@@ -547,12 +547,10 @@ use: [
       // 添加额外的node js 参数
       workerNodeArgs: ['--max-old-space-size=1024'],
 
-
       // 允许重新生成一个dead work pool
       // 这个过程会降低整体编译速度
       // 开发环境应该设置为false
       poolRespawn: false,
-
 
       //空闲多少秒后，干掉work 进程
       // 默认是500ms
@@ -568,18 +566,20 @@ use: [
       // can be used to create different pools with elsewise identical options
       // pool 的名字
       //
-      name: "my-pool"
+      name: 'my-pool'
     }
-  },
+  }
   // your expensive loader (e.g babel-loader)
-]
+];
 ```
 
 ## 参考资料
 
 - 书籍：`《Webpack 深入浅出》`
-- [Webpack优化——将你的构建效率提速翻倍](https://blog.csdn.net/QQ729533020/article/details/100589186)
+- [Webpack 优化——将你的构建效率提速翻倍](https://blog.csdn.net/QQ729533020/article/details/100589186)
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

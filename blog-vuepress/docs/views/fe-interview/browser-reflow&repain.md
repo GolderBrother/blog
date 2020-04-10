@@ -15,16 +15,17 @@
 1. 避免逐条改变样式，使用**类名**去合并样式
 2. 将 DOM “离线”, 使用文档片段 `DocumentFragment`
 
-    可以看下如下demo：
+   可以看下如下 demo：
 
-    ```js
-    // Create the fragment
-    var fragment = document.createDocumentFragment();
+   ```js
+   // Create the fragment
+   var fragment = document.createDocumentFragment();
 
-    //add DOM to fragment 
-    var spanNode = document.createElement("span");
-    spanNode.innerHTML = "Hello World";
-    fragment.appendChild(spanNode);
+   //add DOM to fragment
+   var spanNode = document.createElement('span');
+   spanNode.innerHTML = 'Hello World';
+   fragment.appendChild(spanNode);
+   ```
 
 
     //add this DOM to body
@@ -51,4 +52,6 @@
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

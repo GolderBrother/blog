@@ -34,33 +34,33 @@ micro-task 大概包括:
 我们知道 `async` 隐式返回 `Promise` 作为结果的函数,那么可以简单理解为，`await`后面的函数执行完毕时，`await`会产生一个微任务(`Promise.then`是微任务)。但是我们要注意这个微任务产生的时机，它是执行完 await 之后，直接跳出 async 函数，执行其他**同步**代码(此处就是协程的运作，A 暂停执行，控制权交给 B)。其他代码执行完毕后，再回到 async 函数去执行**剩下的代码**，然后把 await 后面的代码注册到**微任务队列**当中。我们来看个例子：
 
 ```js
-console.log("script start");
+console.log('script start');
 
 async function async1() {
   await async2();
-  console.log("async1 end");
+  console.log('async1 end');
 }
 async function async2() {
-  console.log("async2 end");
+  console.log('async2 end');
 }
 async1();
 
 setTimeout(function() {
-  console.log("setTimeout");
+  console.log('setTimeout');
 }, 0);
 
 new Promise(resolve => {
-  console.log("Promise");
+  console.log('Promise');
   resolve();
 })
   .then(function() {
-    console.log("promise1");
+    console.log('promise1');
   })
   .then(function() {
-    console.log("promise2");
+    console.log('promise2');
   });
 
-console.log("script end");
+console.log('script end');
 // 旧版输出如下，但是请继续看完下面的注意那里，新版有改动
 // script start => async2 end => Promise => script end => promise1 => promise2 => async1 end => setTimeout
 ```
@@ -94,43 +94,43 @@ let promise_ = new Promise((resolve,reject){ resolve(undefined)})
 
 但是这种做法其实是违法了规范的，当然规范也是可以更改的，这是 V8 团队的一个 PR ，目前新版打印已经修改。 知乎上也有相关讨论,可以看看 [这篇文章](https://www.zhihu.com/question/268007969)
 
-我们可以分2种情况来理解：
+我们可以分 2 种情况来理解：
 
-1. 如果 `await` 后面直接跟的为一个**变量**或者**普通值**，比如：`await 1`；这种情况的话相当于直接把 `await` **下面的代码**注册为一个**微任务**，可以简单理解为 `promise.then(xxx)` (xxx为await下面的代码)。然后跳出`async1`函数，执行其他代码，当遇到`promise`函数的时候，会注册`promise.then()`函数到**微任务**队列，注意此时**微任务**队列里面已经存在 `await` 后面的**微任务**。所以这种情况会先执行 `await` 后面的代码（`async1 end`），再执行 `async1` 函数后面注册的 **微任务代码**(`promise1,promise2`)。
+1. 如果 `await` 后面直接跟的为一个**变量**或者**普通值**，比如：`await 1`；这种情况的话相当于直接把 `await` **下面的代码**注册为一个**微任务**，可以简单理解为 `promise.then(xxx)` (xxx 为 await 下面的代码)。然后跳出`async1`函数，执行其他代码，当遇到`promise`函数的时候，会注册`promise.then()`函数到**微任务**队列，注意此时**微任务**队列里面已经存在 `await` 后面的**微任务**。所以这种情况会先执行 `await` 后面的代码（`async1 end`），再执行 `async1` 函数后面注册的 **微任务代码**(`promise1,promise2`)。
 2. 如果 `await` 后面跟的是一个**异步函数(promise)**的调用，比如上面的代码，将代码改成这样：
-将会把**await下面的代码**放到**本轮循环的最后面**执行
+   将会把**await 下面的代码**放到**本轮循环的最后面**执行
 
 ```js
-console.log('script start')
+console.log('script start');
 
 async function async1() {
-    await async2()
-    console.log('async1 end')
+  await async2();
+  console.log('async1 end');
 }
 async function async2() {
-    console.log('async2 end')
-    return Promise.resolve().then(()=>{
-        console.log('async2 end1')
-    })
+  console.log('async2 end');
+  return Promise.resolve().then(() => {
+    console.log('async2 end1');
+  });
 }
-async1()
+async1();
 
 setTimeout(function() {
-    console.log('setTimeout')
-}, 0)
+  console.log('setTimeout');
+}, 0);
 
 new Promise(resolve => {
-    console.log('Promise')
-    resolve()
+  console.log('Promise');
+  resolve();
 })
-.then(function() {
-    console.log('promise1')
-})
-.then(function() {
-    console.log('promise2')
-})
+  .then(function() {
+    console.log('promise1');
+  })
+  .then(function() {
+    console.log('promise2');
+  });
 
-console.log('script end')
+console.log('script end');
 ```
 
 输出为：
@@ -144,8 +144,10 @@ console.log('script end')
 
 ## 参考资料
 
-- [详解JavaScript中的Event Loop（事件循环）机制](https://zhuanlan.zhihu.com/p/33058983)
+- [详解 JavaScript 中的 Event Loop（事件循环）机制](https://zhuanlan.zhihu.com/p/33058983)
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

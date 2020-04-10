@@ -121,11 +121,7 @@ function sendError(err, req, res, file, stat) {
     res.end(err ? err.toString() : "Not Found");
 ```
 
-使用 Last-Modified 存在一些弊端，这其中最常见的就是这样几个场景
-    1. 某些服务器不能精确得到文件的**最后修改时间**， 这样就无法通过**最后修改时间**来判断文件是否更新了。
-    2. 我们编辑了文件，但文件的内容没有改变。服务端并不清楚我们是否真正改变了文件，它仍然通过最后编辑时间进行判断。因此这个资源在再次被请求时，会被当做新资源，进而引发一次完整的响应——不该重新请求的时候，也会重新请求。
-    3. 当我们修改文件的速度过快时（比如花了 `100ms` 完成了改动），由于 `If-Modified-Since` 只能检查到以**秒**为最小计量单位的时间差，所以它是**感知不到**这个改动的——该重新请求的时候，反而没有重新请求了。
-    4. 如果同样的一个文件位于多个CDN服务器上的时候内容虽然一样，修改时间不一样。
+使用 Last-Modified 存在一些弊端，这其中最常见的就是这样几个场景 1. 某些服务器不能精确得到文件的**最后修改时间**， 这样就无法通过**最后修改时间**来判断文件是否更新了。 2. 我们编辑了文件，但文件的内容没有改变。服务端并不清楚我们是否真正改变了文件，它仍然通过最后编辑时间进行判断。因此这个资源在再次被请求时，会被当做新资源，进而引发一次完整的响应——不该重新请求的时候，也会重新请求。 3. 当我们修改文件的速度过快时（比如花了 `100ms` 完成了改动），由于 `If-Modified-Since` 只能检查到以**秒**为最小计量单位的时间差，所以它是**感知不到**这个改动的——该重新请求的时候，反而没有重新请求了。 4. 如果同样的一个文件位于多个 CDN 服务器上的时候内容虽然一样，修改时间不一样。
 
 第二和第三这两个场景其实指向了同一个 bug——服务器并没有正确感知文件的变化。为了解决这样的问题，Etag 作为 `Last-Modified` 的补充出现了。
 
@@ -137,20 +133,16 @@ function sendError(err, req, res, file, stat) {
 
 `Etag`是 Web 服务端产生的，然后发给浏览器客户端。生成过程需要服务器额外付出开销，会**影响服务端的性能**，这是它的弊端。因此启用 `Etag` 需要我们审时度势。正如我们刚刚所提到的——`Etag` 并不能替代 `Last-Modified`，它只能作为 `Last-Modified` 的补充和强化存在。
 
-执行流程是这样的： 
-    1. 客户端想判断缓存是否可用可以先获取缓存中文档的`ETag`，然后通过`If-None-Match`发送请求给 Web 服务器询问此缓存是否可用。 
-    2. 服务器收到请求，将服务器的中此文件的`ETag`,跟请求头中的`If-None-Match`相比较,如果值是一样的,说明缓存还是最新的,Web 服务器将发送`304 Not Modified`响应码给客户端表示缓存未修改过，可以使用。 
-    3. 如果不一样则 Web 服务器将发送该文档的最新版本给浏览器客户端
-
+执行流程是这样的： 1. 客户端想判断缓存是否可用可以先获取缓存中文档的`ETag`，然后通过`If-None-Match`发送请求给 Web 服务器询问此缓存是否可用。 2. 服务器收到请求，将服务器的中此文件的`ETag`,跟请求头中的`If-None-Match`相比较,如果值是一样的,说明缓存还是最新的,Web 服务器将发送`304 Not Modified`响应码给客户端表示缓存未修改过，可以使用。 3. 如果不一样则 Web 服务器将发送该文档的最新版本给浏览器客户端
 
 看如下实例代码：
 
 ```js
-let http = require("http");
-let fs = require("fs");
-let path = require("path");
-let mime = require("mime");
-let crypto = require("crypto");
+let http = require('http');
+let fs = require('fs');
+let path = require('path');
+let mime = require('mime');
+let crypto = require('crypto');
 http
   .createServer(function(req, res) {
     let file = path.join(__dirname, req.url);
@@ -158,11 +150,11 @@ http
       if (err) {
         sendError(err, req, res, file, stat);
       } else {
-        let ifNoneMatch = req.headers["if-none-match"];
+        let ifNoneMatch = req.headers['if-none-match'];
         let etag = crypto
-          .createHash("sha1")
+          .createHash('sha1')
           .update(stat.ctime.toGMTString() + stat.size)
-          .digest("hex");
+          .digest('hex');
         if (ifNoneMatch) {
           if (ifNoneMatch == etag) {
             res.writeHead(304);
@@ -178,13 +170,13 @@ http
   })
   .listen(8080);
 function send(req, res, file, etag) {
-  res.setHeader("ETag", etag);
-  res.writeHead(200, { "Content-Type": mime.lookup(file) });
+  res.setHeader('ETag', etag);
+  res.writeHead(200, { 'Content-Type': mime.lookup(file) });
   fs.createReadStream(file).pipe(res);
 }
 function sendError(err, req, res, file, etag) {
-  res.writeHead(400, { "Content-Type": "text/html" });
-  res.end(err ? err.toString() : "Not Found");
+  res.writeHead(400, { 'Content-Type': 'text/html' });
+  res.end(err ? err.toString() : 'Not Found');
 }
 ```
 
@@ -243,11 +235,11 @@ function sendError(err, req, res, file, etag) {
 - Cache-Control:private, max-age=60, no-cache
 
 ```js
-let http = require("http");
-let fs = require("fs");
-let path = require("path");
-let mime = require("mime");
-let crypto = require("crypto");
+let http = require('http');
+let fs = require('fs');
+let path = require('path');
+let mime = require('mime');
+let crypto = require('crypto');
 http
   .createServer(function(req, res) {
     let file = path.join(__dirname, req.url);
@@ -264,14 +256,14 @@ http
   .listen(8080);
 function send(req, res, file) {
   let expires = new Date(Date.now() + 60 * 1000);
-  res.setHeader("Expires", expires.toUTCString());
-  res.setHeader("Cache-Control", "max-age=60");
-  res.writeHead(200, { "Content-Type": mime.lookup(file) });
+  res.setHeader('Expires', expires.toUTCString());
+  res.setHeader('Cache-Control', 'max-age=60');
+  res.writeHead(200, { 'Content-Type': mime.lookup(file) });
   fs.createReadStream(file).pipe(res);
 }
 function sendError(err, req, res, file, etag) {
-  res.writeHead(400, { "Content-Type": "text/html" });
-  res.end(err ? err.toString() : "Not Found");
+  res.writeHead(400, { 'Content-Type': 'text/html' });
+  res.end(err ? err.toString() : 'Not Found');
 }
 ```
 
@@ -288,7 +280,7 @@ function sendError(err, req, res, file, etag) {
 
 ### Service Worker
 
-`Service Worker` 借鉴了 `Web Worker` 的 思路，即让 JS 运行在**主线程之外**，由于它脱离了浏览器的窗体，因此无法直接访问DOM。虽然如此，但它仍然能帮助我们完成很多有用的功能，比如**离线缓存、消息推送和网络代理**等功能。其中的离线缓存就是 `Service Worker Cache`。
+`Service Worker` 借鉴了 `Web Worker` 的 思路，即让 JS 运行在**主线程之外**，由于它脱离了浏览器的窗体，因此无法直接访问 DOM。虽然如此，但它仍然能帮助我们完成很多有用的功能，比如**离线缓存、消息推送和网络代理**等功能。其中的离线缓存就是 `Service Worker Cache`。
 
 `Service Worker` 同时也是 `PWA` 的重要实现机制，关于它的细节和特性，我们将会在后面的 `PWA` 的分享中详细介绍。
 
@@ -300,7 +292,7 @@ function sendError(err, req, res, file, etag) {
 
 好，现在问题来了，既然两者各有优劣，那浏览器如何决定将资源放进内存还是硬盘呢？主要策略如下：
 
-- **比较大**的JS、CSS文件会直接被丢进磁盘，反之丢进内存
+- **比较大**的 JS、CSS 文件会直接被丢进磁盘，反之丢进内存
 - 内存**使用率比较高**的时候，文件优先进入磁盘
 
 ## 总结
@@ -320,4 +312,6 @@ function sendError(err, req, res, file, etag) {
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

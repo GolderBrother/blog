@@ -2,54 +2,48 @@
 
 ![](https://upload-images.jianshu.io/upload_images/12890819-b96702b6b7cd5c11.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
 ## 前言
 
-本文讲解如何在 Vue 项目中使用 TypeScript 来搭建并开发项目，并在此过程中踩过的坑 。 
+本文讲解如何在 Vue 项目中使用 TypeScript 来搭建并开发项目，并在此过程中踩过的坑 。
 
-TypeScript 具有类型系统，且是 JavaScript 的超集，TypeScript 在 2018年 势头迅猛，可谓遍地开花。
+TypeScript 具有类型系统，且是 JavaScript 的超集，TypeScript 在 2018 年 势头迅猛，可谓遍地开花。
 
 Vue3.0 将使用 TS 重写，重写后的 Vue3.0 将更好的支持 TS。2019 年 TypeScript 将会更加普及，能够熟练掌握 TS，并使用 TS 开发过项目，将更加成为前端开发者的优势。
 
 所以笔者就当然也要学这个必备技能，就以 **边学边实践** 的方式，做个博客项目来玩玩。
 
-此项目是基于 Vue 全家桶 + TypeScript + Element-UI  的技术栈，且已经开源，github 地址 [blog-vue-typescript](https://github.com/biaochenxuying/blog-vue-typescript) 。
+此项目是基于 Vue 全家桶 + TypeScript + Element-UI 的技术栈，且已经开源，github 地址 [blog-vue-typescript](https://github.com/biaochenxuying/blog-vue-typescript) 。
 
 做一个不是我司的项目，且又是 vue 相关的项目来练手并开源吧。
 
-
 ## 1. 效果
-
 
 效果图：
 
 - pc 端
 
   - 主页
-  ![主页](http://img.golderbrother.cn/blog-home.png)
+    ![主页](http://img.golderbrother.cn/blog-home.png)
 
   - 首页
-  ![首页](http://img.golderbrother.cn/blog-articles.png)
+    ![首页](http://img.golderbrother.cn/blog-articles.png)
 
 - 移动端
 
 ![mobile](http://img.golderbrother.cn/blog-mobile.png)
 
-
 完整效果请看：[https://biaochenxuying.cn](https://biaochenxuying.cn)
-
-
 
 ## 2. 功能
 
 ### 已经完成功能
 
-- [x] 登录  
-- [x] 注册  
+- [x] 登录
+- [x] 注册
 - [x] 文章列表
 - [x] 文章归档
-- [x] 标签  
-- [x] 关于  
+- [x] 标签
+- [x] 关于
 - [x] 点赞与评论
 - [x] 留言
 - [x] 历程
@@ -64,7 +58,7 @@ Vue3.0 将使用 TS 重写，重写后的 Vue3.0 将更好的支持 TS。2019 �
 - [ ] 更多 TypeScript 的优化技巧
 - [ ] 服务器渲染 SSR
 
-## 3. 前端主要技术 
+## 3. 前端主要技术
 
 所有技术都是当前最新的。
 
@@ -125,7 +119,7 @@ let tom: Person = {
     name: 'Tom',
     age: 25
 };
-// 以上 对象 的代码相当于 
+// 以上 对象 的代码相当于
 let tom = {
     name: 'Tom',
     age: 25
@@ -155,10 +149,10 @@ function fetch(url: string, id : number, params: any): void {
 
 以上是最简单的一些知识点，更多知识请看 [TypeScript 中文官网](https://www.tslang.cn/)
 
-## 5. 5 分钟上手 Vue +TypeScript 
+## 5. 5 分钟上手 Vue +TypeScript
 
 - [vue-class-component](https://github.com/vuejs/vue-class-component)   
-vue-class-component 对 `Vue` 组件进行了一层封装，让 `Vue` 组件语法在结合了 `TypeScript` 语法之后更加扁平化：
+  vue-class-component 对  `Vue`  组件进行了一层封装，让  `Vue`  组件语法在结合了  `TypeScript`  语法之后更加扁平化：
 
 ```
 <template>
@@ -254,17 +248,17 @@ export default {
 </script>
 ```
 
-- [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)  
+- [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
 
-vue-property-decorator 是在 `vue-class-component` 上增强了更多的结合 `Vue` 特性的装饰器，新增了这 7 个装饰器：
+vue-property-decorator 是在  `vue-class-component`  上增强了更多的结合  `Vue`  特性的装饰器，新增了这 7 个装饰器：
 
-*   `@Emit`
-*   `@Inject`
-*   `@Model`
-*   `@Prop`
-*   `@Provide`
-*   `@Watch`
-*   `@Component` (从 `vue-class-component` 继承)
+- `@Emit`
+- `@Inject`
+- `@Model`
+- `@Prop`
+- `@Provide`
+- `@Watch`
+- `@Component` (从  `vue-class-component`  继承)
 
 在这里列举几个常用的`@Prop/@Watch/@Component`, 更多信息，详见[官方文档](https://github.com/kaorun343/vue-property-decorator)
 
@@ -273,7 +267,7 @@ import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-p
 
 @Component
 export class MyComponent extends Vue {
-  
+
   @Prop()
   propA: number = 1
 
@@ -319,7 +313,7 @@ export default {
 ```
 
 - vuex-class
-[vuex-class](https://github.com/ktsn/vuex-class) ：在 `vue-class-component` 写法中 绑定 `vuex` 。
+  [vuex-class](https://github.com/ktsn/vuex-class) ：在  `vue-class-component`  写法中 绑定  `vuex` 。
 
 ```
 import Vue from 'vue'
@@ -375,8 +369,6 @@ export class MyComp extends Vue {
 
 ![](https://upload-images.jianshu.io/upload_images/12890819-554bf777ccbf942a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
-
 搭建好之后，初始项目结构长这样：
 
 ```
@@ -418,7 +410,7 @@ export class MyComp extends Vue {
 
 ```
 
-奔着 **大型项目的结构** 来改造项目结构，改造后 : 
+奔着 **大型项目的结构** 来改造项目结构，改造后 :
 
 ```
 
@@ -501,7 +493,7 @@ tsconfig.json 文件中指定了用来编译这个项目的根文件和编译选
     "sourceMap": true,
     // 忽略 this 的类型检查, Raise error on this expressions with an implied any type.
     "noImplicitThis": false,
-    // 解析非相对模块名的基准目录 
+    // 解析非相对模块名的基准目录
     "baseUrl": ".",
     // 给错误和消息设置样式，使用颜色和上下文。
     "pretty": true,
@@ -527,6 +519,7 @@ tsconfig.json 文件中指定了用来编译这个项目的根文件和编译选
 }
 
 ```
+
 更多配置请看官网的 tsconfig.json 的 [编译选项](https://www.tslang.cn/docs/handbook/compiler-options.html)
 
 本项目的 vue.config.js:
@@ -614,7 +607,8 @@ module.exports = {
 };
 
 ```
-### 6.2 安装 element-ui 
+
+### 6.2 安装 element-ui
 
 本来想搭配 iview-ui 来用的，但后续还想把这个项目搞成 ssr 的，而 vue + typescript + iview + Nuxt.js 的服务端渲染还有不少坑, 而 vue + typescript + element + Nuxt.js 对 ssr 的支持已经不错了，所以选择了 element-ui 。
 
@@ -624,7 +618,7 @@ module.exports = {
 npm i element-ui -S
 ```
 
-按需引入, 借助 [babel-plugin-component](https://github.com/QingWei-Li/babel-plugin-component)，我们可以只引入需要的组件，以达到减小项目体积的目的。
+按需引入, 借助  [babel-plugin-component](https://github.com/QingWei-Li/babel-plugin-component)，我们可以只引入需要的组件，以达到减小项目体积的目的。
 
 ```
 npm install babel-plugin-component -D
@@ -694,6 +688,7 @@ export default new Router({
   ]
 });
 ```
+
 #### utils
 
 - utils/utils.ts 常用函数的封装， 比如 事件的节流（throttle）与防抖（debounce）方法：
@@ -728,6 +723,7 @@ export function throttle(fn: Function, delay: number) {
   };
 }
 ```
+
 - utils/config.ts 配置文件，比如 github 授权登录的回调地址、client_id、client_secret 等。
 
 ```
@@ -747,10 +743,10 @@ if (process.env.NODE_ENV === 'development') {
 export default config;
 ```
 
-如果你的生产环境也要 github 登录授权的话，请在 github 上申请一个 Oauth App ，把你的  redirect_uri，client_id，client_secret 的信息填在 config 里面即可。具体详情请看我写的这篇文章 [github 授权登录教程与如何设计第三方授权登录的用户表](https://biaochenxuying.cn/articleDetail?article_id=5c7bd34e42b55e2ecc90976d)
-
+如果你的生产环境也要 github 登录授权的话，请在 github 上申请一个 Oauth App ，把你的 redirect_uri，client_id，client_secret 的信息填在 config 里面即可。具体详情请看我写的这篇文章 [github 授权登录教程与如何设计第三方授权登录的用户表](https://biaochenxuying.cn/articleDetail?article_id=5c7bd34e42b55e2ecc90976d)
 
 - utils/urls.ts 请求接口地址，统一管理。
+
 ```
 // url的链接
 export const urls: object = {
@@ -800,6 +796,7 @@ export default service;
 ```
 
 把 urls 和 https 挂载到 main.ts 里面的 Vue 的 prototype 上面。
+
 ```
 import service from "./utils/https";
 import urls from "./utils/urls";
@@ -848,9 +845,9 @@ async handleSearch() {
 ```
 ├── modules                         // 模块
 
-    ├── user.ts                     // 用户模块 
-    
-    ├── article.ts                 // 文章模块 
+    ├── user.ts                     // 用户模块
+
+    ├── article.ts                 // 文章模块
 
 ├── types.ts                        // 类型
 
@@ -893,7 +890,7 @@ const store = new Vuex.Store({
 export default store;
 ```
 
-- types.ts 
+- types.ts
 
 ```
 // 公共 token
@@ -935,7 +932,7 @@ export default user;
 
 ## 7. markdown 渲染
 
-markdown 渲染效果图: 
+markdown 渲染效果图:
 
 ![markdown 渲染效果图](https://upload-images.jianshu.io/upload_images/12890819-cf92cfb3f222c4fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -1058,6 +1055,7 @@ export default markdown;
 ```
 
 第三步： 使用
+
 ```
 import markdown from "@/utils/markdown";
 
@@ -1079,7 +1077,7 @@ async handleSearch() {
       } else {
         // ...
     } else {
-     // ... 
+     // ...
     }
   }
 
@@ -1095,6 +1093,7 @@ async handleSearch() {
 ```
 <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">
 ```
+
 第五步：对 markdown 样式的补充
 
 如果不补充样式，是没有黑色背景的，字体大小等也会比较小，图片也不会居中显示
@@ -1159,8 +1158,8 @@ p img{
 
 - 关于 页面
 
-对于 关于 的页面，其实是一篇文章来的，根据文章类型 type 来决定的，数据库里面 type 为 3 
- 的文章，只能有一篇就是 博主介绍 ；达到了想什么时候修改内容都可以。
+对于 关于 的页面，其实是一篇文章来的，根据文章类型 type 来决定的，数据库里面 type 为 3
+的文章，只能有一篇就是 博主介绍 ；达到了想什么时候修改内容都可以。
 
 所以当 **当前路由** === '/about' 时就是请求类型为 博主介绍 的文章。
 
@@ -1169,21 +1168,24 @@ type: 3,  // 文章类型: 1：普通文章；2：是博主简历；3 ：是博�
 ```
 
 - 移动端适配
-移动端使用 rem 单位适配。
+  移动端使用 rem 单位适配。
+
 ```
 // 屏幕适配（ window.screen.width / 移动端设计稿宽 * 100）也即是 (window.screen.width / 750 * 100)  ——*100 为了方便计算。即 font-size 值是手机 deviceWidth 与设计稿比值的 100 倍
 document.getElementsByTagName('html')[0].style.fontSize = window.screen.width / 7.5 + 'px';
-``` 
+```
 
 如上：通过查询屏幕宽度，动态的设置 html 的 font-size 值，移动端的设计稿大多以宽为 750 px 来设置的。
 
-比如在设计图上一个 150 * 250 的盒子(单位 px)：
+比如在设计图上一个 150 \* 250 的盒子(单位 px)：
 
 原本在 css 中的写法：
+
 ```
 width: 150px;
 heigth: 250px;
 ```
+
 通过上述换算后，在 css 中对应的 rem 值只需要写：
 
 ```
@@ -1206,7 +1208,8 @@ import urls from "./utils/urls";
 Vue.prototype.$https = service; // 其他页面在使用 axios 的时候直接  this.$http 就可以了
 Vue.prototype.$urls = urls; // 其他页面在使用 urls 的时候直接  this.$urls 就可以了
 ```
-然而当你在组件中直接  this.$http 或者 this.$urls 时会报错的，那是因为 $http 和 $urls 属性，并没有在 vue 实例中声明。
+
+然而当你在组件中直接 this.$http 或者 this.$urls 时会报错的，那是因为 $http 和 $urls 属性，并没有在 vue 实例中声明。
 
 2. 再比如使用 Element-uI 的 meesage。
 
@@ -1217,6 +1220,7 @@ Vue.prototype.$message = Message;
 ```
 
 之前用法如下图：
+
 ```
   this.$message({
     message: '恭喜你，这是一条成功消息',
@@ -1242,7 +1246,8 @@ export default class App extends Vue {
   }
 }
 ```
-只是这样写的话，监听 $route 还是会报错的。
+
+只是这样写的话，监听 \$route 还是会报错的。
 
 想要以上三种做法都正常执行，就还要补充如下内容：
 
@@ -1264,14 +1269,15 @@ declare module "vue/types/vue" {
 
 - **2. 引入的模块要声明**
 
-比如 在组件里面使用 window.document 或者  document.querySelector 的时候会报错的，npm run build 不给通过。
+比如 在组件里面使用 window.document 或者 document.querySelector 的时候会报错的，npm run build 不给通过。
 
 再比如：按需引用 element 的组件与动画组件:
 
 ```
 import { Button } from "element-ui";
 import CollapseTransition from "element-ui/lib/transitions/collapse-transition";
-``` 
+```
+
 npm run serve 时可以执行，但是在 npm run build 的时候，会直接报错的，因为没有声明。
 
 正确做法：
@@ -1286,9 +1292,10 @@ declare var document: Document;
 declare module "element-ui/lib/transitions/collapse-transition";
 declare module "element-ui";
 ```
+
 当然，这个文件你加在其他地方也可以，起其他名字都 OK。
 
-但是即使配置了以上方法之后，有些地方使用 document.XXX ，比如 document.title 的时候，npm run build 还是通过不了，所以只能这样了： 
+但是即使配置了以上方法之后，有些地方使用 document.XXX ，比如 document.title 的时候，npm run build 还是通过不了，所以只能这样了：
 
 ```
 <script lang="ts">
@@ -1326,11 +1333,14 @@ function 里面的 this 在 npm run serve 时会报错的，因为 tyescript 检
 import .vue 的文件的时候，要补全 .vue 的后缀，不然 npm run build 会报错的。
 
 比如：
+
 ```
 import Nav from "@/components/nav"; // @ is an alias to /src
 import Footer from "@/components/footer"; // @ is an alias to /src
 ```
+
 要修改为：
+
 ```
 import Nav from "@/components/nav.vue"; // @ is an alias to /src
 import Footer from "@/components/footer.vue"; // @ is an alias to /src
@@ -1339,6 +1349,7 @@ import Footer from "@/components/footer.vue"; // @ is an alias to /src
 - **5. 装饰器 @Component**
 
 报错。
+
 ```
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
@@ -1347,6 +1358,7 @@ export default class LoadingCustom extends Vue {}
 ```
 
 以下才是正确，因为这里的 Vue 是从 vue-property-decorator import 来的。
+
 ```
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
@@ -1375,6 +1387,7 @@ vue-class-component 官网里面的路由的导航钩子的用法是没有效果
   margin-top: 213px;
 }
 ```
+
 position:sticky 是 css 定位新增属性；可以说是相对定位 relative 和固定定位 fixed 的结合；它主要用在对 scroll 事件的监听上；简单来说，在滑动过程中，某个元素距离其父元素的距离达到 sticky 粘性定位的要求时(比如 top：100px )；position:sticky 这时的效果相当于 fixed 定位，固定到适当位置。
 
 用法像上面那样用即可，但是有使用条件：
@@ -1387,6 +1400,7 @@ position:sticky 是 css 定位新增属性；可以说是相对定位 relative �
 - **8. eslint 报找不到文件和装饰器的错**
 
 App.vue 中只是写了引用文件而已，而且 webpack 和 tsconfig.josn 里面已经配置了别名了的。
+
 ```
 import Nav from "@/components/nav.vue"; // @ is an alias to /src
 import Slider from "@/components/slider.vue"; // @ is an alias to /src
@@ -1407,13 +1421,13 @@ import { isMobileOrPc } from "@/utils/utils";
 
 因为文章详情页面有目录，点击目录时定位定相应的内容，但是这个目录定位内容是根据锚点来做的，如果路由模式为 hash 模式的话，本来文章详情页面的路由就是 #articleDetail 了，再点击目录的话（比如 #title2 ），会在 #articleDetail 后面再加上 #title2，一刷新会找不到这个页面的。
 
+## 10. Build Setup
 
-## 10. Build Setup 
-
-``` 
+```
  # clone
 git clone https://github.com/biaochenxuying/blog-vue-typescript.git
 ```
+
 ```
 # cd
 cd  blog-vue-typescript
@@ -1450,20 +1464,20 @@ npm run test:unit
 ```
 
 - Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+  See [Configuration Reference](https://cli.vuejs.org/config/).
 
-如果要看有后台数据完整的效果，是要和后台项目  **[blog-node](https://github.com/biaochenxuying/blog-node)** 一起运行才行的，不然接口请求会失败。
+如果要看有后台数据完整的效果，是要和后台项目 **[blog-node](https://github.com/biaochenxuying/blog-node)** 一起运行才行的，不然接口请求会失败。
 
 虽然引入了 mock 了，但是还没有时间做模拟数据，想看具体效果，请稳步到我的网站上查看 [https://biaochenxuying.cn](https://biaochenxuying.cn)
 
 ## 11. 项目地址与系列相关文章
- 
+
 基于 Vue + TypeScript + Element 的 [ blog-vue-typescript 前台展示: https://github.com/biaochenxuying/blog-vue-typescript](https://github.com/biaochenxuying/blog-vue-typescript)
 
 基于 react + node + express + ant + mongodb 的博客前台，这个是笔者之前做的，效果和这个类似，地址如下：
 [ blog-react 前台展示: https://github.com/biaochenxuying/blog-react](https://github.com/biaochenxuying/blog-react)
 
-*推荐阅读 :*
+_推荐阅读 :_
 
 **本博客系统的系列文章：**
 
@@ -1481,27 +1495,30 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ![](https://upload-images.jianshu.io/upload_images/12890819-a8fd0a50f25a993e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
 #### 权衡
 
 如何更好的利用 JS 的动态性和 TS 的静态特质，我们需要结合项目的实际情况来进行综合判断。一些建议：
 
-*   如果是中小型项目，且生命周期不是很长，那就直接用 JS 吧，不要被 TS 束缚住了手脚。
-*   如果是大型应用，且生命周期比较长，那建议试试 TS。
-*   如果是框架、库之类的公共模块，那更建议用 TS 了。
+- 如果是中小型项目，且生命周期不是很长，那就直接用 JS 吧，不要被 TS 束缚住了手脚。
+- 如果是大型应用，且生命周期比较长，那建议试试 TS。
+- 如果是框架、库之类的公共模块，那更建议用 TS 了。
 
-**至于到底用不用TS，还是要看实际项目规模、项目生命周期、团队规模、团队成员情况等实际情况综合考虑。**
+**至于到底用不用 TS，还是要看实际项目规模、项目生命周期、团队规模、团队成员情况等实际情况综合考虑。**
 
-其实本项目也是小项目来的，其实并不太适合加入  TypeScript ，不过这个项目是个人的项目，是为了练手用的，所以就无伤大大雅。
+其实本项目也是小项目来的，其实并不太适合加入 TypeScript ，不过这个项目是个人的项目，是为了练手用的，所以就无伤大大雅。
 
 未来，class-compoent 也将成为主流，现在写 TypeScript 以后进行 3.0 的迁移会更加方便。
 
 每天下班后，用几个晚上的时间来写这篇文章，码字不易，如果您觉得这篇文章不错或者对你有所帮助，**请给个赞或者星吧，你的点赞就是我继续创作的最大动力。**
 
-参考文章:
+## 参考文章:
 
 1. [vue + typescript 项目起手式](https://segmentfault.com/a/1190000011744210)
 
 2. [TypeScript + 大型项目实战](https://www.imooc.com/article/47096)
 
-3. [Vue全家桶+TypeScript使用总结](https://www.jianshu.com/p/6c064270691f)
+3. [Vue 全家桶+TypeScript 使用总结](https://www.jianshu.com/p/6c064270691f)
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~

@@ -25,10 +25,10 @@
 ```js
 // a.js
 // 相当于这里还有一行：const exports = module.exports;代码
-exports.a = "Hello world"; // 相当于：module.exports.a = 'Hello world';
+exports.a = 'Hello world'; // 相当于：module.exports.a = 'Hello world';
 
 // b.js
-const moduleA = require("./a.js");
+const moduleA = require('./a.js');
 console.log(moduleA.a); // 打印出hello world
 ```
 
@@ -63,11 +63,11 @@ define(function (){return '值');
 // a.js
 define(function() {
   return {
-    a: "hello world"
+    a: 'hello world'
   };
 });
 // b.js
-require(["./a.js"], function(moduleA) {
+require(['./a.js'], function(moduleA) {
   console.log(moduleA.a); // 打印出：hello world
 });
 ```
@@ -97,11 +97,11 @@ define(function (){return '值');
 ```js
 // a.js
 define(function(require, exports, module) {
-  exports.a = "hello world";
+  exports.a = 'hello world';
 });
 // b.js
 define(function(require, exports, module) {
-  const moduleA = require("./a.js");
+  const moduleA = require('./a.js');
   console.log(moduleA.a); // 打印出：hello world
 });
 ```
@@ -139,12 +139,12 @@ define(function(require, exports, module) {
 
 ```js
 (function(root, factory) {
-  if (typeof define === "function" && define.amd) {
+  if (typeof define === 'function' && define.amd) {
     //AMD
-    define(["jquery"], factory);
-  } else if (typeof exports === "object") {
+    define(['jquery'], factory);
+  } else if (typeof exports === 'object') {
     //Node, CommonJS之类的
-    module.exports = factory(require("jquery"));
+    module.exports = factory(require('jquery'));
   } else {
     //浏览器全局变量(root 即 window)
     root.returnExports = factory(root.jQuery);
@@ -183,7 +183,7 @@ export和export default
 (3) ES6+ 的异步引入方案
 
 ```js
-import("模块路径").then(module => {
+import('模块路径').then(module => {
   console.log(module.default);
   // ···
 });
@@ -243,4 +243,6 @@ Promise.all([
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

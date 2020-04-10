@@ -1,4 +1,4 @@
-# 谈谈web安全问题及解决方案
+# 谈谈 web 安全问题及解决方案
 
 ## 目录
 
@@ -7,7 +7,7 @@
 - 同源策略
 - XSS
 - CSRF
-- SQL注入
+- SQL 注入
 - 点击劫持
 - window.opener 安全问题
 - 文件上传漏洞
@@ -30,7 +30,7 @@
 
 ### 存储型 XSS 攻击
 
-利用漏洞提交恶意 JavaScript 代码，比如在input, textarea等所有可能输入文本信息的区域，输入``` <script src="http://恶意网站"></script>```等，提交后信息会存在服务器中，当用户再次打开网站请求到相应的数据，打开页面，恶意脚本就会将用户的 Cookie 信息等数据上传到黑客服务器。
+利用漏洞提交恶意 JavaScript 代码，比如在 input, textarea 等所有可能输入文本信息的区域，输入`<script src="http://恶意网站"></script>`等，提交后信息会存在服务器中，当用户再次打开网站请求到相应的数据，打开页面，恶意脚本就会将用户的 Cookie 信息等数据上传到黑客服务器。
 
 ### 反射型 XSS 攻击
 
@@ -43,14 +43,14 @@ Web 服务器不会存储反射型 XSS 攻击的恶意脚本，这是和存储�
 
 ### 基于 DOM 的 XSS 攻击
 
-基于 DOM 的 XSS 攻击是不牵涉到页面 Web 服务器的。它的特点是在 Web 资源传输过程或者在用户使用页面的过程中修改 Web 页面的数据。比如利用工具(如Burpsuite)扫描目标网站所有的网页并自动测试写好的注入脚本等。
+基于 DOM 的 XSS 攻击是不牵涉到页面 Web 服务器的。它的特点是在 Web 资源传输过程或者在用户使用页面的过程中修改 Web 页面的数据。比如利用工具(如 Burpsuite)扫描目标网站所有的网页并自动测试写好的注入脚本等。
 
 预防策略：
 
-1. 将cookie等敏感信息设置为httponly，禁止Javascript通过document.cookie获得
+1. 将 cookie 等敏感信息设置为 httponly，禁止 Javascript 通过 document.cookie 获得
 2. 对所有的输入做严格的校验尤其是在服务器端，过滤掉任何不合法的输入，比如手机号必须是数字，通常可以采用正则表达式.
-3. 净化和过滤掉不必要的html标签，比如：```<iframe>, alt,<script>``` ;净化和过滤掉不必要的Javascript的事件标签，比如：```onclick, onfocus```等
-4. 转义单引号，双引号，尖括号等特殊字符，可以采用htmlencode编码 或者过滤掉这些特殊字符
+3. 净化和过滤掉不必要的 html 标签，比如：`<iframe>, alt,<script>` ;净化和过滤掉不必要的 Javascript 的事件标签，比如：`onclick, onfocus`等
+4. 转义单引号，双引号，尖括号等特殊字符，可以采用 htmlencode 编码 或者过滤掉这些特殊字符
 5. CSP,CSP 全称为 Content Security Policy，即内容安全策略。主要以白名单的形式配置可信任的内容来源，在网页中，能够使白名单中的内容正常执行（包含 JS，CSS，Image 等等），而非白名单的内容无法正常执行，从而减少跨站脚本攻击（XSS），当然，也能够减少运营商劫持的内容注入攻击。
 
 配置方式：
@@ -58,12 +58,10 @@ Web 服务器不会存储反射型 XSS 攻击的恶意脚本，这是和存储�
 ```html
 //1、meta
 
-<meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
 
-//2、Http 头部
-
-Content-Security-Policy:
-script-src 'unsafe-inline' 'unsafe-eval' 'self' *.54php.cn *.yunetidc.com *.baidu.com *.cnzz.com *.duoshuo.com *.jiathis.com;report-uri /error/csp
+//2、Http 头部 Content-Security-Policy: script-src 'unsafe-inline' 'unsafe-eval' 'self' *.54php.cn
+*.yunetidc.com *.baidu.com *.cnzz.com *.duoshuo.com *.jiathis.com;report-uri /error/csp
 ```
 
 ## CSRF,跨站请求伪造（Cross-site request forgery）
@@ -107,9 +105,9 @@ set-cookie: 1P_JAR=2019-10-20-06; expires=Tue, 19-Nov-2019 06:36:21 GMT; path=/;
 
     然而这种方法的局限性非常大。XMLHttpRequest 请求通常用于 Ajax 方法中对于页面局部的异步刷新，并非所有的请求都适合用这个类来发起，而且通过该类请求得到的页面不能被浏览器所记录下，从而进行前进，后退，刷新，收藏等操作，给用户带来不便。另外，对于没有进行 CSRF 防护的遗留系统来说，要采用这种方法来进行防护，要把所有请求都改为 XMLHttpRequest 请求，这样几乎是要重写整个网站，这代价无疑是不能接受的。
 
-## SQL注入
+## SQL 注入
 
-拼接 SQL 时未仔细过滤，黑客可提交畸形数据改变语义。比如查某个文章，提交了这样的数据id=-1 or 1=1等。1=1 永远是true，导致where语句永远是ture.那么查询的结果相当于整张表的内容，攻击者就达到了目的。或者，通过屏幕上的报错提示推测 SQL 语句等。
+拼接 SQL 时未仔细过滤，黑客可提交畸形数据改变语义。比如查某个文章，提交了这样的数据 id=-1 or 1=1 等。1=1 永远是 true，导致 where 语句永远是 ture.那么查询的结果相当于整张表的内容，攻击者就达到了目的。或者，通过屏幕上的报错提示推测 SQL 语句等。
 
 预防策略：
 
@@ -132,7 +130,7 @@ set-cookie: 1P_JAR=2019-10-20-06; expires=Tue, 19-Nov-2019 06:36:21 GMT; path=/;
 
 ## window.opener 安全问题
 
-window.opener 表示打开当前窗体页面的的父窗体的是谁。例如，在 A 页面中，通过一个带有 target="_blank" 的 a 标签打开了一个新的页面 B，那么在 B 页面里，window.opener 的值为 A 页面的 window 对象。
+window.opener 表示打开当前窗体页面的的父窗体的是谁。例如，在 A 页面中，通过一个带有 target="\_blank" 的 a 标签打开了一个新的页面 B，那么在 B 页面里，window.opener 的值为 A 页面的 window 对象。
 
 一般来说，打开同源(域名相同)的页面，不会有什么问题。但对于跨域的外部链接来说，存在一个被钓鱼的风险。比如你正在浏览购物网站，从当前网页打开了某个外部链接，在打开的外部页面，可以通过 window.opener.location 改写来源站点的地址。利用这一点，将来源站点改写到钓鱼站点页面上，例如跳转到伪造的高仿购物页面，当再回到购物页面的时候，是很难发现购物网站的地址已经被修改了的，这个时候你的账号就存在被钓鱼的可能了。
 
@@ -141,7 +139,7 @@ window.opener 表示打开当前窗体页面的的父窗体的是谁。例如，
     1. 设置 rel 属性
 
 ```html
-<a href="https://xxxx" rel="noopener noreferrer"> 外链 <a>
+<a href="https://xxxx" rel="noopener noreferrer"> 外链 <a></a></a>
 ```
 
     rel=noopener 规定禁止新页面传递源页面的地址，通过设置了此属性的链接打开的页面，其 window.opener 的值为 null。
@@ -168,4 +166,6 @@ window.opener 表示打开当前窗体页面的的父窗体的是谁。例如，
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

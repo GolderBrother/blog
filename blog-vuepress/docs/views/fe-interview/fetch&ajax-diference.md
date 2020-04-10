@@ -14,11 +14,11 @@ xhr.onreadystatechange = function() {
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
       alert(xhr.responseText);
     } else {
-      alert("Request was unsuccessful: " + xhr.status);
+      alert('Request was unsuccessful: ' + xhr.status);
     }
   }
 };
-xhr.open("get", "example.txt", true);
+xhr.open('get', 'example.txt', true);
 xhr.send(null);
 ```
 
@@ -31,7 +31,7 @@ xhr.send(null);
 ```js
 // 原生XHR
 const xhr = new XMLHttpRequest();
-xhr.open("GET", url);
+xhr.open('GET', url);
 xhr.onreadystatechange = function() {
   if (xhr.readyState === 4 && xhr.status === 200) {
     console.log(xhr.responseText); // 从服务器获取数据
@@ -60,4 +60,6 @@ fetch(url)
 
 ## 最后
 
-欢迎关注鄙人的[github](https://github.com/GolderBrother)，做个有专业的技术人，一起学习呀~
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>

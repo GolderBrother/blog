@@ -116,7 +116,8 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/vue/vue-ts.md',
-                        '/views/vue/vue-lazyload.md'
+                        '/views/vue/vue-lazyload.md',
+                        '/views/vue/vue-interview/part-one/note.md'
                     ],
                 },
                 {
