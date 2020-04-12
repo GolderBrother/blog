@@ -536,7 +536,7 @@ const quickSort = (array = []) => {
   return quickSort(left).concat(midIndexValue, quickSort(right));
 };
 const array2 = [5, 4, 3, 2, 1];
-console.log('quickSort1 ', quickSort1(array2));
+console.log('quickSort ', quickSort(array2));
 // quickSort1: [1, 2, 3, 4, 5]
 ```
 
