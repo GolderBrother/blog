@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-选择排序</title>
+</head>
+
+<body>
+  <script>
+    // 选择排序
+    const selectSort = (array = []) => {
+      const len = array.length;
+      for (let i = 0; i < len; i++) {
+        // 未排序区间中的最小元素
+        let minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+          // 寻找最小元素的索引
+          minIndex = array[j] <= array[minIndex] ? j : minIndex;
+        }
+        // 交换最小元素位置
+        if (minIndex !== i) {
+          const temp = array[i];
+          array[i] = array[minIndex];
+          array[minIndex] = temp;
+          console.log('array: ', array);
+        }
+      }
+      return array;
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('selectSort 原始 array :', array);
+    console.log('selectSort 排序后的 array :', JSON.stringify(selectSort(array)));
+    // selectSort 原始 array: (5)[5, 4, 3, 2, 1]
+    // array: (5)[1, 4, 3, 2, 5]
+    // array: (5)[1, 2, 3, 4, 5]
+    // selectSort 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>

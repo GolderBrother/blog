@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-快速排序</title>
+</head>
+
+<body>
+  <script>
+    // 快速排序
+    const quickSort = (array = []) => {
+      //采用自上而下的递归方法
+      const len = array.length;
+      if (len <= 1) return array;
+      //取基准点索引
+      const midIndex = len >> 1; // 相当于 Math.floor(len / 2);
+      // 取基准值(中间值)，splice(index,1) 则返回的是含有被删除的元素的数组。
+      const midIndexValue = array.splice(midIndex, 1)[0];
+      const left = [],
+        right = []; // 用来存放比较后的值，小的放入左边，大的放入右边
+      // 遍历数组，进行判断分配
+      for (let index = 0; index < array.length; index++) {
+        const current = array[index];
+        if (current < midIndexValue) {
+          left.push(current); //比基准点小的放在左边数组
+        } else {
+          right.push(current); //比基准点大的放在右边数组
+        }
+      }
+      //递归执行以上操作，对左右两个数组进行操作，直到数组长度为 <= 1
+      return quickSort(left).concat(midIndexValue, quickSort(right));
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('quickSort 原始 array :', array);
+    console.log('quickSort 排序后的 array :', JSON.stringify(quickSort(array)));
+
+    // quickSort 原始 array: (5)[5, 4, 3, 2, 1]
+    // quickSort 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>

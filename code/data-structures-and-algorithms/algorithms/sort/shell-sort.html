@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-希尔排序</title>
+</head>
+
+<body>
+  <script>
+    // 希尔排序
+    const shellSort = (array = []) => {
+      //采用自上而下的递归方法
+      const len = array.length;
+      if (len <= 1) return array;
+
+      return;
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('shellSort 原始 array :', array);
+    console.log('shellSort 排序后的 array :', JSON.stringify(shellSort(array)));
+
+    // shellSort 原始 array: (5)[5, 4, 3, 2, 1]
+    // shellSort 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>

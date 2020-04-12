@@ -168,11 +168,11 @@ bubbleSort2(arr2);
 
 ![img](https://camo.githubusercontent.com/073caf95c2b9dca89a973dbc9a722f79441ae212/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d333934386465393664346132383533302e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.2 插入排序（Insertion Sort）
+### 3.2 插入排序（Insertion Sort）
 
 插入排序又为分为 **直接插入排序** 和优化后的 **拆半插入排序** 与 **希尔排序**，我们通常说的插入排序是指**直接插入排序**。
 
-### 一、直接插入
+#### 一、直接插入
 
 **思想**:
 
@@ -190,6 +190,8 @@ bubbleSort2(arr2);
 - 重复步骤 2 ~ 5。
 
 **实现**:
+
+第一种写法
 
 ```js
 const insertionSort = (array = []) => {
@@ -227,6 +229,43 @@ insertionSort(array);
 // array: [1, 2, 3, 4, 5]
 ```
 
+第二种写法
+
+```js
+// 插入排序
+const insertionSort2 = (array = []) => {
+  const length = array.length;
+  if (length <= 1) return;
+  for (let i = 1; i < length; i++) {
+    // 未排序区间(从第二个元素开始)
+    const current = array[i]; // 未排序的当前元素
+    // 查找要插入已排序区间的位置
+    let preIndex = i - 1; // 待比较元素下标
+    for (; preIndex >= 0 && array[preIndex] > current; preIndex--) {
+      // 已排序区间
+      // array[preIndex] > current 待比较元素 > 当前元素
+      array[preIndex + 1] = array[preIndex]; // 待比较元素比当前元素大，就将元素往后移动一位
+    }
+    //避免同一个元素赋值给自身
+    if (preIndex + 1 != i) {
+      array[preIndex + 1] = current; // 待排序区间中找不到比当前元素大的，就将当前元素放到待排序区间最后面
+    }
+  }
+  return array;
+};
+```
+
+**测试**:
+
+```js
+const array = [5, 4, 3, 2, 1];
+console.log('insertionSort2 原始 array :', array);
+console.log('insertionSort2 排序后的 array :', JSON.stringify(insertionSort2(array)));
+
+// insertionSort2 原始 array : [5, 4, 3, 2, 1]
+// insertionSort2 排序后的 array : [1,2,3,4,5]
+```
+
 **分析**:
 
 - 第一，插入排序是原地排序算法吗 ？
@@ -242,7 +281,7 @@ insertionSort(array);
 
 ![img](https://camo.githubusercontent.com/1414c9c319c61f45bc43222fcb3b734e0dd53770/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d386261313137353036333732653937652e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-### 二、拆半插入
+#### 二、拆半插入
 
 插入排序也有一种优化算法，叫做拆半插入。
 
@@ -265,34 +304,35 @@ insertionSort(array);
 
 const binaryInsertionSort = (array = []) => {
   const len = array.length;
-  if (len <= 1) return;
-
+  if (len < 1) return;
   let current, i, j, low, high, m;
-  for (i = 0; i < len; i++) {
+  for (let i = 1; i < len; i++) {
     low = 0;
     high = i - 1;
     current = array[i];
-
+    // 步骤 1 & 2 : 折半查找
+    // 重复步骤 1，每次缩小一半的查找范围，直至找到插入的位置。
     while (low <= high) {
-      //步骤 1 & 2 : 折半查找
+      // 中间值的索引
       m = (low + high) >> 1; // 注: x>>1 是位运算中的右移运算, 表示右移一位, 等同于 x 除以 2 再取整, 即 x>>1 == Math.floor(x/2) .
-      if (array[i] >= array[m]) {
+      if (current >= array[m]) {
         //值相同时, 切换到高半区，保证稳定性
-        low = m + 1; //插入点在高半区
+        low = m + 1; //插入点在高半区,更正最低点索引
       } else {
-        high = m - 1; //插入点在低半区
+        high = m - 1; //插入点在低半区,更正最高点索引
       }
     }
 
-    for (j = i; j > low; j--) {
-      //步骤 3: 插入位置之后的元素全部后移一位
+    //步骤 3: 将数组中插入位置之后的元素全部后移一位。
+    for (j = i; j > 0; j--) {
       array[j] = array[j - 1];
-      console.log('array2 :', JSON.parse(JSON.stringify(array)));
+      // console.log('array :', JSON.parse(JSON.stringify(array)));
     }
 
-    array[low] = current; //步骤 4: 插入该元素
+    // 步骤 4: 在指定位置插入该元素。
+    array[low] = current;
   }
-  console.log(`array2 :`, JSON.parse(JSON.stringify(array)));
+  // console.log('array :', JSON.parse(JSON.stringify(array)));
   return array;
 };
 ```
@@ -300,36 +340,27 @@ const binaryInsertionSort = (array = []) => {
 **测试**:
 
 ```js
-const array2 = [5, 4, 3, 2, 1];
-console.log('原始 array2:', array2);
-binaryInsertionSort(array2);
-// 原始 array2:  [5, 4, 3, 2, 1]
-// array2 :     [5, 5, 3, 2, 1]
-// array2 :     [4, 5, 5, 2, 1]
-// array2 :     [4, 4, 5, 2, 1]
-// array2 :     [3, 4, 5, 5, 1]
-// array2 :     [3, 4, 4, 5, 1]
-// array2 :     [3, 3, 4, 5, 1]
-// array2 :     [2, 3, 4, 5, 5]
-// array2 :     [2, 3, 4, 4, 5]
-// array2 :     [2, 3, 3, 4, 5]
-// array2 :     [2, 2, 3, 4, 5]
-// array2 :     [1, 2, 3, 4, 5]
+const array = [5, 4, 3, 2, 1];
+console.log('binaryInsertionSort 原始 array:', array);
+console.log('binaryInsertionSort 排序后的 array :', JSON.stringify(binaryInsertionSort(array)));
+
+// binaryInsertionSort 原始 array: (5) [5, 4, 3, 2, 1]
+// binaryInsertionSort 排序后的 array : [1,2,3,4,5]
 ```
 
 注意：和直接插入排序类似，折半插入排序每次交换的是相邻的且值为不同的元素，它并不会改变值相同的元素之间的顺序，因此它是**稳定**的。
 
-### 三、希尔排序
+#### 三、希尔排序
 
 希尔排序是一个平均时间复杂度为 O(n log n) 的算法, 下节讲解
 
-## 3.3 选择排序（Selection Sort）
+### 3.3 选择排序（Selection Sort）
 
-### 思路
+#### 思路
 
 选择排序算法的实现思路有点类似插入排序，也分**已排序区间**和**未排序区间**。但是选择排序每次会从**未排序区间**中找到最小的元素，将其放到**已排序区间**的**末尾**。
 
-### 步骤
+#### 步骤
 
 1. 首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。
 2. 再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
@@ -340,20 +371,35 @@ binaryInsertionSort(array2);
 ```js
 const selectSort = (array = []) => {
   const len = array.length;
-  let minIndex, temp;
-  for (let i = 0; i < len - 1; i++) {
-    minIndex = i;
+  for (let i = 0; i < len; i++) {
+    // 未排序区间中的最小元素
+    let minIndex = i;
     for (let j = i + 1; j < len; j++) {
       // 寻找最小元素的索引
-      if (array[j] < array[minIndex]) minIndex = j;
+      minIndex = array[j] <= array[minIndex] ? j : minIndex;
     }
-    temp = array[i];
-    array[i] = array[minIndex];
-    array[minIndex] = temp;
-    console.log('array: ', array);
+    // 交换最小元素位置
+    if (minIndex !== i) {
+      const temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
+      console.log('array: ', array);
+    }
   }
   return array;
 };
+```
+
+**测试**:
+
+```js
+const array = [5, 4, 3, 2, 1];
+console.log('selectSort 原始 array :', array);
+console.log('selectSort 排序后的 array :', JSON.stringify(selectSort(array)));
+// selectSort 原始 array: (5)[5, 4, 3, 2, 1]
+// array: (5)[1, 4, 3, 2, 5]
+// array: (5)[1, 2, 3, 4, 5]
+// selectSort 排序后的 array: [1, 2, 3, 4, 5]
 ```
 
 **分析**:
@@ -372,7 +418,7 @@ const selectSort = (array = []) => {
 
 ![img](https://camo.githubusercontent.com/da798ee9de6d9b3dfcdf112e87b87705da5897ce/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d323764646662363336656162666630332e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.4 归并排序（Merge Sort）
+### 3.4 归并排序（Merge Sort）
 
 **思想**:
 
@@ -448,51 +494,53 @@ console.timeEnd('归并排序耗时');
 
 ![img](https://camo.githubusercontent.com/187b5bf65fed1689a418e3798ef510d1a28fc76a/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d333233373236323539303664663361652e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.5 快速排序 （Quick Sort）
+### 3.5 快速排序 （Quick Sort）
 
 快速排序的特点就是快，而且效率高！它是处理大数据最快的排序算法之一。
 
 **思想**:
 
-- 先找到一个**基准点**（一般指数组的中部），然后数组被该**基准点**分为两部分，依次与该**基准点**数据比较，`如果比它小，放左边；反之，放右边`。
+- 先找到一个**基准点**（一般指数组的中部），然后数组被该**基准点**分为两部分，依次与该**基准点**数据比较，**如果比它小，放左边；反之，放右边**。
 - 左右分别用一个`空数组`去存储比较后的数据。
 - 最后递归执行上述操作，直到数组长度 `<= 1`;
 
-特点：快速，常用。
+**特点**：快速，常用。
 
-缺点：需要另外声明两个数组，浪费了内存空间资源。
+**缺点**：需要另外声明两个数组，浪费了内存空间资源。
 
 **实现**:
 
-### 方法一
+#### 方法一
 
 ```js
-const quickSort1 = (arr = []) => {
-  const len = arr.length;
-  if (len <= 1) return;
+const quickSort = (array = []) => {
+  //采用自上而下的递归方法
+  const len = array.length;
+  if (len <= 1) return array;
   //取基准点索引
-  const minIndex = Math.floor(len / 2);
+  const midIndex = len >> 1; // 相当于 Math.floor(len / 2);
   // 取基准值(中间值)，splice(index,1) 则返回的是含有被删除的元素的数组。
-  const minIndexVal = (arr.splice(minIndex, 1) || [])[0];
+  const midIndexValue = array.splice(midIndex, 1)[0];
   const left = [],
-    right = [];
+    right = []; // 用来存放比较后的值，小的放入左边，大的放入右边
   // 遍历数组，进行判断分配
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < minIndexVal) {
-      left.push(arr[i]); //比基准点小的放在左边数组
+  for (let index = 0; index < array.length; index++) {
+    const current = array[index];
+    if (current < midIndexValue) {
+      left.push(current); //比基准点小的放在左边数组
     } else {
-      right.push(arr[i]); //比基准点大的放在右边数组
+      right.push(current); //比基准点大的放在右边数组
     }
   }
   //递归执行以上操作，对左右两个数组进行操作，直到数组长度为 <= 1
-  return quickSort1(left).concat(minIndexVal, quickSort1(right));
+  return quickSort(left).concat(midIndexValue, quickSort(right));
 };
 const array2 = [5, 4, 3, 2, 1];
 console.log('quickSort1 ', quickSort1(array2));
 // quickSort1: [1, 2, 3, 4, 5]
 ```
 
-### 方法二
+#### 方法二
 
 ```js
 // 快速排序
@@ -675,7 +723,7 @@ console.log('newArr:', newArr);
 
 ![img](https://camo.githubusercontent.com/26472912c7d1024d5ad06bf08cabc2ae4101fe9d/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d636461633564616663353337613036612e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.7 堆排序（Heap Sort）
+### 3.7 堆排序（Heap Sort）
 
 堆的定义
 
@@ -781,7 +829,7 @@ console.log('newArr:', newArr);
 
 ![img](https://camo.githubusercontent.com/986c70f5110e500539802b19e0067d65b201f550/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d363263633863333563653434396530322e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.8 桶排序（Bucket Sort）
+### 3.8 桶排序（Bucket Sort）
 
 桶排序是计数排序的升级版，也采用了`分治`思想。
 
@@ -919,12 +967,12 @@ m 个桶排序的时间复杂度就是 `O(m * k * logk)`，因为 `k = n / m`，
 桶排序最好情况下使用线性时间 `O(n)`，桶排序的时间复杂度，取决与对各个桶之间数据进行排序的时间复杂度，因为其它部分的时间复杂度都为 `O(n)`。
 很显然，**桶划分的越小，各个桶之间的数据越少，排序所用的时间也会越少**。但相应的空间消耗就会增大。
 
-### 适用场景
+#### 适用场景
 
 - 桶排序比较适合用在**外部排序**中。
 - 外部排序就是数据存储在**外部磁盘**且数据量大，但内存有限，无法将整个数据全部加载到内存中。
 
-## 3.9 计数排序（Counting Sort）
+### 3.9 计数排序（Counting Sort）
 
 **思想**:
 
@@ -935,7 +983,7 @@ m 个桶排序的时间复杂度就是 `O(m * k * logk)`，因为 `k = n / m`，
 
 关键在于理解最后反向填充时的操作。
 
-### 使用条件
+#### 使用条件
 
 - 只能用在**数据范围不大**的场景中，若数据范围 `k` 比要排序的数据 `n` 大很多，就不适合用计数排序。
 - 计数排序只能给**非负整数排序**，其他类型需要在不改变相对大小情况下，转换为非负整数。
@@ -1026,7 +1074,7 @@ console.log('newArr2: ', newArr2);
 // newArr:  	 [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 4, 4, 6, 7, 7, 8, 8, 9, 9]
 ```
 
-### 例子
+#### 例子
 
 可以认为，**计数排序其实是桶排序的一种特殊情况**。
 
@@ -1053,7 +1101,7 @@ console.log('newArr2: ', newArr2);
 
 ![img](https://camo.githubusercontent.com/c790a7b85e33e7fd084086c4dd64b2a6245ee1c8/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31323839303831392d343362323666323630643930356337372e6769663f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970)
 
-## 3.10 基数排序（Radix Sort）
+### 3.10 基数排序（Radix Sort）
 
 **思想**:
 
