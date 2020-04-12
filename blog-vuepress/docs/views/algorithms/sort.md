@@ -731,11 +731,13 @@ console.log('newArr:', newArr);
 
 - **堆是一个完全二叉树**。
   完全二叉树：除了最后一层，其他层的节点个数都是满的，最后一层的节点都靠左排列。
-- 堆中每一个节点的值都必须大于等于（或小于等于）其子树中每个节点的值。
-  也可以说：堆中每个节点的值都大于等于（或者小于等于）其左右子节点的值。这两种表述是等价的。
+- 堆中每一个节点的值都必须**大于等于**（或**小于等于**）其子树中每个节点的值。
+  也可以说：堆中每个节点的值都**大于等于**（或**者小于等**于）其左右子节点的值。这两种表述是等价的。
 
 对于每个节点的值都**大于等于子树中每个节点值**的堆，我们叫作**大顶堆**。
 对于每个节点的值都**小于等于子树中每个节点值的堆**，我们叫作**小顶堆**。
+
+![heapSort](https://upload-images.jianshu.io/upload_images/12890819-ba0004cfc2c4c8d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 其中图 1 和 图 2 是大顶堆，图 3 是小顶堆，图 4 不是堆(最后一层的节点没有靠左排列)。除此之外，从图中还可以看出来，对于同一组数据，我们可以构建多种不同形态的堆。
 
@@ -853,79 +855,83 @@ console.log('newArr:', newArr);
 **实现**:
 
 ```js
-const quickSort = (arr = [], left, right) => {
-    const len = arr.length,
-        partitionIndex;
-    left = typeof left != 'number' ? 0 : left;
-    right = typeof right != 'number' ? len - 1 : right;
-    if(left < right) {
-        partitionIndex = partition(arr, left, right);
-        quickSort(arr, left, partitionIndex - 1);
-        quickSort(arr, partitionIndex + 1, right);
-    }
-    return arr;
-}
-const partition = (arr, left, right) => {
-    // 分区操作
-    let pivot = left,  //设定基准值（pivot）
-        index = piovt + 1;
-    for(let i = index; i < right; i++) {
-        if(arr[i] < arr[piovt]) {
-            swap(arr, i, index);
-        }
-    }
-    swap(arr, pivot, index - 1);
-    return index - 1;
-}
-const swap = (arr = [], i, j) => {
-    const temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = arr[i];
-}
-// 桶排序
-const bucketSort = (array = [], bucketSize) => {
-    if(array.length === 0) return array;
-
-    console.time('桶排序耗时');
-    let i = 0,
-        minValue = array[0],
-        maxValue = array[0];
-
-    for(i = 1; i < array.length; i++) {
-        if(array[i] < minValue) {
-            minValue = array[i]; //输入数据的最小值
-        }else if(array[i] > maxValue) {
-            maxValue = array[i]; //输入数据的最大值
-        }
-    }
-
-    //桶的初始化
-
-    const DEFAULT_BUCKET_SIZE = 5; // 桶的默认大小
-    bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;
-    // 桶的数量
-    const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
-    const buckets = new Array(bucketCount);
-    for (i = 0; i < buckets.length; i++) {
-        buckets[i] = [];
-    }
-    //利用映射函数将数据分配到各个桶中
-    for(i = 0; i < array.length; i++) {
-        buckets[Math.floor((array[i] - minValue) / bucketSize)].push(array[i]);
-    }
-
-    array.length = 0;
-
-    // 对每个桶，通过快速排序来排序
-    for(i = 0; i < buckets.length; i++) {
-        quickSort(buckets[i]);
-        for(let j = 0; j < buckets[i].length; j++) {
-            array.push(buckets[i][j]);
-        }
-    }
+const bucketSort = (array, bucketSize) => {
+  if (array.length === 0) {
     return array;
-}
+  }
 
+  console.time('桶排序耗时');
+  let i = 0;
+  let minValue = array[0];
+  let maxValue = array[0];
+  for (i = 1; i < array.length; i++) {
+    if (array[i] < minValue) {
+      minValue = array[i]; //输入数据的最小值
+    } else if (array[i] > maxValue) {
+      maxValue = array[i]; //输入数据的最大值
+    }
+  }
+
+  //桶的初始化
+  const DEFAULT_BUCKET_SIZE = 5; //设置桶的默认数量为 5
+  bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;
+  const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
+  const buckets = new Array(bucketCount);
+  for (i = 0; i < buckets.length; i++) {
+    buckets[i] = [];
+  }
+
+  //利用映射函数将数据分配到各个桶中
+  for (i = 0; i < array.length; i++) {
+    buckets[Math.floor((array[i] - minValue) / bucketSize)].push(array[i]);
+  }
+
+  array.length = 0;
+  for (i = 0; i < buckets.length; i++) {
+    quickSort(buckets[i]); //对每个桶进行排序，这里使用了快速排序
+    for (var j = 0; j < buckets[i].length; j++) {
+      array.push(buckets[i][j]);
+    }
+  }
+  console.timeEnd('桶排序耗时');
+
+  return array;
+};
+
+// 快速排序
+const quickSort = (arr, left, right) => {
+  let len = arr.length,
+    partitionIndex;
+  left = typeof left != 'number' ? 0 : left;
+  right = typeof right != 'number' ? len - 1 : right;
+
+  if (left < right) {
+    partitionIndex = partition(arr, left, right);
+    quickSort(arr, left, partitionIndex - 1);
+    quickSort(arr, partitionIndex + 1, right);
+  }
+  return arr;
+};
+
+const partition = (arr, left, right) => {
+  //分区操作
+  let pivot = left, //设定基准值（pivot）
+    index = pivot + 1;
+  for (let i = index; i <= right; i++) {
+    if (arr[i] < arr[pivot]) {
+      swap(arr, i, index);
+      index++;
+    }
+  }
+  swap(arr, pivot, index - 1);
+  return index - 1;
+};
+
+const swap = (arr, i, j) => {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+};
 ```
 
 **测试**:
@@ -1040,26 +1046,28 @@ console.log('newArr: ', newArr);
 方法二
 
 ```js
-const countingSort2 = (array = []) => {
-    console.time('计数排序耗时');
-    maxValue = maxValue || arr.length;
-    let bucket = new Array(maxValue + 1), sortedIndex = 0,
-    (arrLen = arr.length), (bucketLen = bucket.length);
+const countingSort2 = (array = [], maxValue) => {
+  console.time('计数排序耗时');
+  maxValue = maxValue || array.length;
+  let bucket = new Array(maxValue + 1),
+    sortedIndex = 0,
+    arrLen = array.length,
+    bucketLen = bucket.length;
 
-    for(let i = 0; i < arrLen; i++) {
-        if(!bucket[arr[i]]) bucket[arr[i]] = 0;
-        bucket[arr[i]]++;
-    }
+  for (let i = 0; i < arrLen; i++) {
+    if (!bucket[array[i]]) bucket[array[i]] = 0;
+    bucket[array[i]]++;
+  }
 
-    for(let j = 0; j < bucketLen; j++) {
-        while(bucket[j] > 0) {
-            arr[sortedIndex++] = j;
-            bucket[j]--;
-        }
+  for (let j = 0; j < bucketLen; j++) {
+    while (bucket[j] > 0) {
+      array[sortedIndex++] = j;
+      bucket[j]--;
     }
-    console.timeEnd('计数排序耗时');
-    return arr;
-}
+  }
+  console.timeEnd('计数排序耗时');
+  return array;
+};
 ```
 
 **测试**:
@@ -1118,7 +1126,7 @@ console.log('newArr2: ', newArr2);
 **使用条件**:
 
 - 要求数据可以分割独立的`位`来比较；
-- 位之间由递进关系，如果 a 数据的高位比 b 数据大，那么剩下的地位就不用比较了；
+- 位之间由递进关系，如果 a 数据的高位比 b 数据大，那么剩下的位就不用比较了；
 - 每一位的数据范围不能太大，要可以用线性排序，否则基数排序的时间复杂度无法做到 O(n)。
 
 **方案**:
@@ -1136,30 +1144,28 @@ console.log('newArr2: ', newArr2);
  * @param  array 待排序数组
  * @param  max 最大位数
  */
-const radixSort = (array, max) => {
-  console.time('计数排序耗时');
+const radixSort = (array = [], max = 0) => {
+  console.time('基数排序耗时');
   const buckets = [];
   let unit = 10,
     base = 1;
   for (let i = 0; i < max; i++, base *= 10, unit *= 10) {
     for (let j = 0; j < array.length; j++) {
-      let index = ~~((array[j] % unit) / base); //依次过滤出个位，十位等等数字
-      if (buckets[index] == null) {
-        buckets[index] = []; //初始化桶
-      }
-      buckets[index].push(array[j]); //往不同桶里添加数据
+      let index = ~~((array % unit) / base); // 依次过滤出个位，十位等等数字; 等同于 parseInt((array % unit) / base)
+      if (buckets[index] == null) buckets[index] = []; // 初始化桶
     }
-    let pos = 0,
-      value;
-    for (let j = 0, length = buckets.length; j < length; j++) {
-      if (buckets[j] != null) {
-        while ((value = buckets[j].shift()) != null) {
-          array[pos++] = value; //将不同桶里数据挨个捞出来，为下一轮高位排序做准备，由于靠近桶底的元素排名靠前，因此从桶底先捞
-        }
+    buckets[index].push(array[j]); //往不同桶里添加数据
+  }
+  let pos = 0;
+  for (let k = 0, len = buckets.length; k < len; k++) {
+    let value;
+    if (buckets[k] != null && Array.isArray(buckets[k])) {
+      while ((value = buckets[k].shift()) != null) {
+        array[pos++] = value; // 将不同桶里数据挨个捞出来，为下一轮高位排序做准备，由于靠近桶底的元素排名靠前，因此从桶底先捞
       }
     }
   }
-  console.timeEnd('计数排序耗时');
+  console.timeEnd('基数排序耗时');
   return array;
 };
 ```

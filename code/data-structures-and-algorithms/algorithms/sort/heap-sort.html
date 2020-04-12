@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-堆排序</title>
+</head>
+
+<body>
+  <script>
+    // 堆排序
+    // 这是插入排序的改进版。 对间隔 gap 为一组的数进行插入排序
+    // 方法一
+    const heapSort = (array = []) => {
+      const length = array.length;
+      // 调整初始堆，调整完其实也确定了最大值
+      // 但此时最大值是在 arr[0] 中
+      for (let index = Math.floor(length / 2) - 1; index >= 0; index--) {
+        adjustHeap(array, index, length);
+      }
+      // 把 arr[0](最大值/堆顶元素)换到后面
+      for (let index = length - 1; index > 0; index--) {
+        swap(array, 0, index);
+        adjustHeap(array, 0, index);
+      }
+
+      // size 是还需要调整的堆的大小
+      // 随着一个个最大值的确定，size 会越来越小
+      function adjustHeap(array, position, size) {
+        const left = 2 * position + 1;
+        const right = left + 1;
+        let maxIndex = position;
+        if (left < size && array[left] > array[maxIndex]) maxIndex = left;
+        if (right < size && array[right] > array[maxIndex]) maxIndex = right;
+        if (maxIndex !== position) {
+          swap(array, position, maxIndex);
+          adjustHeap(array, maxIndex, size);
+        }
+      }
+      // 交换两个节点
+      function swap(array, i, j) {
+        const temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+      return array
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('heapSort 原始 array :', JSON.stringify(array));
+    console.log('heapSort 排序后的 array :', JSON.stringify(heapSort(array)));
+    // heapSort 原始 array: (5)[5, 4, 3, 2, 1]
+    // heapSort 排序后的 array: [1, 2, 3, 4, 5]
+
+
+    // 方法二
+    const headSort2 = (array = []) => {
+      console.time('堆排序耗时');
+      // 初始化大顶堆，从第一个非叶子结点开始
+      const heapify = (array, i, length) => {
+        let temp = array[i]; // 当前父节点
+        // j < length 的目的是对结点 i 以下的结点全部做顺序调整
+        for (let j = 2 * i + 1; j < length; j = 2 * j + 1) {
+          // 将 array[i] 取出，整个过程相当于找到 array[i] 应处于的位置
+          temp = array[i];
+          if (j + 1 < length && array[j] < array[j + 1]) {
+            j++; // 找到两个孩子中较大的一个，再与父节点比较
+          }
+          if (temp < array[j]) {
+            swap(array, i, j); // 如果父节点小于子节点:交换；否则跳出
+            i = j; //  交换后，temp 的下标变为 j
+          } else {
+            break;
+          }
+        }
+      };
+      const swap = (array, i, j) => {
+        const temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+      for (let index = Math.floor(array.length / 2 - 1); index >= 0; index--) {
+        heapify(array, index, array.length);
+      }
+      // 排序，每一次 for 循环找出一个当前最大值，数组长度减一
+      for (let index = Math.floor(array.length - 1); index > 0; index--) {
+        // 根节点与最后一个节点交换
+        swap(array, 0, index);
+        // 从根节点开始调整，并且最后一个结点已经为当前最大值，不需要再参与比较，所以第三个参数为 i，即比较到最后一个结点的前一个即可
+        heapify(array, 0, index);
+      }
+      console.timeEnd('堆排序耗时');
+      return array;
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('headSort2 原始 array :', JSON.stringify(array));
+    console.log('headSort2 排序后的 array :', JSON.stringify(headSort2(array)));
+    // headSort2 原始 array: [1, 2, 3, 4, 5]
+    // 堆排序耗时: 0.402 ms
+    // headSort2 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>

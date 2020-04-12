@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-桶排序</title>
+</head>
+
+<body>
+  <script>
+    // 桶排序
+    const quickSort = (arr = [], left, right) => {
+      let len = arr.length,
+        partitionIndex;
+      left = typeof left !== 'number' ? 0 : left;
+      right = typeof right !== 'number' ? len - 1 : right;
+      if (left < right) {
+        partitionIndex = partition(arr, left, right);
+        quickSort(arr, left, partitionIndex - 1);
+        quickSort(arr, partitionIndex + 1, right);
+      }
+      return arr;
+    }
+    const bucketSort = (array = [], bucketSize) => {
+      const length = array.length;
+      console.time(`桶排序耗时`);
+      if (length === 0) return array;
+      let i = 0,
+        minValue = array[0], // 最小值，默认为第一个元素值
+        maxValue = array[0]; // 最大值，默认为第一个元素值
+      for (i = 1; i < length; i++) {
+        if (array[i] < minValue) {
+          minValue = array[i]; // 输入数据的最小值
+        } else if (array[i] > maxValue) {
+          maxValue = array[i]; // 输入数据的最大值
+        }
+      }
+      // 桶的初始化
+      const DEFAULT_BUCKET_SIZE = 5; // 痛的默认大小
+      bucketSize = bucketSize || DEFAULT_BUCKET_SIZE;
+      const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
+      // 存放桶的数组
+      const buckets = new Array(bucketCount);
+      for (i = 0; i < buckets.length; i++) {
+        buckets[i] = [];
+      }
+      // 利用映射函数将数据分配到各个桶中
+      for (i = 0; i < array.length; i++) {
+        const bucketIndex = Math.floor((array[i] - minValue) / bucketSize);
+        buckets[bucketIndex].push(array[i]);
+      }
+
+      // 清空待排序数组元素
+      array.length = 0;
+      console.log(`buckets`, buckets);
+      // 最后对装完数据的每个桶，通过快速排序对里面的数据排序
+      for (i = 0; i < buckets.length; i++) {
+        const bucket = buckets[i] || [];
+        if (!bucket) break;
+        quickSort(bucket);
+        for (let j = 0; j < bucket.length; j++) {
+          array.push(bucket[j]);
+        }
+      }
+      console.timeEnd(`桶排序耗时`);
+      return array;
+    }
+    const swap = (array, i, j) => {
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    // 分区获取索引
+    const partition = (arr, left, right) => {
+      // 分区操作
+      let pivot = left, // 设定基准值(pivot), 默认为最左边值索引
+        index = pivot + 1;
+      for (let i = index; i <= right; i++) {
+        if (arr[i] < arr[pivot]) {
+          swap(arr, i, index);
+          index++;
+        }
+      }
+      swap(arr, pivot, index - 1);
+      return index - 1;
+    }
+
+    const array = [5, 4, 3, 2, 1];
+    console.log('bucketSort 原始 array :', JSON.stringify(array));
+    console.log('bucketSort 排序后的 array :', JSON.stringify(bucketSort(array)));
+    // bucketSort 原始 array: [5, 4, 3, 2, 1]
+    // buckets[[5, 4, 3, 2, 1]]
+    // 桶排序耗时: 2.037 ms
+    // bucketSort 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>
