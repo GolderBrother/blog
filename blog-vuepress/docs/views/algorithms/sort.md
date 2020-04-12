@@ -537,7 +537,7 @@ const quickSort = (array = []) => {
 };
 const array2 = [5, 4, 3, 2, 1];
 console.log('quickSort ', quickSort(array2));
-// quickSort1: [1, 2, 3, 4, 5]
+// quickSort: [1, 2, 3, 4, 5]
 ```
 
 #### 方法二
