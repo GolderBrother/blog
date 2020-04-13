@@ -1073,6 +1073,7 @@ const countingSort2 = (array = [], maxValue) => {
 **测试**:
 
 ```js
+// TODO 这排序有点问题
 const array2 = [2, 2, 3, 8, 7, 1, 2, 2, 2, 7, 3, 9, 8, 2, 1, 4, 2, 4, 6, 9, 2];
 console.log('原始 array2: ', array2);
 const newArr2 = countingSort2(array2, 21);
