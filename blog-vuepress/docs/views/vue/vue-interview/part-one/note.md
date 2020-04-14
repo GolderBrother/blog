@@ -368,6 +368,693 @@ function _traverse (val: any, seen: SimpleSet) {
 - **清除**自己定义的定时器
 - **解除事件的绑定** `scroll mousemove ....`
 
+## 11.`Vue`中模板编译原理
+
+- 将`template`转化成`render`函数
+
+```javascript
+function baseCompile (
+  template: string,
+  options: CompilerOptions
+) {
+  const ast = parse(template.trim(), options) // 1.将模板转化成ast语法树
+  if (options.optimize !== false) {           // 2.优化树
+    optimize(ast, options)
+  }
+  const code = generate(ast, options)         // 3.生成树
+  return {
+    ast,
+    render: code.render,
+    staticRenderFns: code.staticRenderFns
+  }
+})
+```
+
+```javascript
+const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z]*`;
+const qnameCapture = `((?:${ncname}\\:)?${ncname})`;
+const startTagOpen = new RegExp(`^<${qnameCapture}`); // 标签开头的正则 捕获的内容是标签名
+const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`); // 匹配标签结尾的  </div>
+const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配属性的
+const startTagClose = /^\s*(\/?)>/; // 匹配标签结束的  >
+let root;
+let currentParent;
+let stack = [];
+function createASTElement(tagName, attrs) {
+  return {
+    tag: tagName,
+    type: 1,
+    children: [],
+    attrs,
+    parent: null
+  };
+}
+function start(tagName, attrs) {
+  let element = createASTElement(tagName, attrs);
+  if (!root) {
+    root = element;
+  }
+  currentParent = element;
+  stack.push(element);
+}
+function chars(text) {
+  currentParent.children.push({
+    type: 3,
+    text
+  });
+}
+function end(tagName) {
+  const element = stack[stack.length - 1];
+  stack.length--;
+  currentParent = stack[stack.length - 1];
+  if (currentParent) {
+    element.parent = currentParent;
+    currentParent.children.push(element);
+  }
+}
+function parseHTML(html) {
+  while (html) {
+    let textEnd = html.indexOf('<');
+    if (textEnd == 0) {
+      const startTagMatch = parseStartTag();
+      if (startTagMatch) {
+        start(startTagMatch.tagName, startTagMatch.attrs);
+        continue;
+      }
+      const endTagMatch = html.match(endTag);
+      if (endTagMatch) {
+        advance(endTagMatch[0].length);
+        end(endTagMatch[1]);
+      }
+    }
+    let text;
+    if (textEnd >= 0) {
+      text = html.substring(0, textEnd);
+    }
+    if (text) {
+      advance(text.length);
+      chars(text);
+    }
+  }
+  function advance(n) {
+    html = html.substring(n);
+  }
+  function parseStartTag() {
+    const start = html.match(startTagOpen);
+    if (start) {
+      const match = {
+        tagName: start[1],
+        attrs: []
+      };
+      advance(start[0].length);
+      let attr, end;
+      while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+        advance(attr[0].length);
+        match.attrs.push({ name: attr[1], value: attr[3] });
+      }
+      if (end) {
+        advance(end[0].length);
+        return match;
+      }
+    }
+  }
+}
+// 生成语法树
+parseHTML(`<div id="container"><p>hello<span>zf</span></p></div>`);
+function gen(node) {
+  if (node.type == 1) {
+    return generate(node);
+  } else {
+    return `_v(${JSON.stringify(node.text)})`;
+  }
+}
+function genChildren(el) {
+  const children = el.children;
+  if (el.children) {
+    return `[${children.map(c => gen(c)).join(',')}]`;
+  } else {
+    return false;
+  }
+}
+function genProps(attrs) {
+  let str = '';
+  for (let i = 0; i < attrs.length; i++) {
+    let attr = attrs[i];
+    str += `${attr.name}:${attr.value},`;
+  }
+  return `{attrs:{${str.slice(0, -1)}}}`;
+}
+function generate(el) {
+  let children = genChildren(el);
+  let code = `_c('${el.tag}'${el.attrs.length ? `,${genProps(el.attrs)}` : ''}${
+    children ? `,${children}` : ''
+  })`;
+  return code;
+}
+// 根据语法树生成新的代码
+let code = generate(root);
+let render = `with(this){return ${code}}`;
+
+// 包装成函数
+let renderFn = new Function(render);
+console.log(renderFn.toString());
+```
+
+## 12.`Vue`中`v-if`和`v-show`的区别
+
+### 理解
+
+- `v-if`如果条件不成立不会渲染当前指令所在节点的`dom`元素
+- `v-show`只是切换当前`dom`的显示或者隐藏
+
+### 原理
+
+```javascript
+const VueTemplateCompiler = require('vue-template-compiler');
+let r1 = VueTemplateCompiler.compile(`<div v-if="true"><span v-for="i in 3">hello</span></div>`);
+/**
+with(this) {
+    return (true) ? _c('div', _l((3), function (i) {
+        return _c('span', [_v("hello")])
+    }), 0) : _e()
+}
+*/
+```
+
+```js
+const VueTemplateCompiler = require('vue-template-compiler');
+let r2 = VueTemplateCompiler.compile(`<div v-show="true"></div>`);
+/**
+with(this) {
+    return _c('div', {
+        directives: [{
+            name: "show",
+            rawName: "v-show",
+            value: (true),
+            expression: "true"
+        }]
+    })
+}
+ */
+
+// v-show 操作的是样式  定义在platforms/web/runtime/directives/show.js
+bind (el: any, { value }: VNodeDirective, vnode: VNodeWithData) {
+    vnode = locateNode(vnode)
+    const transition = vnode.data && vnode.data.transition
+    const originalDisplay = el.__vOriginalDisplay =
+      el.style.display === 'none' ? '' : el.style.display
+    if (value && transition) {
+      vnode.data.show = true
+      enter(vnode, () => {
+        el.style.display = originalDisplay
+      })
+    } else {
+      el.style.display = value ? originalDisplay : 'none'
+    }
+}
+```
+
+## 13.为什么`V-for`和`v-if`不能连用
+
+### 理解:
+
+```javascript
+const VueTemplateCompiler = require('vue-template-compiler');
+let r1 = VueTemplateCompiler.compile(`<div v-if="false" v-for="i in 3">hello</div>`);
+/**
+with(this) {
+    return _l((3), function (i) {
+        return (false) ? _c('div', [_v("hello")]) : _e()
+    })
+}
+*/
+console.log(r1.render);
+```
+
+- `v-for`会比`v-if`的优先级高一些,如果连用的话会把`v-if`给每个元素都添加一下,会造成性能问题
+
+## 14.用`vnode`来描述一个`DOM`结构
+
+- 虚拟节点就是用一个对象来描述真实的`dom`元素
+
+```javascript
+function $createElement(tag, data, ...children) {
+  let key = data.key;
+  delete data.key;
+  children = children.map(child => {
+    if (typeof child === 'object') {
+      return child;
+    } else {
+      return vnode(undefined, undefined, undefined, undefined, child);
+    }
+  });
+  return vnode(tag, props, key, children);
+}
+export function vnode(tag, data, key, children, text) {
+  return {
+    tag, // 表示的是当前的标签名
+    data, // 表示的是当前标签上的属性
+    key, // 唯一表示用户可能传递
+    children,
+    text
+  };
+}
+```
+
+## 15.`diff`算法的时间复杂度
+
+两个树的完全的`diff`算法是一个时间复杂度为 `O(n3)`,`Vue`进行了优化·_O(n3)_ *复杂度*的问题转换成 O(n) *复杂度*的问题(只比较同级不考虑跨级问题) 在前端当中， 你很少会跨越层级地移动 Dom 元素。 所以 Virtual Dom 只会对同一个层级的元素进行对比。
+
+## 16.简述`Vue`中`diff`算法原理
+
+### 理解
+
+- 1.先同级比较，在比较子节点
+- 2.先判断一方有儿子一方没儿子的情况
+- 3.比较都有儿子的情况
+- 4.递归比较子节点
+
+![img](note.assets/vue-diff.jpg)
+
+### 原理
+
+> `core/vdom/patch.js`
+
+```js
+const oldCh = oldVnode.children; // 老的儿子
+const ch = vnode.children; // 新的儿子
+if (isUndef(vnode.text)) {
+  if (isDef(oldCh) && isDef(ch)) {
+    // 比较孩子
+    if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly);
+  } else if (isDef(ch)) {
+    // 新的儿子有 老的没有
+    if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '');
+    addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
+  } else if (isDef(oldCh)) {
+    // 如果老的有新的没有 就删除
+    removeVnodes(oldCh, 0, oldCh.length - 1);
+  } else if (isDef(oldVnode.text)) {
+    // 老的有文本 新的没文本
+    nodeOps.setTextContent(elm, ''); // 将老的清空
+  }
+} else if (oldVnode.text !== vnode.text) {
+  // 文本不相同替换
+  nodeOps.setTextContent(elm, vnode.text);
+}
+```
+
+```js
+function updateChildren(parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly) {
+  let oldStartIdx = 0;
+  let newStartIdx = 0;
+  let oldEndIdx = oldCh.length - 1;
+  let oldStartVnode = oldCh[0];
+  let oldEndVnode = oldCh[oldEndIdx];
+  let newEndIdx = newCh.length - 1;
+  let newStartVnode = newCh[0];
+  let newEndVnode = newCh[newEndIdx];
+  let oldKeyToIdx, idxInOld, vnodeToMove, refElm;
+
+  // removeOnly is a special flag used only by <transition-group>
+  // to ensure removed elements stay in correct relative positions
+  // during leaving transitions
+  const canMove = !removeOnly;
+
+  if (process.env.NODE_ENV !== 'production') {
+    checkDuplicateKeys(newCh);
+  }
+
+  while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    if (isUndef(oldStartVnode)) {
+      oldStartVnode = oldCh[++oldStartIdx]; // Vnode has been moved left
+    } else if (isUndef(oldEndVnode)) {
+      oldEndVnode = oldCh[--oldEndIdx];
+    } else if (sameVnode(oldStartVnode, newStartVnode)) {
+      patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
+      oldStartVnode = oldCh[++oldStartIdx];
+      newStartVnode = newCh[++newStartIdx];
+    } else if (sameVnode(oldEndVnode, newEndVnode)) {
+      patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newEndVnode = newCh[--newEndIdx];
+    } else if (sameVnode(oldStartVnode, newEndVnode)) {
+      // Vnode moved right
+      patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
+      canMove &&
+        nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm));
+      oldStartVnode = oldCh[++oldStartIdx];
+      newEndVnode = newCh[--newEndIdx];
+    } else if (sameVnode(oldEndVnode, newStartVnode)) {
+      // Vnode moved left
+      patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
+      canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
+      oldEndVnode = oldCh[--oldEndIdx];
+      newStartVnode = newCh[++newStartIdx];
+    } else {
+      if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+      idxInOld = isDef(newStartVnode.key)
+        ? oldKeyToIdx[newStartVnode.key]
+        : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx);
+      if (isUndef(idxInOld)) {
+        // New element
+        createElm(
+          newStartVnode,
+          insertedVnodeQueue,
+          parentElm,
+          oldStartVnode.elm,
+          false,
+          newCh,
+          newStartIdx
+        );
+      } else {
+        vnodeToMove = oldCh[idxInOld];
+        if (sameVnode(vnodeToMove, newStartVnode)) {
+          patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
+          oldCh[idxInOld] = undefined;
+          canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm);
+        } else {
+          // same key but different element. treat as new element
+          createElm(
+            newStartVnode,
+            insertedVnodeQueue,
+            parentElm,
+            oldStartVnode.elm,
+            false,
+            newCh,
+            newStartIdx
+          );
+        }
+      }
+      newStartVnode = newCh[++newStartIdx];
+    }
+  }
+  if (oldStartIdx > oldEndIdx) {
+    refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
+    addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
+  } else if (newStartIdx > newEndIdx) {
+    removeVnodes(oldCh, oldStartIdx, oldEndIdx);
+  }
+}
+```
+
+## 17.`v-for`中为什么要用`key` (图解)
+
+![vue-diff-key](note.assets/diff-key.jpg)
+
+## 18.描述组件渲染和更新过程
+
+### 理解
+
+- 渲染组件时，会通过`Vue.extend`方法构建子组件的构造函数，并进行实例化。最终手动调用`$mount()`进行挂载。更新组件时会进行`patchVnode`流程.核心就是 diff 算法
+
+![组件渲染流程](note.assets/组件渲染流程.png)
+
+## 19.组件中的 `data`为什么是一个函数?
+
+### 理解：
+
+同一个组件被复用多次，会创建多个实例。这些实例用的是同一个构造函数，如果`data`是一个对象的话。那么所有组件都共享了同一个对象。为了保证组件的数据独立性要求每个组件必须通过`data`函数返回一个对象作为组件的状态。
+
+### 原理:
+
+> `core/global-api/extend.js line:33`
+
+```javascript
+Sub.options = mergeOptions(Super.options, extendOptions);
+function mergeOptions() {
+  function mergeField(key) {
+    const strat = strats[key] || defaultStrat;
+    options[key] = strat(parent[key], child[key], vm, key);
+  }
+}
+strats.data = function(parentVal: any, childVal: any, vm?: Component): ?Function {
+  if (!vm) {
+    // 合并是会判断子类的data必须是一个函数
+    if (childVal && typeof childVal !== 'function') {
+      process.env.NODE_ENV !== 'production' &&
+        warn(
+          'The "data" option should be a function ' +
+            'that returns a per-instance value in component ' +
+            'definitions.',
+          vm
+        );
+
+      return parentVal;
+    }
+    return mergeDataOrFn(parentVal, childVal);
+  }
+  return mergeDataOrFn(parentVal, childVal, vm);
+};
+```
+
+- 一个组件被使用多次，用的都是同一个构造函数。为了保证组件的不同的实例 data 不冲突，要求 data 必须是一个函数，这样组件间不会相互影响
+
+## 20.`Vue`中事件绑定的原理
+
+### 理解:
+
+- 1.原生`dom`事件的绑定,采用的是`addEventListener`实现
+- 2.组件绑定事件采用的是`$on`方法
+
+### 原理:
+
+- 事件的编译：
+
+```js
+let compiler = require('vue-template-compiler');
+let r1 = compiler.compile('<div @click="fn()"></div>');
+let r2 = compiler.compile('<my-component @click.native="fn" @click="fn1"></my-component>');
+console.log(r1); // {on:{click}}
+console.log(r2); // {nativeOnOn:{click},on:{click}}
+```
+
+![](note.assets/事件初始化.png)
+
+#### 1.原生`dom`的绑定
+
+- `Vue`在创建真是`dom`时会调用`createElm`,默认会调用`invokeCreateHooks`
+- 会遍历当前平台下相对的属性处理代码,其中就有`updateDOMListeners`方法,内部会传入`add`方法
+
+yuan
+
+```js
+function updateDOMListeners(oldVnode: VNodeWithData, vnode: VNodeWithData) {
+  if (isUndef(oldVnode.data.on) && isUndef(vnode.data.on)) {
+    return;
+  }
+  const on = vnode.data.on || {};
+  const oldOn = oldVnode.data.on || {};
+  target = vnode.elm;
+  normalizeEvents(on);
+  updateListeners(on, oldOn, add, remove, createOnceHandler, vnode.context);
+  target = undefined;
+}
+
+function add(name: string, handler: Function, capture: boolean, passive: boolean) {
+  target.addEventListener(
+    // 给当前的dom添加事件
+    name,
+    handler,
+    supportsPassive ? { capture, passive } : capture
+  );
+}
+```
+
+> `vue`中绑定事件是直接绑定给真实`dom`元素的
+
+- 2.组件中绑定事件
+
+```javascript
+export function updateComponentListeners(vm: Component, listeners: Object, oldListeners: ?Object) {
+  target = vm;
+  updateListeners(listeners, oldListeners || {}, add, remove, createOnceHandler, vm);
+  target = undefined;
+}
+function add(event, fn) {
+  target.$on(event, fn);
+}
+```
+
+> 组件绑定事件是通过`vue`中自定义的`$on`方法来实现的
+
+## 21.`v-model`中的实现原理及如何自定义`v-model`
+
+### 理解:
+
+组件的`v-model`是`value+input方法`的语法糖
+
+```html
+<el-checkbox :value="" @input=""></el-checkbox> <el-checkbox v-model="check"></el-checkbox>
+```
+
+可以自己重新定义`v-model`的含义
+
+```javascript
+Vue.component('el-checkbox', {
+  template: `<input type="checkbox" :checked="check" @change="$emit('change',$event.target.checked)">`,
+  model: {
+    prop: 'check', // 更改默认的value的名字
+    event: 'change' // 更改默认的方法名
+  },
+  props: {
+    check: Boolean
+  }
+});
+```
+
+### 原理:
+
+- 会将组件的`v-model`默认转化成 value+input
+
+```js
+const VueTemplateCompiler = require('vue-template-compiler');
+const ele = VueTemplateCompiler.compile('<el-checkbox v-model="check"></el-checkbox>');
+// with(this) {
+//     return _c('el-checkbox', {
+//         model: {
+//             value: (check),
+//             callback: function ($$v) {
+//                 check = $$v
+//             },
+//             expression: "check"
+//         }
+//     })
+// }
+```
+
+> `core/vdom/create-component.js line:155`
+
+```javascript
+function transformModel(options, data: any) {
+  const prop = (options.model && options.model.prop) || 'value';
+  const event = (options.model && options.model.event) || 'input';
+  (data.attrs || (data.attrs = {}))[prop] = data.model.value;
+  const on = data.on || (data.on = {});
+  const existing = on[event];
+  const callback = data.model.callback;
+  if (isDef(existing)) {
+    if (Array.isArray(existing) ? existing.indexOf(callback) === -1 : existing !== callback) {
+      on[event] = [callback].concat(existing);
+    }
+  } else {
+    on[event] = callback;
+  }
+}
+```
+
+- 原生的 `v-model`，会根据标签的不同生成不同的事件和属性
+
+```js
+const VueTemplateCompiler = require('vue-template-compiler');
+const ele = VueTemplateCompiler.compile('<input v-model="value"/>');
+/** 
+with(this) {
+    return _c('input', {
+        directives: [{
+            name: "model",
+            rawName: "v-model",
+            value: (value),
+            expression: "value"
+        }],
+        domProps: {
+            "value": (value)
+        },
+        on: {
+            "input": function ($event) {
+                if ($event.target.composing) return;
+                value = $event.target.value
+            }
+        }
+    })
+}
+*/
+```
+
+> 编译时：不同的标签解析出的内容不一样 `platforms/web/compiler/directives/model.js`
+
+```javascript
+if (el.component) {
+  genComponentModel(el, value, modifiers);
+  // component v-model doesn't need extra runtime
+  return false;
+} else if (tag === 'select') {
+  genSelect(el, value, modifiers);
+} else if (tag === 'input' && type === 'checkbox') {
+  genCheckboxModel(el, value, modifiers);
+} else if (tag === 'input' && type === 'radio') {
+  genRadioModel(el, value, modifiers);
+} else if (tag === 'input' || tag === 'textarea') {
+  genDefaultModel(el, value, modifiers);
+} else if (!config.isReservedTag(tag)) {
+  genComponentModel(el, value, modifiers);
+  // component v-model doesn't need extra runtime
+  return false;
+}
+```
+
+> 运行时：会对元素处理一些关于输入法的问题 `platforms/web/runtime/directives/model.js`
+
+```javascript
+inserted (el, binding, vnode, oldVnode) {
+  if (vnode.tag === 'select') {
+    // #6903
+    if (oldVnode.elm && !oldVnode.elm._vOptions) {
+      mergeVNodeHook(vnode, 'postpatch', () => {
+        directive.componentUpdated(el, binding, vnode)
+      })
+    } else {
+      setSelected(el, binding, vnode.context)
+    }
+    el._vOptions = [].map.call(el.options, getValue)
+  } else if (vnode.tag === 'textarea' || isTextInputType(el.type)) {
+    el._vModifiers = binding.modifiers
+    if (!binding.modifiers.lazy) {
+      el.addEventListener('compositionstart', onCompositionStart)
+      el.addEventListener('compositionend', onCompositionEnd)
+      // Safari < 10.2 & UIWebView doesn't fire compositionend when
+      // switching focus before confirming composition choice
+      // this also fixes the issue where some browsers e.g. iOS Chrome
+      // fires "change" instead of "input" on autocomplete.
+      el.addEventListener('change', onCompositionEnd)
+      /* istanbul ignore if */
+      if (isIE9) {
+        el.vmodel = true
+      }
+    }
+  }
+}
+```
+
+## 22.`Vue`中`v-html`会导致哪些问题?
+
+### 理解:
+
+- 可能会导致`xss`攻击
+- `v-html`会替换掉标签内部的子元素
+
+### 原理:
+
+```javascript
+let template = require('vue-template-compiler');
+let r = template.compile(`<div v-html="'<span>hello</span>'"></div>`);
+// with(this){return _c('div',{domProps:{"innerHTML":_s('<span>hello</span>')}})}
+console.log(r.render);
+
+// _c 定义在core/instance/render.js
+// _s 定义在core/instance/render-helpers/index,js
+
+if (key === 'textContent' || key === 'innerHTML') {
+  if (vnode.children) vnode.children.length = 0;
+  if (cur === oldProps[key]) continue;
+  // #6601 work around Chrome version <= 55 bug where single textNode
+  // replaced by innerHTML/textContent retains its parentNode property
+  if (elm.childNodes.length === 1) {
+    elm.removeChild(elm.childNodes[0]);
+  }
+}
+```
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~
