@@ -1055,9 +1055,525 @@ if (key === 'textContent' || key === 'innerHTML') {
 }
 ```
 
+## 23. Vue 父子组件生命周期调用顺序
+
+### 理解:
+
+组件的调用顺序都是先父后子，渲染完成的顺序肯定是先子后父
+
+组件的销毁操作是先父后子，销毁完成的顺序是先子后父
+
+### 原理:
+
+```js
+function patch (oldVnode, vnode, hydrating, removeOnly) {
+    if (isUndef(vnode)) {
+      if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
+      return
+    }
+
+    let isInitialPatch = false
+    const insertedVnodeQueue = [] // 定义收集所有组件的insert hook方法的数组
+    // somthing ...
+    createElm(
+        vnode,
+        insertedVnodeQueue,
+        oldElm._leaveCb ? null : parentElm,
+        nodeOps.nextSibling(oldElm)
+    )
+    // somthing...
+    // 最终会依次调用收集的insert hook
+    invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch);
+
+    return vnode.elm
+}
+function createElm (
+    vnode,
+    insertedVnodeQueue,
+    parentElm,
+    refElm,
+    nested,
+    ownerArray,
+    index
+  ) {
+        // createChildren会递归创建儿子组件
+        createChildren(vnode, children, insertedVnodeQueue)
+        // something...
+  }
+
+// 将组件的vnode插入到数组中
+function invokeCreateHooks (vnode, insertedVnodeQueue) {
+    for (let i = 0; i < cbs.create.length; ++i) {
+      cbs.create[i](emptyNode, vnode)
+    }
+    i = vnode.data.hook // Reuse variable
+    if (isDef(i)) {
+      if (isDef(i.create)) i.create(emptyNode, vnode)
+      if (isDef(i.insert)) insertedVnodeQueue.push(vnode)
+    }
+  }
+// insert方法中会依次调用mounted方法
+insert (vnode: MountedComponentVNode) {
+    const { context, componentInstance } = vnode
+    if (!componentInstance._isMounted) {
+      componentInstance._isMounted = true
+      callHook(componentInstance, 'mounted')
+    }
+}
+
+function invokeInsertHook (vnode, queue, initial) {
+     // delay insert hooks for component root nodes, invoke them after the
+     // element is really inserted
+     if (isTrue(initial) && isDef(vnode.parent)) {
+         vnode.parent.data.pendingInsert = queue
+     } else {
+         for (let i = 0; i < queue.length; ++i) {
+             queue[i].data.hook.insert(queue[i]); // 调用insert方法
+         }
+     }
+}
+```
+
+```js
+Vue.prototype.$destroy = function() {
+  callHook(vm, 'beforeDestroy'); //
+  // invoke destroy hooks on current rendered tree
+  vm.__patch__(vm._vnode, null); // 先销毁儿子
+  // fire destroyed hook
+  callHook(vm, 'destroyed');
+};
+```
+
+## 24.Vue 组件如何通信?
+
+- 父子间通信 **父->子通过 `props`**、**子->父`$on、$emit`**
+- 获取父子组件实例的方式`$parent、$children`
+- 在父组件中提供数据子组件进行消费 `Provide、inject`
+- `Ref` 获取实例的方式调用组件的属性或者方法
+- `Event Bus` 实现跨组件通信
+- `Vuex` 状态管理实现通信
+
+## 25.Vue 中相同逻辑如何抽离？
+
+- `Vue.mixin`用法 给组件每个生命周期，函数等都混入一些公共逻辑
+
+```js
+Vue.mixin = function(mixin: Object) {
+  this.options = mergeOptions(this.options, mixin); // 将当前定义的属性合并到每个组件中
+  return this;
+};
+export function mergeOptions(parent: Object, child: Object, vm?: Component): Object {
+  if (!child._base) {
+    if (child.extends) {
+      // 递归合并extends
+      parent = mergeOptions(parent, child.extends, vm);
+    }
+    if (child.mixins) {
+      // 递归合并mixin
+      for (let i = 0, l = child.mixins.length; i < l; i++) {
+        parent = mergeOptions(parent, child.mixins[i], vm);
+      }
+    }
+  }
+  const options = {}; // 属性及生命周期的合并
+  let key;
+  for (key in parent) {
+    mergeField(key);
+  }
+  for (key in child) {
+    if (!hasOwn(parent, key)) {
+      mergeField(key);
+    }
+  }
+  function mergeField(key) {
+    const strat = strats[key] || defaultStrat;
+    // 调用不同属性合并策略进行合并
+    options[key] = strat(parent[key], child[key], vm, key);
+  }
+  return options;
+}
+```
+
+## 26.为什么要使用异步组件？
+
+### 理解:
+
+如果组件功能多打包出的结果会变大，我们可以采用**异步**的方式来加载组件。主要依赖 `import()` 这个语法，可以实现**文件的分割加载**。
+
+```js
+components:{
+  AddCustomerSchedule(resolve) {
+      require(["../components/AddCustomer"], resolve);
+  }
+}
+```
+
+### 原理:
+
+```js
+export function createComponent(
+  Ctor: Class<Component> | Function | Object | void,
+  data: ?VNodeData,
+  context: Component,
+  children: ?Array<VNode>,
+  tag?: string
+): VNode | Array<VNode> | void {
+  // async component
+  let asyncFactory;
+  if (isUndef(Ctor.cid)) {
+    asyncFactory = Ctor;
+    Ctor = resolveAsyncComponent(asyncFactory, baseCtor); // 默认调用此函数时返回undefiend
+    // 第二次渲染时Ctor不为undefined
+    if (Ctor === undefined) {
+      return createAsyncPlaceholder(
+        // 渲染占位符 空虚拟节点
+        asyncFactory,
+        data,
+        context,
+        children,
+        tag
+      );
+    }
+  }
+}
+function resolveAsyncComponent(
+  factory: Function,
+  baseCtor: Class<Component>
+): Class<Component> | void {
+  if (isDef(factory.resolved)) {
+    // 3.在次渲染时可以拿到获取的最新组件
+    return factory.resolved;
+  }
+  const resolve = once((res: Object | Class<Component>) => {
+    factory.resolved = ensureCtor(res, baseCtor);
+    if (!sync) {
+      forceRender(true); //2. 强制更新视图重新渲染
+    } else {
+      owners.length = 0;
+    }
+  });
+  const reject = once(reason => {
+    if (isDef(factory.errorComp)) {
+      factory.error = true;
+      forceRender(true);
+    }
+  });
+  const res = factory(resolve, reject); // 1.将resolve方法和reject方法传入，用户调用resolve方法后
+  sync = false;
+  return factory.resolved;
+}
+```
+
+## 27.什么是作用域插槽?
+
+### 理解:
+
+#### 1.插槽：
+
+创建组件虚拟节点时，会将组件的儿子的虚拟节点保存起来。当初始化组件时,通过插槽属性将儿子进行分类 {a:[vnode],b[vnode]}
+渲染组件时会拿对应的 `slot` 属性的节点进行**替换**操作。（**插槽的作用域为父组件**）
+
+#### 2.作用域插槽:
+
+作用域插槽在解析的时候，不会作为组件的孩子节点。会解析成**函数**，当子组件渲染时，会调用此**函数**进行渲染。（**插槽的作用域为子组件**）
+
+### 原理:
+
+#### 1.插槽:
+
+源码是这样的:
+
+```js
+const VueTemplateCompiler = require('vue-template-compiler');
+let ele = VueTemplateCompiler.compile(`
+    <my-component>
+        <div slot="header">node</div>
+        <div>react</div>
+        <div slot="footer">vue</div>
+    </my-component>
+`);
+/** 
+with(this) {
+    return _c('my-component', [_c('div', {
+        attrs: {
+            "slot": "header"
+        },
+        slot: "header"
+    }, [_v("node")]), _v(" "), _c('div', [_v("react")]), _v(" "), _c('div', {
+        attrs: {
+            "slot": "footer"
+        },
+        slot: "footer"
+    }, [_v("vue")])])
+}
+*/
+
+const VueTemplateCompiler = require('vue-template-compiler');
+let ele = VueTemplateCompiler.compile(`
+    <div>
+        <slot name="header"></slot>
+        <slot name="footer"></slot>
+        <slot></slot>
+    </div>
+`);
+/**
+with(this) {
+    return _c('div', [_t("header"), _v(" "), _t("footer"), _v(" "), _t("default")], 2)
+}
+**/
+// _t定义在 core/instance/render-helpers/index.js
+```
+
+### 作用域插槽:
+
+对应的源码是这样的
+
+```js
+let ele = VueTemplateCompiler.compile(`
+    <app>
+        <div slot-scope="msg" slot="footer">{{msg.a}}</div>
+    </app>
+`);
+/**
+with(this) {
+    return _c('app', {
+        scopedSlots: _u([{ // 作用域插槽的内容会被渲染成一个函数
+            key: "footer",
+            fn: function (msg) {
+                return _c('div', {}, [_v(_s(msg.a))])
+            }
+        }])
+    })
+    }
+}
+*/
+const VueTemplateCompiler = require('vue-template-compiler');
+
+VueTemplateCompiler.compile(`
+    <div>
+        <slot name="footer" a="1" b="2"></slot>
+    </div>
+`);
+/**
+with(this) {
+    return _c('div', [_t("footer", null, {
+        "a": "1",
+        "b": "2"
+    })], 2)
+}
+**/
+```
+
+## 28.谈谈你对 keep-alive 的了解？
+
+### 理解:
+
+`keep-alive` 可以实现**组件的缓存**，当组件切换时不会对当前组件进行卸载,常用的 2 个属性 `include/exclude`,2 个生命周期 `activated,deactivated`
+
+### 原理:
+
+> 代码位置：core/components/keep-alive.js
+
+```js
+export default {
+  name: 'keep-alive',
+  abstract: true, // 抽象组件
+
+  props: {
+    include: patternTypes,
+    exclude: patternTypes,
+    max: [String, Number]
+  },
+
+  created() {
+    this.cache = Object.create(null); // 创建缓存列表
+    this.keys = []; // 创建缓存组件的key列表
+  },
+
+  destroyed() {
+    // keep-alive销毁时 会清空所有的缓存和key
+    for (const key in this.cache) {
+      // 循环销毁
+      pruneCacheEntry(this.cache, key, this.keys);
+    }
+  },
+
+  mounted() {
+    // 会监控include 和 include属性 进行组件的缓存处理
+    this.$watch('include', val => {
+      pruneCache(this, name => matches(val, name));
+    });
+    this.$watch('exclude', val => {
+      pruneCache(this, name => !matches(val, name));
+    });
+  },
+
+  render() {
+    const slot = this.$slots.default; // 会拿默认插槽
+    const vnode: VNode = getFirstComponentChild(slot); // 只缓存第一个组件
+    const componentOptions: ?VNodeComponentOptions = vnode && vnode.componentOptions;
+    if (componentOptions) {
+      // check pattern
+      const name: ?string = getComponentName(componentOptions); // 取出组件的名字
+      const { include, exclude } = this;
+      if (
+        // 判断是否缓存
+        // not included
+        (include && (!name || !matches(include, name))) ||
+        // excluded
+        (exclude && name && matches(exclude, name))
+      ) {
+        return vnode;
+      }
+
+      const { cache, keys } = this;
+      const key: ?string =
+        vnode.key == null
+          ? // same constructor may get registered as different local components
+            // so cid alone is not enough (#3269)
+            componentOptions.Ctor.cid + (componentOptions.tag ? `::${componentOptions.tag}` : '')
+          : vnode.key; // 如果组件没key 就自己通过 组件的标签和key和cid 拼接一个key
+
+      if (cache[key]) {
+        vnode.componentInstance = cache[key].componentInstance; //  直接拿到组件实例
+        // make current key freshest
+        remove(keys, key); // 删除当前的  [b,c,d,e,a]   // LRU 最近最久未使用法
+        keys.push(key); // 并将key放到后面[b,a]
+      } else {
+        cache[key] = vnode; // 缓存vnode
+        keys.push(key); // 将key 存入
+        // prune oldest entry
+        if (this.max && keys.length > parseInt(this.max)) {
+          // 缓存的太多超过了max 就需要删除掉
+          pruneCacheEntry(cache, keys[0], keys, this._vnode); // 要删除第0个 但是现在渲染的就是第0个
+        }
+      }
+
+      vnode.data.keepAlive = true; // 并且标准keep-alive下的组件是一个缓存组件
+    }
+    return vnode || (slot && slot[0]); // 返回当前的虚拟节点
+  }
+};
+```
+
+## 29.Vue 中常见性能优化
+
+### 1.编码优化:
+
+- 1.不要将所有的数据都放在 `data` 中，`data` 中的数据都会增加 `getter` 和 `setter`，会收集对应的 `watcher`
+
+- 2.`vue` 在 `v-for` 时给每项元素绑定事件需要用**事件代理(事件委托)**
+
+- 3.`SPA` 页面采用 `keep-alive` 缓存组件
+
+- 4.拆分组件( 提高复用性、增加代码的可维护性,减少不必要的渲染 )
+
+- 5.`v-if` 当值为 false 时内部指令不会执行,具有**阻断**功能，很多情况下使用 `v-if` 替代 `v-show`
+
+- 6.key 保证唯一性 ( 默认 vue 会采用就地复用策略 )
+
+- 7.`Object.freeze` 冻结数据
+
+- 8.合理使用**路由懒加载**、**异步组件**
+
+- 9.尽量采用 `runtime` 运行时版本
+
+- 10.数据持久化的问题 （防抖、节流）
+
+### 2.Vue 加载性能优化:
+
+- 第三方模块按需导入 ([`babel-plugin-component`](https://www.npmjs.com/package/babel-plugin-component))
+
+- [滚动到可视区域动态加载](https://tangbc.github.io/vue-virtual-scroll-list)
+
+- [图片懒加载](https://github.com/hilongjw/vue-lazyload.git)
+
+### 3.用户体验:
+
+- `app-skeleton` 骨架屏
+- `app-shellapp` 壳
+- `pwa`
+
+### 4.SEO 优化：
+
+- 预渲染插件 `prerender-spa-plugin`
+- 服务端渲染 `ssr`
+
+### 5.打包优化:
+
+- 使用 `cdn` 的方式加载第三方模块
+- 多线程打包 `happypack`
+- `splitChunks` 抽离公共文件
+- `sourceMap` 生成
+
+### 6.缓存，压缩
+
+- 客户端缓存、服务端缓存
+- 服务端 `gzip` 压缩
+
+## 30.`Vue3.0` 你知道有哪些改进?
+
+- `Vue3`采用了 `TS` 来编写
+
+- 支持 `Composition API`
+
+- `Vue3`中响应式数据原理改成 `proxy`
+
+- `vdom` 的对比算法更新，只更新 `vdom` 的绑定了**动态数据**的部分
+
+## 31.实现 `hash` 路由和 `history` 路由
+
+- `onhashchange`
+- `history.pushState`
+
+## 32.`Vue-Router`中导航守卫有哪些？
+
+### 完整的导航解析流程如下
+
+1. 导航被触发。
+2. 在失活的组件里调用离开守卫。
+3. 调用全局的 `beforeEach` 守卫。
+4. 在重用的组件里调用 `beforeRouteUpdate` 守卫 (2.2+)。
+5. 在路由配置里调用 `beforeEnter。`
+6. 解析异步路由组件。
+7. 在被激活的组件里调用 `beforeRouteEnter`。
+8. 调用全局的 `beforeResolve` 守卫 (2.5+)。
+9. 导航被确认。
+10. 调用全局的 `afterEach` 钩子。
+11. 触发 `DOM` 更新。
+12. 用创建好的实例调用 `beforeRouteEnter` 守卫中传给 `next` 的回调函数。
+
+## 33.action 和 mutation 区别
+
+- mutation 是**同步**操作更新数据(内部会进行是否为异步方式更新数据的检测)
+- action **异步**操作，可以获取数据后调用`mutation`提交最终数据
+
+## 34.简述 Vuex 工作原理
+
+直接上图吧！
+
+![vuex](https://vuex.vuejs.org/vuex.png)
+
+## 作业:
+
+- 1.双向绑定和 `vuex`是否冲突?
+
+- 2.`Vue`中内置组件 `transition`、`transition-group` 的源码实现原理？
+
+- 3.说说 `patch` 函数里做了啥?
+
+- 4.知道`vue`生命周期内部怎么实现的么 ?
+
+- 5.`ssr`项目如果并发很大服务器性能怎么优化?
+
+- 6.说下项目中怎么实现**权限校验**?
+
+- 7.讲 `vue-lazyloader` 的原理，手写伪代码?
+
+- 8.`Vue.set`的原理?
+
+- 9.`vue compile`过程详细说一下，指令、插值表达式等`vue`语法如何生效的?
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~
-
- <comment/>
-```
