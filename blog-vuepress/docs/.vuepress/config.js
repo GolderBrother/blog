@@ -86,6 +86,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/css/css-skills1.md',
+                        '/views/css/css-knowledge.md',
                     ]
                 },
                 {
