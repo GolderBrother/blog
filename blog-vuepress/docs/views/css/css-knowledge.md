@@ -66,3 +66,98 @@
   </div>
 </div>
 ```
+
+## 05.【flex 不为人知的特性之一】💕flex 布局下 margin:auto 的神奇用法
+
+![16c3d4f579c4de52](./knowledge/16c3d4f579c4de52.png)
+
+实现代码是这样的
+
+```html
+<style>
+    .container {
+      display: flex;
+    }
+
+    .item {
+      border: 1px solid black;
+      width: 30px;
+      height: 30px;
+      background-color: aqua;
+      text-align: center;
+      /* margin: auto; */
+    }
+
+    .item:first-child {
+      margin-right: auto;
+    }
+
+    .item:nth-child(3) {
+      margin: auto;
+    }
+
+    .item:last-child {
+      margin-left: auto;
+    }
+  </style>
+  <div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5</div>
+  </div
+```
+
+## 06.【flex 不为人知的特性之二】💖flex 布局，当 flex-grow 之和小于 1 时，只能按比例分配部分剩余空间，而不是全部
+
+![16c3d4f642feaa48](./knowledge/16c3d4f642feaa48.png)
+
+实现代码是这样的：
+
+```html
+<style>
+  .container {
+    display: flex;
+    background-color: brown;
+  }
+
+  .item {
+    border: 1px solid black;
+    width: 30px;
+    background-color: aqua;
+    flex-grow: 0.1;
+  }
+
+  .item:first-child {
+    flex-grow: 0.3;
+  }
+</style>
+<div class="container">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+</div>
+```
+
+## 07.【input 的宽度】💗 并不是给元素设置 display:block 就会自动填充父元素宽度。input 就是个例外，其默认宽度取决于 size 特性的值
+
+![16c3d4f6fef0a871](./knowledge/16c3d4f6fef0a871.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .container {
+    display: flex;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+  }
+</style>
+<div class="container">
+  <input type="text" size="30" />
+</div>
+```
