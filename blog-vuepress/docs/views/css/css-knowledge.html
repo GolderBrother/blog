@@ -9,18 +9,28 @@
 
 <body>
   <style>
-    .container {
-      display: flex;
+    div {
+      width: 50px;
+      height: 50px;
+      background-color: aqua;
+      border-radius: 100%;
+      animation: move 2s ease-in-out infinite alternate;
     }
 
-    input {
-      display: block;
-      width: 100%;
+    div:nth-child(2n+1) {
+      animation-delay: 2s;
+    }
+
+    @keyframes move {
+      100% {
+        transform: translate(300%, 0);
+      }
     }
   </style>
-  <div class="container">
-    <input type="text" size="30">
-  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
 </body>
 
 </html>
