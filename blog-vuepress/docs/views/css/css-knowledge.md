@@ -6,9 +6,72 @@
 
 ![16c3f20e0bfc9f24](./knowledge/16c3f20e0bfc9f24.png)
 
+实现代码是这样的：
+
+```html
+<style>
+  .container {
+    width: 300px;
+    height: 200px;
+    border: 2px dotted pink;
+  }
+
+  .container div {
+    /* float: left; */
+    width: 100px;
+    height: 100px;
+    border: 1px solid;
+  }
+
+  .container div:nth-child(1) {
+    background-color: aqua;
+  }
+
+  .container div:nth-child(2) {
+    background-color: purple;
+    margin-top: -50px;
+    margin-right: -50px;
+    margin-bottom: -50px;
+    margin-left: -50px;
+  }
+</style>
+<div class="container">
+  <div></div>
+  <div></div>
+</div>
+```
+
 ### 02.【`shape-outside`】💘 不要自以为是了。你以为自己是方的，在别人眼里你却是圆的
 
 ![16c3d4d63509b4f0](./knowledge/16c3d4d63509b4f0.png)
+
+实现代码是这样的：
+
+```html
+<style>
+  .container {
+    width: 600px;
+    border: 2px dotted pink;
+    margin: auto;
+  }
+
+  .container div {
+    float: left;
+    width: 300px;
+    height: 300px;
+    background-color: aqua;
+    shape-outside: circle();
+  }
+</style>
+<div class="container">
+  <div></div>
+  <p>
+    生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
+    生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
+    生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
+  </p>
+</div>
+```
 
 ### 03.【BFC 应用】💓BFC 应用之阻止外边距合并（margin collapsing）
 
@@ -799,5 +862,238 @@
 实现代码是这样的
 
 ```html
+<style>
+  .percent {
+    --percent: 90%;
+    height: 10px;
+    border: 1px solid;
+    border-radius: 10px;
+    background-repeat: no-repeat;
+    background-size: 0;
+    background-image: linear-gradient(aqua, aqua);
+    animation: move 1.5s linear;
+    animation-fill-mode: forwards;
+  }
 
+  @keyframes move {
+    to {
+      background-size: var(--percent);
+    }
+  }
+</style>
+<div class="percent"></div>
+```
+
+### 34.【动画负延迟】🥑CSS 动画可以设置延迟时间为负数，表示动画仿佛开始前就已经运行过了那么长时间
+
+![16c3d51a09f353d9](./knowledge/16c3d51a09f353d9.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .percent {
+    --percent: 100%;
+    height: 10px;
+    border: 1px solid;
+    border-radius: 10px;
+    background-repeat: no-repeat;
+    background-size: 0;
+    background-image: linear-gradient(aqua, aqua);
+    animation: move 5s linear infinite;
+    /* 表示开始动画前就已经到了2秒后的状态 */
+    animation-delay: -2s;
+  }
+
+  @keyframes move {
+    to {
+      background-size: var(--percent);
+    }
+  }
+</style>
+<div class="percent"></div>
+```
+
+### 35【过渡】🍆 爱的魔力转圈圈
+
+![16c3d51b12aca6ff](./knowledge/16c3d51b12aca6ff.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .circle {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    border-radius: 50%;
+    background: url('./knowledge/circle.jpg') no-repeat center/contain;
+    transition: all 10s;
+  }
+
+  .circle:hover {
+    transform: rotate(10turn);
+  }
+</style>
+<div class="circle"></div>
+```
+
+### 36.【动画案例】🍬 水波效果原理
+
+![16c3d51c0ada68da](./knowledge/16c3d51c0ada68da.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .water-waves {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    border: 1px solid silver;
+    line-height: 50px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .water-wave1,
+  .water-wave2,
+  .water-wave3 {
+    top: 45%;
+    left: -25%;
+    position: absolute;
+    opacity: 0.6;
+    border-radius: calc(100% / 3);
+    width: 200%;
+    height: 200%;
+  }
+
+  .water-wave1 {
+    background-color: lightblue;
+    animation: water-waves 6s linear infinite;
+  }
+
+  .water-wave2 {
+    background-color: lightskyblue;
+    animation: water-waves 6s linear infinite;
+    animation-delay: 1s;
+  }
+
+  .water-wave3 {
+    background-color: blue;
+    opacity: 0.1;
+    animation: water-waves 6s linear infinite;
+    animation-delay: 2s;
+  }
+
+  @keyframes water-waves {
+    0% {
+      transform: rotate(0);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+<div class="water-waves">
+  水波效果
+  <div class="water-wave1"></div>
+  <div class="water-wave2"></div>
+  <div class="water-wave3"></div>
+</div>
+```
+
+### 37.【动画案例】🌸CSS 弹球动画效果的原理
+
+![16c3d51d2d34833e](./knowledge/16c3d51d2d34833e.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .boundary {
+    position: relative;
+    width: 50vw;
+    height: 50vw;
+    margin: auto;
+    /* background-color: aqua; */
+    border: 1px solid green;
+  }
+
+  .ball {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: crimson;
+    /* 控制x坐标轴和y坐标轴的动画时间，也对应动画速度，就可以算出动画方向 */
+    animation: x 2s infinite alternate linear, y 2.2s infinite alternate linear;
+  }
+
+  @keyframes x {
+    0% {
+      left: 0%;
+    }
+
+    100% {
+      left: calc(100% - 10vw);
+    }
+  }
+
+  @keyframes y {
+    0% {
+      top: 0;
+    }
+
+    100% {
+      top: calc(100% - 10vw);
+    }
+  }
+</style>
+<div class="boundary">
+  <div class="ball"></div>
+</div>
+```
+
+### 38.【outline】🌻outline 属性的妙用
+
+![16c3d51e76666d72](./knowledge/16c3d51e76666d72.png)
+
+实现代码是这样的
+
+```html
+<style>
+  ul,
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    border: 10px solid pink;
+  }
+
+  li + li {
+    margin-top: 10px;
+  }
+
+  li:hover {
+    outline: 10px solid purple;
+    outline-offset: -10px;
+  }
+</style>
+<ul>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
+  <li>6</li>
+</ul>
 ```
