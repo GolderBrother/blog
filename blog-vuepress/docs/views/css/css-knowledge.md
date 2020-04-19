@@ -443,4 +443,361 @@
 <div></div>
 ```
 
- <comment/>
+### 19. 【tab-size】🐷 浏览器默认显示 tab 为 8 个空格，tab-size 可以指定空格长度
+
+![16c3d50ac1d21e4b](./knowledge/16c3d50ac1d21e4b.png)
+
+实现代码是这样的
+
+```html
+<style>
+  pre {
+    color: brown;
+    background-color: aqua;
+    /* tab-size可以指定空格长度 */
+    tab-size: 10;
+  }
+</style>
+<div>
+  <pre>
+      <code>
+      div {
+        width: 50px;
+        height: 50px;
+        padding: 10px;
+        background-color: aqua;
+      }
+    </code>
+  </pre>
+</div>
+```
+
+### 20.【动画暂停】🥝CSS 动画其实是可以暂停的
+
+![16c3d50bcc76349f](./knowledge/16c3d50bcc76349f.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .box {
+    width: 200px;
+    height: 200px;
+    background-color: aqua;
+    margin: auto;
+    animation: rotate 1s linear infinite;
+  }
+
+  .box:hover {
+    /* 暂停动画 */
+    animation-play-state: paused;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(1turn);
+    }
+  }
+</style>
+<div class="box"></div>
+```
+
+### 21.【object-fit】🍓 图片在指定尺寸后，可以设置 object-fit 为 contain 或 cover 保持比例
+
+![16c3d50c9c447a1a](./knowledge/16c3d50c9c447a1a.png)
+
+实现代码是这样的
+
+```html
+<style>
+  img {
+    width: 300px;
+    height: 100px;
+    /* 保持图片的宽高比例不变化 */
+    object-fit: contain;
+  }
+</style>
+<img src="./knowledge/200.png" alt="" />
+```
+
+### 22.【鼠标状态】🍒 按钮禁用时，不要忘了设置鼠标状态
+
+![16c3d50df31971f3](./knowledge/16c3d50df31971f3.png)
+
+实现代码是这样的
+
+```html
+<style>
+  button {
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: aqua;
+    line-height: 1;
+    outline: none;
+    padding: 10px 30px;
+    font-size: 20px;
+  }
+
+  /* 设置禁用按钮状态下的样式 */
+  button:disabled {
+    background-color: lightcyan;
+    cursor: not-allowed;
+  }
+</style>
+<button disabled>按钮</button>
+```
+
+### 23.【背景虚化】🍑 使用 CSS 滤镜实现背景虚化, 体验近视小伙伴所看到的场景~
+
+![16c3d50e8cadbfc4](./knowledge/16c3d50e8cadbfc4.png)
+
+实现代码是这样的
+
+```html
+<style>
+  body {
+    filter: blur(2px);
+  }
+</style>
+<div>
+  你是看不清楚我的啦
+</div>
+```
+
+### 24. 【fill-available】🍏 设置宽度为 fill-available，可以使 inline-block 像 block 那样填充整个空间
+
+![16c3d50f694c5878](./knowledge/16c3d50f694c5878.png)
+
+实现代码是这样的
+
+```html
+<style>
+  div {
+    display: inline-block;
+    /* -webkit-fill-available: 可以使inline-block像block那样填充整个空间 */
+    width: -webkit-fill-available;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid black;
+  }
+</style>
+<div>
+  我是文字我是文字我是文字
+</div>
+```
+
+### 25.【fit-content】🍎 设置宽度为 fit-content，可以使 block 像 inline-block 那样实现收缩宽度包裹内容的效果
+
+![16c3d510015a44fc](./knowledge/16c3d510015a44fc.png)
+
+实现代码是这样的
+
+```html
+<style>
+  div {
+    display: block;
+    /* fit-content 可以使block像inline-block那样填充整个空间 */
+    width: fit-content;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid black;
+  }
+</style>
+<div>
+  我是文字我是文字我是文字
+</div>
+```
+
+### 26.【自定义属性】🍋CSS 自定义属性的简单使用
+
+![16c3d510b10d731e](./knowledge/16c3d510b10d731e.png)
+
+实现代码是这样的
+
+```html
+<style>
+  div.progress {
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid;
+    --percent: 27;
+    background-image: linear-gradient(#0ff, #0ff);
+    background-repeat: no-repeat;
+    background-size: calc(var(--percent) * 1%);
+  }
+</style>
+<div class="progress"></div>
+```
+
+### 27.【min-content/max-content】🍍 可以设置宽度为 min-content 和 max-content，前者让内容尽可能地收缩，后者让内容尽可能地展开
+
+![16c3d511d0ea8214](./knowledge/16c3d511d0ea8214.png)
+
+实现代码是这样的
+
+```html
+<style>
+  figure {
+    border: 1px solid black;
+    width: min-content;
+  }
+</style>
+<div>
+  <figure>
+    <img src="./knowledge/200.png" alt="" />
+    <p>
+      我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字我是文字
+    </p>
+  </figure>
+</div>
+```
+
+### 28.【进度条】🍊 使用渐变，一个 div 打造专业的进度条
+
+![16c3d51329e83a68](./knowledge/16c3d51329e83a68.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .progress {
+    --c: aqua;
+    --p: 54%;
+    height: 20px;
+    width: 80%;
+    margin: auto;
+    border-radius: 30px;
+    background-repeat: no-repeat;
+    background-size: 100%, var(--p);
+    background-color: grey;
+    background-image: radial-gradient(
+        closest-side circle at var(--p),
+        var(--c),
+        var(--c) 100%,
+        transparent
+      ), linear-gradient(var(--c), var(--c));
+  }
+</style>
+<div class="progress"></div>
+```
+
+### 29.【逐帧动画】🍌 利用 CSS 精灵实现逐帧动画
+
+![16c3d515ef18723a](./knowledge/16c3d515ef18723a.png)
+
+实现代码是这样的
+
+```html
+<style>
+  div {
+    width: 184px;
+    height: 325px;
+    background: url('./knowledge/player.jpg') no-repeat;
+    animation: 1s move steps(8) infinite;
+  }
+
+  @keyframes move {
+    100% {
+      background-position: -1472px 0;
+    }
+  }
+</style>
+<img src="./knowledge/player.jpg" width="" alt="" class="player" />
+<div></div>
+```
+
+### 30【resize】🍐 普通元素也可以像 textarea 那样 resize
+
+![16c3d516e61e2885](./knowledge/16c3d516e61e2885.png)
+
+实现代码是这样的
+
+```html
+<style>
+  div {
+    border: 1px solid;
+    overflow: hidden;
+    resize: auto;
+  }
+</style>
+<div>
+  <img src="./knowledge/200.png" width="" alt="" class="player" />
+</div>
+```
+
+### 31.【面包屑】🍇 使用 before 伪元素实现面包屑
+
+![16c3d517babad7d8](./knowledge/16c3d517babad7d8.png)
+
+实现代码是这样的
+
+```html
+<style>
+  ul,
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: inline-block;
+  }
+
+  li:before {
+    content: '\27a5';
+  }
+
+  li:first-of-type:before {
+    content: '';
+  }
+</style>
+<ul>
+  <li>首页</li>
+  <li>活动</li>
+  <li>查看</li>
+</ul>
+```
+
+### 32【sticky footer】🍈 使用 grid 布局实现 sticky footer
+
+![16c3d518ab2c7e0f](./knowledge/16c3d518ab2c7e0f.png)
+
+实现代码是这样的
+
+```html
+<style>
+  .container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  header,
+  main,
+  footer {
+    border: 1px solid;
+  }
+
+  header,
+  main {
+    border-bottom: none;
+  }
+</style>
+<div class="container">
+  <header>header</header>
+  <main>main</main>
+  <footer>footer</footer>
+</div>
+```
+
+### 33.【动画填充状态】🍅CSS 可以设置动画开始前和结束时所保持的状态
+
+![16c3d5195e6bea48](./knowledge/16c3d5195e6bea48.png)
+
+实现代码是这样的
+
+```html
+
+```

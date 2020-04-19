@@ -9,28 +9,28 @@
 
 <body>
   <style>
-    div {
-      width: 50px;
-      height: 50px;
-      background-color: aqua;
-      border-radius: 100%;
-      animation: move 2s ease-in-out infinite alternate;
+    .container {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
     }
 
-    div:nth-child(2n+1) {
-      animation-delay: 2s;
+    header,
+    main,
+    footer {
+      border: 1px solid;
     }
 
-    @keyframes move {
-      100% {
-        transform: translate(300%, 0);
-      }
+    header,
+    main {
+      border-bottom: none;
     }
   </style>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
+  <div class="container">
+    <header>header</header>
+    <main>main</main>
+    <footer>footer</footer>
+  </div>
 </body>
 
 </html>
