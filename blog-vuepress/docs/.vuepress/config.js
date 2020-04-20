@@ -87,6 +87,7 @@ module.exports = {
                     children: [
                         '/views/css/css-skills1.md',
                         '/views/css/css-knowledge.md',
+                        '/views/css/css-knowledge2.md'
                     ]
                 },
                 {

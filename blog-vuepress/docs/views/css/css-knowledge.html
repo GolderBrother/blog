@@ -10,26 +10,22 @@
 <body>
   <style>
     .container {
-      width: 600px;
-      border: 2px dotted pink;
-      margin: auto;
+      display: flex;
+      justify-content: center;
     }
 
-    .container div {
-      float: left;
-      width: 300px;
-      height: 300px;
-      background-color: aqua;
-      shape-outside: circle();
+    .container:focus-within {
+      transform: scale(1.5);
+    }
+
+    .container:focus-within button {
+      transform: rotate(1turn);
+      transition: 1.5s cubic-bezier(0.24, 1.82, 0.53, 1.65);
     }
   </style>
   <div class="container">
-    <div></div>
-    <p>
-      生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
-      生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
-      生命的美丽，永远展现在她的进取之中；就像大树的美丽，是展现在它负势向上高耸入云的蓬勃生机中；像雄鹰的美丽，是展现在它搏风击雨如苍天之魂的翱翔中；像江河的美丽，是展现在它波涛汹涌一泻千里的奔流中。
-    </p>
+    <input />
+    <button>login</button>
   </div>
 </body>
 
