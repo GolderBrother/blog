@@ -9,24 +9,57 @@
 
 <body>
   <style>
-    .container {
-      display: flex;
-      justify-content: center;
+    div {
+      width: 190px;
+      height: 190px;
+      background: aqua;
+      position: relative;
     }
 
-    .container:focus-within {
-      transform: scale(1.5);
+    div:before
+
+    /* ,div:after  */
+      {
+      position: absolute;
+      content: "";
+      left: -5px;
+      right: -5px;
+      top: -5px;
+      bottom: -5px;
+      border: 5px solid #ff00ff88;
     }
 
-    .container:focus-within button {
-      transform: rotate(1turn);
-      transition: 1.5s cubic-bezier(0.24, 1.82, 0.53, 1.65);
+    div:before {
+      animation: move 5s linear infinite;
+    }
+
+    /* div:after {
+      border-color: #ff000088;
+      animation: move 3s linear infinite alternate -2.5s;
+    } */
+
+    @keyframes move {
+
+      0%,
+      100% {
+        clip: rect(0, 200px, 5px, 0);
+      }
+
+      25% {
+        clip: rect(0, 200px, 200px, 195px);
+      }
+
+      50% {
+        border-color: #00ff0088;
+        clip: rect(195px, 200px, 200px, 0);
+      }
+
+      75% {
+        clip: rect(0, 5px, 200px, 0px);
+      }
     }
   </style>
-  <div class="container">
-    <input />
-    <button>login</button>
-  </div>
+  <div>content</div>
 </body>
 
 </html>
