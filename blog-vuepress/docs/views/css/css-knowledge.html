@@ -9,57 +9,47 @@
 
 <body>
   <style>
+    body {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      perspective-origin: 0 0;
+      background: purple;
+      overflow: hidden;
+    }
+
     div {
-      width: 190px;
-      height: 190px;
-      background: aqua;
-      position: relative;
-    }
-
-    div:before
-
-    /* ,div:after  */
-      {
+      margin: 0 auto;
       position: absolute;
-      content: "";
-      left: -5px;
-      right: -5px;
-      top: -5px;
-      bottom: -5px;
-      border: 5px solid #ff00ff88;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      color: purple;
+      box-shadow: 0 0 0 1000px, 0 0 0 5px #352f2f inset;
+      animation: rotate 3s infinite alternate;
+      transform: rotate3D(0, 1, 0.1, -30deg);
     }
 
-    div:before {
-      animation: move 5s linear infinite;
+    @keyframes rotate {
+      to {
+        transform: rotate3D(0, 1, 0.1, 30deg);
+      }
     }
 
-    /* div:after {
-      border-color: #ff000088;
-      animation: move 3s linear infinite alternate -2.5s;
-    } */
+    img {
+      width: 300px;
+      position: absolute;
+      animation: move 5s infinite;
+      transform: translateZ(-500px);
+    }
 
     @keyframes move {
-
-      0%,
-      100% {
-        clip: rect(0, 200px, 5px, 0);
-      }
-
-      25% {
-        clip: rect(0, 200px, 200px, 195px);
-      }
-
-      50% {
-        border-color: #00ff0088;
-        clip: rect(195px, 200px, 200px, 0);
-      }
-
-      75% {
-        clip: rect(0, 5px, 200px, 0px);
+      40% {
+        transform: translateZ(-100px);
       }
     }
   </style>
-  <div>content</div>
+  <img src="./knowledge2/girl2.jpg" alt="">
+  <div></div>
 </body>
 
 </html>

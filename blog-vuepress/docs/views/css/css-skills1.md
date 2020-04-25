@@ -190,18 +190,8 @@ transform: scale(0.5);
 
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 
-        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(
-              0,
-              0,
-              0,
-              0.1
-            ) inset;
-        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(
-              0,
-              0,
-              0,
-              0.1
-            ) inset;
+        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       }
       /**
        * 设置盒子外阴影和内阴影
@@ -222,7 +212,7 @@ transform: scale(0.5);
         right: 30px;
         bottom: 0;
         left: 30px;
-        content: "";
+        content: '';
         border-radius: 100px/10px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
 
@@ -260,18 +250,8 @@ transform: scale(0.5);
         border: 2px;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 60px rgba(0, 0, 0, 0.7) inset;
 
-        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 60px rgba(
-              0,
-              0,
-              0,
-              0.7
-            ) inset;
-        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 60px rgba(
-              0,
-              0,
-              0,
-              0.7
-            ) inset;
+        -ms-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 60px rgba(0, 0, 0, 0.7) inset;
+        -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 0 60px rgba(0, 0, 0, 0.7) inset;
       }
       /**
        * width:(300+10*2+2*2)*3 = 972 <980
@@ -299,7 +279,7 @@ transform: scale(0.5);
         width: 90%;
         height: 80%;
 
-        content: "";
+        content: '';
         -webkit-transform: skew(-8deg) rotate(-4deg);
         -ms-transform: skew(-8deg) rotate(-4deg);
         transform: skew(-8deg) rotate(-4deg);
@@ -319,7 +299,7 @@ transform: scale(0.5);
         width: 90%;
         height: 80%;
 
-        content: "";
+        content: '';
         -webkit-transform: skew(8deg) rotate(4deg);
         -ms-transform: skew(8deg) rotate(4deg);
         transform: skew(8deg) rotate(4deg);
@@ -355,8 +335,8 @@ transform: scale(0.5);
 代码：
 
 ```css
-background: url("images/logo.png") no-repeat;
--webkit-mask: url("images/mask.png");
+background: url('images/logo.png') no-repeat;
+-webkit-mask: url('images/mask.png');
 ```
 
 mask.png 中黑色代表是不透明的（alpha：1）,其他部分为透明的（alpha：0），将它盖在背景图上，注意：背景图对应 mask.png 中透明的位置也会变成透明，留下非透明的形状，即背景图的可见形状与 mask.png 的可见形状相同。 即为"蒙版"。
@@ -381,7 +361,7 @@ css 中，当 padding-top/bottom 值为百分比时，其值都是以其父元�
   position: relative; /* 父容器相对定位 */
 }
 .placeholder::after {
-  content: "";
+  content: '';
   display: block;
   margin-top: 100%;
 }
@@ -434,6 +414,6 @@ html {
 }
 ```
 
- 
- <comment/> 
- 
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
