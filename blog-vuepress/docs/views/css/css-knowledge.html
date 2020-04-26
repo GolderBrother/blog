@@ -9,47 +9,80 @@
 
 <body>
   <style>
-    body {
-      transform-style: preserve-3d;
-      perspective: 1000px;
-      perspective-origin: 0 0;
-      background: purple;
-      overflow: hidden;
+    table,
+    tr,
+    th,
+    td {
+      border: 1px solid #d6d6d6;
     }
 
-    div {
-      margin: 0 auto;
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      color: purple;
-      box-shadow: 0 0 0 1000px, 0 0 0 5px #352f2f inset;
-      animation: rotate 3s infinite alternate;
-      transform: rotate3D(0, 1, 0.1, -30deg);
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      color: #555;
+      font-size: 14px;
+      table-layout: fixed;
     }
 
-    @keyframes rotate {
-      to {
-        transform: rotate3D(0, 1, 0.1, 30deg);
-      }
+    th,
+    td {
+      padding: 6px 12px;
     }
 
-    img {
-      width: 300px;
-      position: absolute;
-      animation: move 5s infinite;
-      transform: translateZ(-500px);
+    tr:nth-child(2n+1) {
+      background: aliceblue;
     }
 
-    @keyframes move {
-      40% {
-        transform: translateZ(-100px);
-      }
+    tr {
+      transition: background-color 1s;
+    }
+
+    tr:hover {
+      background: lightpink;
     }
   </style>
-  <img src="./knowledge2/girl2.jpg" alt="">
-  <div></div>
+  <table>
+    <colgroup>
+      <col span="3">
+      </col>
+      <col style="width:260px;">
+      </col>
+    </colgroup>
+    <tr>
+      <th>等级</th>
+      <th>掘力值</th>
+      <th>身份</th>
+      <th>权限</th>
+    </tr>
+    <tr>
+      <td>Lv3</td>
+      <td>1000</td>
+      <td></td>
+      <td>开发中</td>
+    </tr>
+    <tr>
+      <td>Lv4</td>
+      <td>5000</td>
+      <td><img style="vertical-align: text-bottom; height: 16px;" class="lazyload inited loaded"
+          data-src="./knowledge2/girl.jpg" data-width="39" data-height="51" src="./knowledge2/girl.jpg">
+        掘金优秀作者</td>
+      <td>自动推荐至首页，专栏添加 2 个标签</td>
+    </tr>
+    <tr>
+      <td>Lv5</td>
+      <td>10000</td>
+      <td></td>
+      <td>小册写作权限</td>
+    </tr>
+    <tr>
+      <td>Lv6</td>
+      <td>20000</td>
+      <td><img style="vertical-align: text-bottom; height: 16px;" class="lazyload inited loaded"
+          data-src="./knowledge2/girl2.jpg" data-width="39" data-height="39" src="./knowledge2/girl2.jpg">
+        掘金共建者</td>
+      <td>提交、维护标签，掘金共建者证书</td>
+    </tr>
+  </table>
 </body>
 
 </html>

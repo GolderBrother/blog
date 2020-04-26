@@ -197,6 +197,83 @@
 
 ![16db44293151bbce](./knowledge2/16db44293151bbce.png)
 
+### 09.📖 美化表格常用技巧。等比、定宽、错色等
+
+![16db44054726651e](./knowledge2/16db44054726651e.png)
+
+实现代码是这样的
+
+```html
+<style>
+  table,tr,th,td{
+  border: 1px solid #d6d6d6;
+}
+table{
+  border-collapse: collapse;
+  width: 100%;
+  color: #555;
+  font-size: 14px;
+  table-layout: fixed;
+}
+th,td{
+  padding: 6px 12px;
+}
+tr:nth-child(2n+1){
+  background: aliceblue;
+}
+tr{
+  transition: background-color 1s;
+}
+tr:hover{
+  background: lightpink;
+}
+</style>
+<table>
+  <colgroup>
+    <col span="3"></col>
+    <col style="width:260px;"></col>
+  </colgroup>
+  <tr>
+    <th>等级</th>
+    <th>掘力值</th>
+    <th>身份</th>
+    <th>权限</th>
+  </tr>
+  <tr>
+    <td>Lv3</td>
+    <td>1000</td>
+    <td></td>
+    <td>开发中</td>
+    </tr>
+  <tr>
+    <td>Lv4</td>
+    <td>5000</td>
+    <td><img style="vertical-align: text-bottom; height: 16px;" class="lazyload inited loaded"
+        data-src="https://user-gold-cdn.xitu.io/2019/5/5/16a86a487f1f53ea?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"
+        data-width="39" data-height="51"
+        src="https://user-gold-cdn.xitu.io/2019/5/5/16a86a487f1f53ea?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+      掘金优秀作者</td>
+    <td>自动推荐至首页，专栏添加 2 个标签</td>
+  </tr>
+  <tr>
+    <td>Lv5</td>
+    <td>10000</td>
+    <td></td>
+    <td>小册写作权限</td>
+  </tr>
+  <tr>
+    <td>Lv6</td>
+    <td>20000</td>
+    <td><img style="vertical-align: text-bottom; height: 16px;" class="lazyload inited loaded"
+        data-src="https://user-gold-cdn.xitu.io/2019/5/5/16a86a50661ca87b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"
+        data-width="39" data-height="39"
+        src="https://user-gold-cdn.xitu.io/2019/5/5/16a86a50661ca87b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+      掘金共建者</td>
+    <td>提交、维护标签，掘金共建者证书</td>
+  </tr>
+</table>
+```
+
 ## 特效原理篇
 
 ### 10.🐍 蛇形边框特效原理
