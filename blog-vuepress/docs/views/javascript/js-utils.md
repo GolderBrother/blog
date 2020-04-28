@@ -24,9 +24,9 @@
 export const isNoWord = value => /^[^A-Za-z]*$/g.test(value);
 
 // 验证
-const noWordStr = "123_";
+const noWordStr = '123_';
 console.log(isNoWord(noWordStr)); // true
-console.log(isNoWord("hello")); // false
+console.log(isNoWord('hello')); // false
 ```
 
 ## 验证中文和数字
@@ -41,9 +41,9 @@ export const isCHNAndEN = value =>
   );
 
 // 验证
-const word = "前端超神路222";
+const word = '前端超神路222';
 console.log(isCHNAndEN(word)); // true
-console.log(isCHNAndEN("hello")); // false
+console.log(isCHNAndEN('hello')); // false
 ```
 
 ### 验证邮政编码(中国)
@@ -53,13 +53,11 @@ console.log(isCHNAndEN("hello")); // false
  * @param { string } value
  */
 export const isPostcode = value =>
-  /^(0[1-7]|1[0-356]|2[0-7]|3[0-6]|4[0-7]|5[1-7]|6[1-7]|7[0-5]|8[013-6])\d{4}$/g.test(
-    value
-  );
+  /^(0[1-7]|1[0-356]|2[0-7]|3[0-6]|4[0-7]|5[1-7]|6[1-7]|7[0-5]|8[013-6])\d{4}$/g.test(value);
 
 // 验证
-console.log(isPostcode("361000")); // true
-console.log(isPostcode("999999")); // false
+console.log(isPostcode('361000')); // true
+console.log(isPostcode('999999')); // false
 ```
 
 ### 验证微信号，6 至 20 位，以字母开头，字母，数字，减号，下划线
@@ -68,8 +66,7 @@ console.log(isPostcode("999999")); // false
 /**
  * @param { string } value
  */
-export const isWeChatNum = value =>
-  /^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/g.test(value);
+export const isWeChatNum = value => /^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/g.test(value);
 
 // 验证
 console.log(isWeChatNum(`goodnight-mylove123`)); // true
@@ -82,8 +79,7 @@ console.log(isWeChatNum(`晚安，醒来记得想我`)); // false
 /**
  * @param { string } value
  */
-export const isColor16 = value =>
-  /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/g.test(value);
+export const isColor16 = value => /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/g.test(value);
 
 // 验证
 console.log(isColor16(`#7ac143`)); // true
@@ -137,9 +133,7 @@ console.log(isHttpAndPort(`http://www.golderbrother.cn/`)); // false
  *  @param { string } value
  */
 export const isRightWebsite = value =>
-  /^(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/g.test(
-    value
-  );
+  /^(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/g.test(value);
 
 // 验证
 console.log(isRightWebsite(`http://golderbrother.cn:8090/#/recommend`)); // true
@@ -165,8 +159,7 @@ console.log(isCreditCode(`91350200MA31KB4599`)); // true
 /**
  *  @param { string } value
  */
-export const isThunderLink = value =>
-  /^thunderx?:\/\/[a-zA-Z\d]+=$/g.test(value);
+export const isThunderLink = value => /^thunderx?:\/\/[a-zA-Z\d]+=$/g.test(value);
 
 // 验证
 console.log(isThunderLink(`thunderx://baidu=`)); // true
@@ -190,14 +183,11 @@ console.log(ised2k(`ed2k://|file|xxx|/`)); // true
 /**
  *  @param { string } value
  */
-export const isMagnet = value =>
-  /^magnet:\?xt=urn:btih:[0-9a-fA-F]{40,}.*$/g.test(value);
+export const isMagnet = value => /^magnet:\?xt=urn:btih:[0-9a-fA-F]{40,}.*$/g.test(value);
 
 // 验证
 console.log(
-  isMagnet(
-    `magnet:?xt=urn:btih:123golderbrotherGolderBrother123golderbrotherGolderBrother`
-  )
+  isMagnet(`magnet:?xt=urn:btih:123golderbrotherGolderBrother123golderbrotherGolderBrother`)
 ); //false
 ```
 
@@ -208,9 +198,7 @@ console.log(
  *  @param { string } value
  */
 export const isSubnetMask = value =>
-  /^(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/g.test(
-    value
-  );
+  /^(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(?:\.(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/g.test(value);
 
 // 验证
 console.log(isSubnetMask(`255.255.255.0`)); // true
@@ -253,8 +241,7 @@ console.log(
 /**
  *  @param { string } value
  */
-export const isWindowsFolderPath = value =>
-  /^[a-zA-Z]:\\(?:\w+\\?)*$/g.test(value);
+export const isWindowsFolderPath = value => /^[a-zA-Z]:\\(?:\w+\\?)*$/g.test(value);
 
 // 验证
 console.log(isWindowsFolderPath(`D:\james\my\code\blog`)); // false
@@ -266,13 +253,10 @@ console.log(isWindowsFolderPath(`D:\james\my\code\blog`)); // false
 /**
  *  @param { string } value
  */
-export const isWindowsFilePath = value =>
-  /^[a-zA-Z]:\\(?:\w+\\)*\w+\.\w+$/g.test(value);
+export const isWindowsFilePath = value => /^[a-zA-Z]:\\(?:\w+\\)*\w+\.\w+$/g.test(value);
 
 // 验证
-console.log(
-  isWindowsFolderPath(`D:\james\my\code\blog\code\javascript\jsUtils\README.md`)
-); // false
+console.log(isWindowsFolderPath(`D:\james\my\code\blog\code\javascript\jsUtils\README.md`)); // false
 ```
 
 ### 验证股票代码(A 股)
@@ -282,9 +266,7 @@ console.log(
  *  @param { string } value
  */
 export const isAShare = value =>
-  /^(s[hz]|S[HZ])(000[\d]{3}|002[\d]{3}|300[\d]{3}|600[\d]{3}|60[\d]{4})$/g.test(
-    value
-  );
+  /^(s[hz]|S[HZ])(000[\d]{3}|002[\d]{3}|300[\d]{3}|600[\d]{3}|60[\d]{4})$/g.test(value);
 
 console.log(isAShare(`LK`)); // false
 console.log(isAShare(`09988.HK`)); // alibaba false
@@ -311,16 +293,10 @@ console.log(isVersion(`1.4.5.1`)); // false
  *  @param { string } value
  */
 export const isVideoUrl = value =>
-  /^https?:\/\/(.+\/)+.+(\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4))$/i.test(
-    value
-  );
+  /^https?:\/\/(.+\/)+.+(\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4))$/i.test(value);
 
 // 验证
-console.log(
-  isVideoUrl(
-    `https://s2.luckincoffeecdn.com/luckywebrm/images/index/8sautoplay.mp4`
-  )
-); // true
+console.log(isVideoUrl(`https://s2.luckincoffeecdn.com/luckywebrm/images/index/8sautoplay.mp4`)); // true
 ```
 
 ### 验证图片链接地址（图片格式可按需增删）
@@ -330,15 +306,11 @@ console.log(
  *  @param { string } value
  */
 export const isImageUrl = value =>
-  /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif))$/i.test(
-    value
-  );
+  /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif))$/i.test(value);
 
 // 验证
 console.log(
-  isImageUrl(
-    `https://s2.luckincoffeecdn.com/luckywebrm/images/index/commitment/part_main-2.jpg`
-  )
+  isImageUrl(`https://s2.luckincoffeecdn.com/luckywebrm/images/index/commitment/part_main-2.jpg`)
 ); // true
 ```
 
@@ -360,8 +332,7 @@ console.log(isAccountNumber(`6228480688117346466`)); // true
 /**
  * @param { string } value
  */
-export const isChineseName = value =>
-  /^(?:[\u4e00-\u9fa5·]{2,16})$/g.test(value);
+export const isChineseName = value => /^(?:[\u4e00-\u9fa5·]{2,16})$/g.test(value);
 
 // 验证
 console.log(isChineseName(`神哥`)); // true
@@ -374,8 +345,7 @@ console.log(isChineseName(`GolderBrother`)); // false
 /**
  * @param { string } value
  */
-export const isEnglishName = value =>
-  /(^[a-zA-Z]{1}[a-zA-Z\s]{0,20}[a-zA-Z]{1}$)/g.test(value);
+export const isEnglishName = value => /(^[a-zA-Z]{1}[a-zA-Z\s]{0,20}[a-zA-Z]{1}$)/g.test(value);
 
 // 验证
 console.log(isEnglishName(`神哥`)); // false
@@ -451,8 +421,7 @@ console.log(isMPStrict(`18450087588`)); // true
 /**
  * @param { string } value
  */
-export const isMPRelaxed = value =>
-  /^(?:(?:\+|00)86)?1[3-9]\d{9}$/g.test(value);
+export const isMPRelaxed = value => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/g.test(value);
 
 // 验证
 console.log(isMPRelaxed(`18450087588`)); // true
@@ -479,8 +448,7 @@ console.log(isEmail(`1204788939@qq.com`)); // true
 /**
  * @param { string } value
  */
-export const isLandlineTelephone = value =>
-  /\d{3}-\d{8}|\d{4}-\d{7}/g.test(value);
+export const isLandlineTelephone = value => /\d{3}-\d{8}|\d{4}-\d{7}/g.test(value);
 
 // 验证
 console.log(isLandlineTelephone(`041-86091234`)); // true
@@ -494,8 +462,7 @@ console.log(isLandlineTelephone(`041-8091234`)); // false
 /**
  * @param { string } value
  */
-export const isIDCardOld = value =>
-  /^\d{8}(0\d|10|11|12)([0-2]\d|30|31)\d{3}$/g.test(value);
+export const isIDCardOld = value => /^\d{8}(0\d|10|11|12)([0-2]\d|30|31)\d{3}$/g.test(value);
 
 // 验证
 console.log(isIDCardOld(`350521190000000`)); // true
@@ -681,7 +648,7 @@ console.log(currentURL()); // https://golderbrother.github.io/blog/views/
  */
 
 export function getUrlParam(name, origin = null) {
-  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
   let r = null;
   if (origin == null) {
     r = window.location.search.substr(1).match(reg);
@@ -701,12 +668,12 @@ export function getUrlParam(name, origin = null) {
  */
 export function getUrlQuery(origin = null) {
   let url = location.href;
-  let temp1 = url.split("?");
+  let temp1 = url.split('?');
   let pram = temp1[1];
-  let keyValue = pram.split("&");
+  let keyValue = pram.split('&');
   let obj = {};
   for (let i = 0; i < keyValue.length; i++) {
-    let item = keyValue[i].split("=");
+    let item = keyValue[i].split('=');
     let key = item[0];
     let value = item[1];
     obj[key] = value;
@@ -719,12 +686,12 @@ export function getUrlQuery(origin = null) {
  */
 export function getUrlParams(name, origin = null) {
   let url = location.href;
-  let temp1 = url.split("?");
+  let temp1 = url.split('?');
   let pram = temp1[1];
-  let keyValue = pram.split("&");
+  let keyValue = pram.split('&');
   let obj = {};
   for (let i = 0; i < keyValue.length; i++) {
-    let item = keyValue[i].split("=");
+    let item = keyValue[i].split('=');
     let key = item[0];
     let value = item[1];
     obj[key] = value;
@@ -747,8 +714,8 @@ console.log(getUrlParams(`wd`, url)); // javascript
  */
 export function replaceParamVal(paramName, replaceWith) {
   let oUrl = location.href.toString();
-  let re = eval("/(" + paramName + "=)([^&]*)/gi");
-  location.href = oUrl.replace(re, paramName + "=" + replaceWith);
+  let re = eval('/(' + paramName + '=)([^&]*)/gi');
+  location.href = oUrl.replace(re, paramName + '=' + replaceWith);
   return location.href;
 }
 ```
@@ -761,22 +728,22 @@ export function replaceParamVal(paramName, replaceWith) {
  */
 export function funcUrlDel(baseURL, name) {
   let loca = location;
-  let baseUrl = baseURL || loca.origin + loca.pathname + "?";
+  let baseUrl = baseURL || loca.origin + loca.pathname + '?';
   let query = loca.search.substr(1);
   if (query.indexOf(name) > -1) {
     let obj = {};
-    let arr = query.split("&");
+    let arr = query.split('&');
     for (let i = 0; i < arr.length; i++) {
-      arr[i] = arr[i].split("=");
+      arr[i] = arr[i].split('=');
       obj[arr[i][0]] = arr[i][1];
     }
     delete obj[name];
     let url =
       baseUrl +
       JSON.stringify(obj)
-        .replace(/[\"\{\}]/g, "")
-        .replace(/\:/g, "=")
-        .replace(/\,/g, "&");
+        .replace(/[\"\{\}]/g, '')
+        .replace(/\:/g, '=')
+        .replace(/\,/g, '&');
     return url;
   }
 }
@@ -789,7 +756,7 @@ funcUrlDel(`wd`); // https://www.baidu.com/s?wd=javascript&rsv_spt=1&rsv_iqid=0x
 ```js
 export function getPageViewWidth() {
   let d = document,
-    a = d.compatMode == "BackCompat" ? d.body : d.documentElement;
+    a = d.compatMode == 'BackCompat' ? d.body : d.documentElement;
   return a.clientWidth;
 }
 
@@ -825,7 +792,7 @@ export function getPageWidth() {
   const g = document,
     a = g.body,
     f = g.documentElement,
-    d = g.compatMode == "BackCompat" ? a : g.documentElement;
+    d = g.compatMode == 'BackCompat' ? a : g.documentElement;
   return Math.max(f.scrollWidth, a.scrollWidth, d.clientWidth);
 }
 
@@ -846,11 +813,11 @@ export function getViewportOffset() {
     // ie8及其以下 ? 怪异模式 : 标准模式
     return {
       w:
-        document.compatMode === "BackCompat"
+        document.compatMode === 'BackCompat'
           ? document.body.clientWidth
           : document.documentElement.clientWidth,
       h:
-        document.compatMode === "BackCompat"
+        document.compatMode === 'BackCompat'
           ? document.body.clientHeight
           : document.documentElement.clientHeight
     };
@@ -953,7 +920,7 @@ console.log(getScrollPosition()); // {x: 0, y: 13655.2001953125}
 ```js
 export const smoothScroll = element => {
   document.querySelector(element).scrollIntoView({
-    behavior: "smooth"
+    behavior: 'smooth'
   });
 };
 
@@ -978,8 +945,7 @@ scrollToTop(`#domID`);
 
 ```js
 export const httpsRedirect = () => {
-  if (location.protocol !== "https:")
-    location.replace("https://" + location.href.split("//")[1]);
+  if (location.protocol !== 'https:') location.replace('https://' + location.href.split('//')[1]);
 };
 
 httpsRedirect();
@@ -991,8 +957,7 @@ httpsRedirect();
 export const bottomVisible = () => {
   return (
     document.documentElement.clientHeight + window.scrollY >=
-    (document.documentElement.scrollHeight ||
-      document.documentElement.clientHeight)
+    (document.documentElement.scrollHeight || document.documentElement.clientHeight)
   );
 };
 
@@ -1011,34 +976,34 @@ bottomVisible();
 export function openWindow(url, windowName, width = 1920, height = 1030) {
   const x = parseInt(screen.width / 2.0) - width / 2.0;
   const y = parseInt(screen.height / 2.0) - height / 2.0;
-  const isMSIE = navigator.appName == "Microsoft Internet Explorer";
+  const isMSIE = navigator.appName == 'Microsoft Internet Explorer';
   if (isMSIE) {
-    const p = "resizable=1,location=no,scrollbars=no,width=";
+    const p = 'resizable=1,location=no,scrollbars=no,width=';
     p = p + width;
-    p = p + ",height=";
+    p = p + ',height=';
     p = p + height;
-    p = p + ",left=";
+    p = p + ',left=';
     p = p + x;
-    p = p + ",top=";
+    p = p + ',top=';
     p = p + y;
     window.open(url, windowName, p);
   } else {
     const win = window.open(
       url,
-      "ZyiisPopup",
-      "top=" +
+      'ZyiisPopup',
+      'top=' +
         y +
-        ",left=" +
+        ',left=' +
         x +
-        ",scrollbars=" +
+        ',scrollbars=' +
         scrollbars +
-        ",dialog=yes,modal=yes,width=" +
+        ',dialog=yes,modal=yes,width=' +
         width +
-        ",height=" +
+        ',height=' +
         height +
-        ",resizable=no"
+        ',resizable=no'
     );
-    eval("try { win.resizeTo(width, height); } catch(e) { }");
+    eval('try { win.resizeTo(width, height); } catch(e) { }');
     win.focus();
   }
 }
@@ -1055,8 +1020,8 @@ openWindow(`https://juejin.im/`, `juejin`, 800, 600);
 export function AutoResponse(width = 750) {
   const target = document.documentElement;
   target.clientWidth >= 600
-    ? (target.style.fontSize = "80px")
-    : (target.style.fontSize = (target.clientWidth / width) * 100 + "px");
+    ? (target.style.fontSize = '80px')
+    : (target.style.fontSize = (target.clientWidth / width) * 100 + 'px');
 }
 
 AutoResponse();
@@ -1073,7 +1038,7 @@ AutoResponse();
  */
 export function getLocalTime(i = 0, d) {
   d = d ? new Date(d) : new Date();
-  if (typeof i !== "number") return;
+  if (typeof i !== 'number') return;
   const len = d.getTime();
   // 本地时间与GMT时间的时间偏移差
   // 注意：new Date().getTimezoneOffset()，获取的东时区为 负数，西时区为正数。
@@ -1097,7 +1062,7 @@ console.log(getLocalTime(0, new Date())); // Wed Mar 25 2020 13:46:54 GMT+0800 (
  * @return {string} dateText 返回为指定格式的日期字符串
  */
 export function getFormatDate(date, dateType) {
-  dateType = dateType || "yyyy-mm-dd MM:mm:ss";
+  dateType = dateType || 'yyyy-mm-dd MM:mm:ss';
   let dateObj = date ? new Date(date) : new Date();
   let month = dateObj.getMonth() + 1;
   let strDate = dateObj.getDate();
@@ -1112,59 +1077,53 @@ export function getFormatDate(date, dateType) {
   seconds = String(seconds).padStart(2, 0);
 
   let dateText =
-    dateObj.getFullYear() +
-    "年" +
-    (dateObj.getMonth() + 1) +
-    "月" +
-    dateObj.getDate() +
-    "日";
-  if (dateType === "yyyy-mm-dd") {
+    dateObj.getFullYear() + '年' + (dateObj.getMonth() + 1) + '月' + dateObj.getDate() + '日';
+  if (dateType === 'yyyy-mm-dd') {
     dateText =
       dateObj.getFullYear() +
-      "-" +
+      '-' +
       String(dateObj.getMonth() + 1).padStart(2, 0) +
-      "-" +
+      '-' +
       String(dateObj.getDate()).padStart(2, 0);
   }
-  if (dateType === "yyyy.mm.dd") {
+  if (dateType === 'yyyy.mm.dd') {
     dateText =
       dateObj.getFullYear() +
-      "." +
+      '.' +
       String(dateObj.getMonth() + 1).padStart(2, 0) +
-      "." +
+      '.' +
       String(dateObj.getDate()).padStart(2, 0);
   }
-  if (dateType === "yyyy-mm-dd MM:mm:ss") {
+  if (dateType === 'yyyy-mm-dd MM:mm:ss') {
     dateText =
       dateObj.getFullYear() +
-      "-" +
+      '-' +
       month +
-      "-" +
+      '-' +
       strDate +
-      " " +
+      ' ' +
       hours +
-      ":" +
+      ':' +
       minutes +
-      ":" +
+      ':' +
       seconds;
   }
-  if (dateType === "mm-dd MM:mm:ss") {
-    dateText =
-      month + "-" + strDate + " " + hours + ":" + minutes + ":" + seconds;
+  if (dateType === 'mm-dd MM:mm:ss') {
+    dateText = month + '-' + strDate + ' ' + hours + ':' + minutes + ':' + seconds;
   }
-  if (dateType === "yyyy年mm月dd日 MM:mm:ss") {
+  if (dateType === 'yyyy年mm月dd日 MM:mm:ss') {
     dateText =
       dateObj.getFullYear() +
-      "年" +
+      '年' +
       month +
-      "月" +
+      '月' +
       strDate +
-      "日" +
-      " " +
+      '日' +
+      ' ' +
       hours +
-      ":" +
+      ':' +
       minutes +
-      ":" +
+      ':' +
       seconds;
   }
   return dateText;
@@ -1189,7 +1148,7 @@ getFormatDate(new Date(), `yyyy-mm-dd`); // "2020-03-26"
  * @param { string } value 值
  */
 export const localStorageSet = (key, value) => {
-  if (typeof value === "object") value = JSON.stringify(value);
+  if (typeof value === 'object') value = JSON.stringify(value);
   localStorage.setItem(key, value);
 };
 ```
@@ -1224,12 +1183,8 @@ export const localStorageRemove = key => {
  * @param {*} value 存贮值
  * @param { number } expire 过期时间,毫秒数 默认1天(24 * 6000 * 1000)
  */
-export const localStorageSetExpire = (
-  key,
-  value,
-  expire = 24 * 6000 * 1000
-) => {
-  if (typeof value === "object") value = JSON.stringify(value);
+export const localStorageSetExpire = (key, value, expire = 24 * 6000 * 1000) => {
+  if (typeof value === 'object') value = JSON.stringify(value);
   localStorage.setItem(key, value);
   setTimeout(() => {
     localStorage.removeItem(key);
@@ -1253,7 +1208,7 @@ export const cookieSet = (key, value, expire) => {
   document.cookie = `${key}=${value};expires=${d.toUTCString()}`;
 };
 
-cookieSet(`name`, "golderbrother", new Date(Date.now() + 6000 * 1000));
+cookieSet(`name`, 'golderbrother', new Date(Date.now() + 6000 * 1000));
 ```
 
 ### cookie 获取
@@ -1264,10 +1219,10 @@ cookieSet(`name`, "golderbrother", new Date(Date.now() + 6000 * 1000));
  */
 export const cookieGet = key => {
   const cookieStr = unescape(document.cookie);
-  const arr = cookieStr.split("; ");
-  let cookieValue = "";
+  const arr = cookieStr.split('; ');
+  let cookieValue = '';
   for (let i = 0; i < arr.length; i++) {
-    const temp = arr[i].split("=");
+    const temp = arr[i].split('=');
     if (temp[0] === key) {
       cookieValue = temp[1];
       break;
@@ -1305,8 +1260,7 @@ cookieRemove();
 /**
  *  @param { number } num
  */
-export const formatMoney = num =>
-  num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const formatMoney = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 formatMoney(9999999); // "9,999,999"
 ```
@@ -1316,10 +1270,10 @@ formatMoney(9999999); // "9,999,999"
 ```js
 export function subText(str, length) {
   if (str.length === 0) {
-    return "";
+    return '';
   }
   if (str.length > length) {
-    return str.substr(0, length) + "...";
+    return str.substr(0, length) + '...';
   } else {
     return str;
   }
@@ -1341,14 +1295,14 @@ export function subText(str, length) {
  */
 export function fileToBase64String(
   file,
-  format = ["jpg", "jpeg", "png", "gif"],
+  format = ['jpg', 'jpeg', 'png', 'gif'],
   size = 20 * 1024 * 1024,
-  formatMsg = "文件格式不正确",
-  sizeMsg = "文件大小超出限制"
+  formatMsg = '文件格式不正确',
+  sizeMsg = '文件大小超出限制'
 ) {
   return new Promise((resolve, reject) => {
     // 格式过滤
-    let suffix = file.type.split("/")[1].toLowerCase();
+    let suffix = file.type.split('/')[1].toLowerCase();
     let inFormat = false;
     for (let i = 0; i < format.length; i++) {
       if (suffix === format[i]) {
@@ -1369,7 +1323,7 @@ export function fileToBase64String(
     fileReader.onload = () => {
       let res = fileReader.result;
       resolve({ base64String: res, suffix: suffix });
-      reject("异常文件，请重新选择");
+      reject('异常文件，请重新选择');
     };
   });
 }
@@ -1384,19 +1338,19 @@ export function fileToBase64String(
 export function formatFileSize(fileSize) {
   let temp;
   if (fileSize < 1024) {
-    return fileSize + "B";
+    return fileSize + 'B';
   } else if (fileSize < 1024 * 1024) {
     temp = fileSize / 1024;
     temp = temp.toFixed(2);
-    return temp + "KB";
+    return temp + 'KB';
   } else if (fileSize < 1024 * 1024 * 1024) {
     temp = fileSize / (1024 * 1024);
     temp = temp.toFixed(2);
-    return temp + "MB";
+    return temp + 'MB';
   } else {
     temp = fileSize / (1024 * 1024 * 1024);
     temp = temp.toFixed(2);
-    return temp + "GB";
+    return temp + 'GB';
   }
 }
 ```
@@ -1409,9 +1363,9 @@ export function formatFileSize(fileSize) {
  *  @param { string } filename 转换后的文件名
  */
 export const base64ToFile = (base64, filename) => {
-  let arr = base64.split(",");
+  let arr = base64.split(',');
   let mime = arr[0].match(/:(.*?);/)[1];
-  let suffix = mime.split("/")[1]; // 图片后缀
+  let suffix = mime.split('/')[1]; // 图片后缀
   let bstr = atob(arr[1]);
   let n = bstr.length;
   let u8arr = new Uint8Array(n);
@@ -1429,7 +1383,7 @@ export const base64ToFile = (base64, filename) => {
  *  @param { base64 } base64
  */
 export const base64ToBlob = base64 => {
-  let arr = base64.split(","),
+  let arr = base64.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1476,9 +1430,9 @@ export const fileToBase64 = file => {
 export function getTreeData(
   data,
   pid,
-  pidName = "parentId",
-  idName = "id",
-  childrenName = "children",
+  pidName = 'parentId',
+  idName = 'id',
+  childrenName = 'children',
   key
 ) {
   let arr = [];
@@ -1486,13 +1440,7 @@ export function getTreeData(
   for (let i = 0; i < data.length; i++) {
     if (data[i][pidName] == pid) {
       data[i].key = data[i][idName];
-      data[i][childrenName] = getTreeData(
-        data,
-        data[i][idName],
-        pidName,
-        idName,
-        childrenName
-      );
+      data[i][childrenName] = getTreeData(data, data[i][idName], pidName, idName, childrenName);
       arr.push(data[i]);
     }
   }
@@ -1504,7 +1452,7 @@ export function getTreeData(
 ### 遍历树节点
 
 ```js
-export function forEachTree(data, childrenName = "children", callback) {
+export function forEachTree(data, childrenName = 'children', callback) {
   for (let i = 0; i < data.length; i++) {
     callback(data[i]);
     if (data[i][childrenName] && data[i][childrenName].length > 0) {
@@ -1521,18 +1469,16 @@ export function traceParentNode(
   pid,
   data,
   rootPid,
-  pidName = "parentId",
-  idName = "id",
-  childrenName = "children"
+  pidName = 'parentId',
+  idName = 'id',
+  childrenName = 'children'
 ) {
   let arr = [];
   forEachTree(data, childrenName, node => {
     if (node[idName] == pid) {
       arr.push(node);
       if (node[pidName] != rootPid) {
-        arr = arr.concat(
-          traceParentNode(node[pidName], data, rootPid, pidName, idName)
-        );
+        arr = arr.concat(traceParentNode(node[pidName], data, rootPid, pidName, idName));
       }
     }
   });
@@ -1546,17 +1492,15 @@ export function traceParentNode(
 export function traceChildNode(
   id,
   data,
-  pidName = "parentId",
-  idName = "id",
-  childrenName = "children"
+  pidName = 'parentId',
+  idName = 'id',
+  childrenName = 'children'
 ) {
   let arr = [];
   forEachTree(data, childrenName, node => {
     if (node[pidName] == id) {
       arr.push(node);
-      arr = arr.concat(
-        traceChildNode(node[idName], data, pidName, idName, childrenName)
-      );
+      arr = arr.concat(traceChildNode(node[idName], data, pidName, idName, childrenName));
     }
   });
   return arr;
@@ -1571,7 +1515,7 @@ export function traceChildNode(
  *  @param { * } id 数据中的id
  *  @param { * } link 生成树形结构的依据
  */
-export const createTree = (items, id = null, link = "pid") => {
+export const createTree = (items, id = null, link = 'pid') => {
   items
     .filter(item => item[link] === id)
     .map(item => ({ ...item, children: createTree(items, item.id) }));
@@ -1611,16 +1555,16 @@ export function OutOsName(osVersion) {
   let str = osVersion.substr(0, 3);
   // 也可以用Map结构来存储
   const osNameMap = {
-    "5.0": "Win 2000",
-    "5.1": "Win XP",
-    "5.2": "Win XP64",
-    "6.0": "Win Vista",
-    "6.1": "Win 7",
-    "6.2": "Win 8",
-    "6.3": "Win 8.1",
-    "10.": "Win 10"
+    '5.0': 'Win 2000',
+    '5.1': 'Win XP',
+    '5.2': 'Win XP64',
+    '6.0': 'Win Vista',
+    '6.1': 'Win 7',
+    '6.2': 'Win 8',
+    '6.3': 'Win 8.1',
+    '10.': 'Win 10'
   };
-  str = osNameMap[str] || "Win";
+  str = osNameMap[str] || 'Win';
   return str;
 }
 ```
@@ -1636,7 +1580,7 @@ export function OutOsName(osVersion) {
 export function getOSType() {
   let u = navigator.userAgent,
     app = navigator.appVersion;
-  let isAndroid = u.indexOf("Android") > -1 || u.indexOf("Linux") > -1;
+  let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1;
   let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
   if (isIOS) {
     return 0;
@@ -1750,16 +1694,16 @@ export function throttle(func, wait, type) {
 export function type(target) {
   let ret = typeof target;
   let template = {
-    "[object Array]": "array",
-    "[object Object]": "object",
-    "[object Number]": "number - object",
-    "[object Boolean]": "boolean - object",
-    "[object String]": "string-object"
+    '[object Array]': 'array',
+    '[object Object]': 'object',
+    '[object Number]': 'number - object',
+    '[object Boolean]': 'boolean - object',
+    '[object String]': 'string-object'
   };
 
   if (target === null) {
-    return "null";
-  } else if (ret == "object") {
+    return 'null';
+  } else if (ret == 'object') {
     let str = Object.prototype.toString.call(target);
     return template[str];
   } else {
@@ -1778,8 +1722,7 @@ export function type(target) {
  * @param { number } min
  * @param { number } max
  */
-export const RandomNum = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+export const RandomNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 RandomNum(0, 10); // 6
 ```
@@ -1828,6 +1771,63 @@ export function countOccurrences(arr, value) {
 console.log(countOccurrences([1, 2, 2, 1, 3, 5, 6, 7], 2)); // 2
 ```
 
+### 数组中某元素连续出现的次数
+
+```js
+/**
+ * 计算元素连续出现的次数
+ * @param arr 元素所在的数组
+ * @param value 元素
+ * @param startIndex 查找的开始索引值，默认从0开始查找
+ */
+function countContinuousOccurrences(arr, value, startIndex = 0) {
+  // 钙元素是否为首次出现的
+  let isFirstOccur = false;
+  // 元素首次出现的索引
+  let firstOccurIndex = -1,
+    // 元素最后一次出现的索引
+    lastOccurIndex = arr.length - 1;
+  // 记录元素连续出现的次数
+  let count = 0;
+  for (let index = startIndex; index < arr.length; index++) {
+    const val = arr[index];
+    if (val === value) {
+      count++;
+      if (!isFirstOccur) {
+        firstOccurIndex = index;
+        isFirstOccur = true;
+      }
+    } else if (isFirstOccur) {
+      lastOccurIndex = index - 1;
+      break;
+    }
+  }
+  return {
+    count,
+    firstOccurIndex,
+    lastOccurIndex,
+    isFirstOccur
+  };
+}
+
+// 测试
+// 没有传入开始查找的索引
+const count = countContinuousOccurrences([1, 2, 2, 2, 2, 2, 2, 4, 2, 2, 6], 2);
+console.log(`count`, count);
+// count { count: 6,
+//   firstOccurIndex: 1,
+//   lastOccurIndex: 6,
+//   isFirstOccur: true }
+
+// 从索引为7开始查找
+const count = countContinuousOccurrences([1, 2, 2, 2, 2, 2, 2, 4, 2, 2, 6], 2, 7);
+console.log(`count`, count);
+// count { count: 2,
+//   firstOccurIndex: 8,
+//   lastOccurIndex: 9,
+//   isFirstOccur: true }
+```
+
 ### 加法函数（精度丢失问题）
 
 ```js
@@ -1838,12 +1838,12 @@ console.log(countOccurrences([1, 2, 2, 1, 3, 5, 6, 7], 2)); // 2
 export function add(arg1, arg2) {
   let r1, r2, m;
   try {
-    r1 = arg1.toString().split(".")[1].length;
+    r1 = arg1.toString().split('.')[1].length;
   } catch (e) {
     r1 = 0;
   }
   try {
-    r2 = arg2.toString().split(".")[1].length;
+    r2 = arg2.toString().split('.')[1].length;
   } catch (e) {
     r2 = 0;
   }
@@ -1864,12 +1864,12 @@ console.log(add(1 / 123456, 2 / 123456789)); // 0.000008116251840479197
 export function sub(arg1, arg2) {
   let r1, r2, m, n;
   try {
-    r1 = arg1.toString().split(".")[1].length;
+    r1 = arg1.toString().split('.')[1].length;
   } catch (e) {
     r1 = 0;
   }
   try {
-    r2 = arg2.toString().split(".")[1].length;
+    r2 = arg2.toString().split('.')[1].length;
   } catch (e) {
     r2 = 0;
   }
@@ -1889,17 +1889,17 @@ export function sub(arg1, arg2) {
 export function division(num1, num2) {
   let t1, t2, r1, r2;
   try {
-    t1 = num1.toString().split(".")[1].length;
+    t1 = num1.toString().split('.')[1].length;
   } catch (e) {
     t1 = 0;
   }
   try {
-    t2 = num2.toString().split(".")[1].length;
+    t2 = num2.toString().split('.')[1].length;
   } catch (e) {
     t2 = 0;
   }
-  r1 = Number(num1.toString().replace(".", ""));
-  r2 = Number(num2.toString().replace(".", ""));
+  r1 = Number(num1.toString().replace('.', ''));
+  r2 = Number(num2.toString().replace('.', ''));
   return (r1 / r2) * Math.pow(10, t2 - t1);
 }
 ```
@@ -1916,15 +1916,12 @@ export function mcl(num1, num2) {
     s1 = num1.toString(),
     s2 = num2.toString();
   try {
-    m += s1.split(".")[1].length;
+    m += s1.split('.')[1].length;
   } catch (e) {}
   try {
-    m += s2.split(".")[1].length;
+    m += s2.split('.')[1].length;
   } catch (e) {}
-  return (
-    (Number(s1.replace(".", "")) * Number(s2.replace(".", ""))) /
-    Math.pow(10, m)
-  );
+  return (Number(s1.replace('.', '')) * Number(s2.replace('.', ''))) / Math.pow(10, m);
 }
 ```
 
@@ -1981,13 +1978,13 @@ export function trim(str, type = 1) {
   if (type && type !== 1 && type !== 2 && type !== 3 && type !== 4) return;
   switch (type) {
     case 1:
-      return str.replace(/\s/g, "");
+      return str.replace(/\s/g, '');
     case 2:
-      return str.replace(/(^\s)|(\s*$)/g, "");
+      return str.replace(/(^\s)|(\s*$)/g, '');
     case 3:
-      return str.replace(/(^\s)/g, "");
+      return str.replace(/(^\s)/g, '');
     case 4:
-      return str.replace(/(\s$)/g, "");
+      return str.replace(/(\s$)/g, '');
     default:
       return str;
   }
@@ -2026,8 +2023,8 @@ export function turnCase(str, type) {
  * 方法一
  */
 export function hexColor() {
-  let str = "#";
-  let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
+  let str = '#';
+  let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F'];
   for (let i = 0; i < 6; i++) {
     let index = Number.parseInt((Math.random() * 16).toString());
     str += arr[index];
@@ -2046,7 +2043,7 @@ hexColor(); // "#0F6C42"
  */
 export const randomHexColorCode = () => {
   let n = (Math.random() * 0xfffff * 1000000).toString(16);
-  return "#" + n.slice(0, 6);
+  return '#' + n.slice(0, 6);
 };
 
 randomHexColorCode();
@@ -2060,11 +2057,11 @@ export const escapeHTML = str => {
     /[&<>'"]/g,
     tag =>
       ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
       }[tag] || tag)
   );
 };
@@ -2075,11 +2072,9 @@ escapeHTML(`<h1>golderBrother</h1>`); // "&lt;h1&gt;golderBrother&lt;/h1&gt;"
 
 ```js
 export const detectDeviceType = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-    ? "Mobile"
-    : "Desktop";
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ? 'Mobile'
+    : 'Desktop';
 };
 detectDeviceType();
 ```
@@ -2090,8 +2085,7 @@ detectDeviceType();
 /**
  * 例: hide(document.querySelectorAll('img'))
  */
-export const hideTag = (...el) =>
-  [...el].forEach(e => (e.style.display = "none"));
+export const hideTag = (...el) => [...el].forEach(e => (e.style.display = 'none'));
 
 hideTag();
 ```
@@ -2114,13 +2108,9 @@ export const getStyle = (el, ruleName) => getComputedStyle(el)[ruleName];
  * @param { element } child
  * 例：elementContains(document.querySelector('head'), document.querySelector('title')); // true
  */
-export const elementContains = (parent, child) =>
-  parent !== child && parent.contains(child);
+export const elementContains = (parent, child) => parent !== child && parent.contains(child);
 
-elementContains(
-  document.querySelector("head"),
-  document.querySelector("title")
-);
+elementContains(document.querySelector('head'), document.querySelector('title'));
 ```
 
 ### 数字超过规定大小加上加号“+”，如数字超过 99 显示 99+
