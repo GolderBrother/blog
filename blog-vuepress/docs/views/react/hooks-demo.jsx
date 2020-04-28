@@ -9,6 +9,7 @@ function App() {
   const [name, setName] = useState('zhufeng');
   const addClick = useCallback(() => setNumber(number + 1), [number]);
   const data = useMemo(() => ({ number }), [number]);
+  useEffect(async () => {}, [input]);
   return (
     <div>
       <input type="text" value={name} onChange={e => setName(e.target.value)} />

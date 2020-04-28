@@ -271,6 +271,7 @@ const [state, dispatch] = useReducer(reducer, initialArg, init);
 ```
 
 ```js
+import React, { useState, useReducer } from 'react';
 const initialState = 0;
 
 function reducer(state, action) {
@@ -300,342 +301,698 @@ function Counter() {
 
 ## 6. useContext
 
-接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值
-当前的 context 值由上层组件中距离当前组件最近的 <MyContext.Provider> 的 value prop 决
-定
-当组件上层最近的 <MyContext.Provider> 更新时，该 Hook 会触发重渲染，并使用最新传递
-给 MyContext provider 的 context value 值
-useContext(MyContext) 相当于 class 组件中的 static contextType = MyContext 或者
-<MyContext.Consumer>
-useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要
-在上层组件树中使用 <MyContext.Provider> 来为下层组件提供 context
+- 接收一个 `context` 对象（`React.createContext` 的返回值）并返回该 `context` 的当前值
+- 当前的 `context` 值由上层组件中距离当前组件最近的 <MyContext.Provider> 的 `value prop` 决定
+- 当组件上层最近的 <MyContext.Provider> 更新时，该 Hook 会触发重渲染，并使用最新传递
+  给 `MyContext provider` 的 `context value` 值
+- `useContext(MyContext)` 相当于 `class` 组件中的 `static contextType = MyContext` 或者 `<MyContext.Consumer>`
+- `useContext(MyContext)` 只是让你能够读取 `context` 的值以及订阅 `context` 的变化。你仍然需要在上层组件树中使用 `<MyContext.Provider>` 来为下层组件提供 `context`
 
-```
+```js
+import React, { useState, useReducer } from 'react';
 const CounterContext = React.createContext();
-function reducer(state, action) {
-switch (action.type) {
-case 'increment':
-return {number: state.number + 1};
-case 'decrement':
-return {number: state.number - 1};
-default:
-throw new Error();
-}
-}
-function Counter(){
-let {state,dispatch} = useContext(CounterContext);
-return (
-<>
-<p>{state.number}</p>
-<button onClick={() => dispatch({type: 'increment'})}>+</button>
-<button onClick={() => dispatch({type: 'decrement'})}>-</button>
-</>
-)
-}
-function App(){
-const [state, dispatch] = useReducer(reducer, {number:0});
-return (
-<>
-Count: {state.number}
-<button onClick={() => dispatch({type: 'increment'})}>+</button
->
-<button onClick={() => dispatch({type: 'decrement'})}>-</button
->
-</>
-)
-}
 
-<CounterContext.Provider value={{state,dispatch}}>
-<Counter/>
-</CounterContext.Provider>
-)
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { number: state.number + 1 };
+    case 'decrement':
+      return { number: state.number - 1 };
+    default:
+      throw new Error();
+  }
+}
+function Counter() {
+  let { state, dispatch } = useContext(CounterContext);
+  return (
+    <>
+      <p>{state.number}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+    </>
+  );
+}
+function App() {
+  const [state, dispatch] = useReducer(reducer, { number: 0 });
+  return (
+    <CounterContext.Provider value={{ state, dispatch }}>
+      <Counter />
+    </CounterContext.Provider>
+  );
 }
 ```
 
 ## 7. effect
 
-在函数组件主体内（这里指在 React 渲染阶段）改变 DOM、添加订阅、设置定时器、记录日
-志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏
-UI 的一致性
-使用 useEffect 完成副作用操作。赋值给 useEffect 的函数会在组件渲染到屏幕之后执行。你
-可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道
-useEffect 就是一个 Effect Hook，给函数组件增加了操作副作用的能力。它跟 class 组件中的
-componentDidMount 、 componentDidUpdate 和 componentWillUnmount 具有相同的用
-途，只不过被合并成了一个 API
-该 Hook 接收一个包含命令式、且可能有副作用代码的函数
+- 在函数组件主体内（这里指在 `React` 渲染阶段）改变 `DOM`、添加订阅、设置定时器、记录日
+  志以及执行其他包含**副作用**的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏
+  UI 的一致性
+
+- 使用 `useEffect` 完成**副作用**操作。赋值给 `useEffect` 的函数会在组件渲染到屏幕之后执行。你
+  可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道
+  `useEffect` 就是一个 `Effect Hook`，给函数组件增加了操作**副作用**的能力。它跟 `class` 组件中的
+  `componentDidMount` 、 `componentDidUpdate` 和 `componentWillUnmount` 具有相同的用
+  途，只不过被合并成了一个 `API`
+  该 Hook 接收一个包含命令式、且可能有副作用代码的函数
+
+```js
 useEffect(didUpdate);
+```
 
 ### 7.1 通过 class 实现修标题
 
-```
+```js
 class Counter extends React.Component {
-constructor(props) {
-super(props);
-this.state = {
-number: 0
-};
-}
-componentDidMount() {
-document.title = `你点击了${this.state.number}次`;
-}
-componentDidUpdate() {
-document.title = `你点击了${this.state.number}次`;
-}
+  constructor(props) {
+    super(props);
+    this.state = {
+      number: 0
+    };
+  }
+
+  componentDidMount() {
+    document.title = `你点击了${this.state.number}次`;
+  }
+
+  componentDidUpdate() {
+    document.title = `你点击了${this.state.number}次`;
+  }
+
+  render() {
+    return (
+      <div>
+        <p>{this.state.number}</p>
+        <button onClick={() => this.setState({ number: this.state.number + 1 })}>+</button>
+      </div>
+    );
+  }
 }
 ```
 
-在这个 class 中，我们需要在两个生命周期函数中编写重复的代码,这是因为很多情况下，
-我们希望在组件加载和更新时执行同样的操作。我们希望它在每次渲染之后执行，但
-React 的 class 组件没有提供这样的方法。即使我们提取出一个方法，我们还是要在两个地
-方调用它。useEffect 会在第一次渲染之后和每次更新之后都会执行
+> 在这个 class 中，我们需要在两个生命周期函数中编写重复的代码,这是因为很多情况下，
+> 我们希望在**组件加载和更新时执行同样的操作**。我们希望它在每次渲染之后执行，但
+> `React` 的 `class` 组件没有提供这样的方法。即使我们提取出一个方法，我们还是要在两个地
+> 方调用它。`useEffect` 会在**第一次渲染之后**和**每次更新之后**都会执行
 
 ### 7.2 通过 effect 实现
 
-```
-import React,{Component,useState,useEffect} from 'react';
+```js
+import React, { Component, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-function Counter(){
-const [number,setNumber] = useState(0);
-// 相当于 componentDidMount 和 componentDidUpdate:
-useEffect(() => {
-// 使用浏览器的 API 更新页面标题
-document.title = `你点击了${number}次`;
-});
-return ()
-```
-
-每次我们重新渲染，都会生成新的 effect，替换掉之前的。某种意义上讲，effect 更像是渲
-染结果的一部分 —— 每个 effect 属于一次特定的渲染。
-
-### 7.3 清除副作用
-
-副作用函数还可以通过返回一个函数来指定如何清除副作用
-为防止内存泄漏，清除函数会在组件卸载前执行。另外，如果组件多次渲染，则在执行下一个
-effect 之前，上一个 effect 就已被清除
-
-```
-<button onClick={() => this.setState({ number: this.state.numbe
-r + 1 })}>
-+
-</button>
-</div>
-<>
-<p>{number}</p>
-<button onClick={()=>setNumber(number+1)}>+</button>
-</>
-)
+function Counter() {
+  const [number, setNumber] = useState(0);
+  // 相当于 componentDidMount 和 componentDidUpdate:
+  useEffect(() => {
+    // 使用浏览器的 API 更新页面标题
+    document.title = `你点击了${number}次`;
+  });
+  return (
+    <>
+      <p>{number}</p>
+      <button onClick={() => setNumber(number + 1)}>+</button>
+    </>
+  );
 }
 ReactDOM.render(<Counter />, document.getElementById('root'));
+```
 
-function Counter(){
-const [number,setNumber] = useState(0);
-// 相当于componentDidMount 和 componentDidUpdate
-useEffect(() => {
-console.log('开启一个新的定时器')
-const $timer = setInterval(()=>{
-setNumber(number=>number+1);
-},1000);
-return ()=>{
-console.log('销毁老的定时器');
-clearInterval($timer);
+> 每次我们重新渲染，都会生成新的 `effect`，替换掉之前的。某种意义上讲，`effect` 更像是渲
+> 染结果的一部分 —— 每个 `effect` 属于一次特定的渲染。
+
+### 7.3 跳过 Effect 进行性能优化
+
+- 如果某些特定值在两次重渲染之间没有发生变化，你可以通知 `React` **跳过**对 `effect` 的调用，只要传递**数组**作为 `useEffect` 的第二个可选参数即可
+- 如果想执行只运行一次的 `effect`（仅在`组件挂载和卸载`时执行），可以传递一个**空数组**（`[]`）作为第二个参数。这就告诉 `React` 你的 `effect` 不依赖于 `props` 或 `state` 中的任何值，所以它**永远都不需要重复执行**
+
+```js
+function Counter() {
+  const [number, setNumber] = useState(0);
+  // 相当于componentDidMount 和 componentDidUpdate
+  useEffect(() => {
+    console.log('开启一个新的定时器');
+    const $timer = setInterval(() => {
+      setNumber(number => number + 1);
+    }, 1000);
+  }, []);
+  return (
+    <>
+      <p>{number}</p>
+    </>
+  );
 }
-});
-return ()
 ```
 
-### 7.4 跳过 Effect 进行性能优化
+### 7.4 清除副作用
 
-如果某些特定值在两次重渲染之间没有发生变化，你可以通知 React 跳过对 effect 的调用，只
-要传递数组作为 useEffect 的第二个可选参数即可
-如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作
-为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，所以它永远
-都不需要重复执行
+- 副作用函数还可以通过**返回一个函数**来指定如何清除副作用
+- 为防止**内存泄漏**，清除函数会在**组件卸载前**执行。另外，如果组件多次渲染，则在执行**下一个**
+  `effect` **之前**，上一个 `effect` 就已被清除, 所以就是会先执行 `return` 的`清除副作用函数`，再执行`effect`里面的逻辑。
 
+```js
+import React, { useEffect, useState, useReducer } from 'react';
+import ReactDOM from 'react-dom';
+function Counter() {
+  const [number, setNumber] = useState(0);
+  useEffect(() => {
+    console.log('开启一个新的定时器');
+    const $timer = setInterval(() => {
+      setNumber(number => number + 1);
+    }, 1000);
+    return () => {
+      console.log('销毁老的定时器');
+      clearInterval($timer);
+    };
+  });
+  return (
+    <>
+      <p>{number}</p>
+    </>
+  );
+}
+function App() {
+  let [visible, setVisible] = useState(true);
+  return (
+    <div>
+      {visible && <Counter />}
+      <button onClick={() => setVisible(false)}>stop</button>
+    </div>
+  );
+}
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
-function Counter(){
-const [number,setNumber] = useState(0);
-// 相当于componentDidMount 和 componentDidUpdate
-useEffect(() => {
-console.log('开启一个新的定时器')
-const $timer = setInterval(()=>{
-setNumber(number=>number+1);
-},1000);
-},[]);
-return (
+
 ### 7.5 useRef
-<>
-<p>{number}</p>
-</>
-)
-}
-<>
-<p>{number}</p>
-</>
-)
-}
-```
 
-useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）
-返回的 ref 对象在组件的整个生命周期内保持不变
-`const refContainer = useRef(initialValue);`
+- `useRef` 返回一个可变的 `ref` 对象，其 `.current` **属性值**被初始化为传入的参数（`initialValue`）
+- 返回的 `ref` 对象在组件的整个生命周期内保持不变
+
+```js
+const refContainer = useRef(initialValue);
+```
 
 #### 7.5.1 useRef
 
-```
-function Parent(){
-let [number,setNumber] = useState(0);
-return (
-<>
-<Child/>
-<button onClick={()=>setNumber({number:number+1})}>+</button>
-</>
-)
+```js
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+function Parent() {
+  let [number, setNumber] = useState(0);
+  return (
+    <>
+      <Child />
+      <button onClick={() => setNumber({ number: number + 1 })}>+</button>
+    </>
+  );
 }
 let input;
-function Child(){
-const inputRef = useRef();
-console.log('input===inputRef',input===inputRef);
-input = inputRef;
-function getFocus(){
-inputRef.current.focus();
+function Child() {
+  const inputRef = useRef();
+  console.log('input===inputRef', input === inputRef);
+  input = inputRef;
+  function getFocus() {
+    inputRef.current.focus();
+  }
+  return (
+    <>
+      <input type="text" ref={inputRef} />
+      <button onClick={getFocus}>获得焦点</button>
+    </>
+  );
 }
-return (
-<>
-<input type="text" ref={inputRef}/>
-<button onClick={getFocus}>获得焦点</button>
-</>
-)
-}
+ReactDOM.render(<Parent />, document.getElementById('root'));
 ```
 
 #### 7.5.2 forwardRef
 
-将 ref 从父组件中转发到子组件中的 dom 元素上
-子组件接受 props 和 ref 作为参数
+= 将 `ref` 从父组件中转发到子组件中的 `dom` 元素上
+= 子组件接受 `props` 和 `ref` 作为参数
 
-```
-function Child(props,ref){
-return (
-<input type="text" ref={ref}/>
-)
+```js
+function Child(props, ref) {
+  return <input type="text" ref={ref} />;
 }
 Child = forwardRef(Child);
-function Parent(){
-let [number,setNumber] = useState(0);
-const inputRef = useRef();
-function getFocus(){
-inputRef.current.value = 'focus';
-inputRef.current.focus();
-}
-return (
-<>
-<Child ref={inputRef}/>
-<button onClick={()=>setNumber({number:number+1})}>+</button>
-<button onClick={getFocus}>获得焦点</button>
-</>
-)
+function Parent() {
+  let [number, setNumber] = useState(0);
+  const inputRef = useRef();
+  function getFocus() {
+    inputRef.current.value = 'focus';
+    inputRef.current.focus();
+  }
+  return (
+    <>
+      <Child ref={inputRef} />
+      <button onClick={() => setNumber({ number: number + 1 })}>+</button>
+      <button onClick={getFocus}>获得焦点</button>
+    </>
+  );
 }
 ```
 
 #### 7.5.3 useImperativeHandle
 
-useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值
-在大多数情况下，应当避免使用 ref 这样的命令式代码。useImperativeHandle 应当与
-forwardRef 一起使用
+- `useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值
+- 在大多数情况下，应当避免使用 `ref` 这样的命令式代码。`useImperativeHandle` 应当与 `forwardRef` 一起使用
 
-```
-function Child(props,ref){
-const inputRef = useRef();
-useImperativeHandle(ref,()=>(
-{
-focus(){
-inputRef.current.focus();
-}
-}
-));
-return (
-<input type="text" ref={inputRef}/>
-)
+```js
+function Child(props, ref) {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus() {
+      inputRef.current.focus();
+    }
+  }));
+  return <input type="text" ref={inputRef} />;
 }
 Child = forwardRef(Child);
-function Parent(){
-let [number,setNumber] = useState(0);
-const inputRef = useRef();
-function getFocus(){
-console.log(inputRef.current);
-inputRef.current.value = 'focus';
-inputRef.current.focus();
-}
-return (
-<>
-<Child ref={inputRef}/>
-<button onClick={()=>setNumber({number:number+1})}>+</button>
-<button onClick={getFocus}>获得焦点</button>
-</>
-)
+function Parent() {
+  let [number, setNumber] = useState(0);
+  const inputRef = useRef();
+  function getFocus() {
+    console.log(inputRef.current);
+    inputRef.current.value = 'focus';
+    inputRef.current.focus();
+  }
+  return (
+    <>
+      <Child ref={inputRef} />
+      <button onClick={() => setNumber({ number: number + 1 })}>+</button>
+      <button onClick={getFocus}>获得焦点</button>
+    </>
+  );
 }
 ```
 
 ## 8. useLayoutEffect
 
-其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect
-可以使用它来读取 DOM 布局并同步触发重渲染
-在浏览器执行绘制之前 useLayoutEffect 内部的更新计划将被同步刷新
-尽可能使用标准的 useEffect 以避免阻塞视图更新
+- 其函数签名与 `useEffect` 相同，但它会在所有的 `DOM` 变更之后同步调用 `effect`
+- 可以使用它来读取 `DOM` 布局并同步触发重渲染
+- 在浏览器执行绘制之前 `useLayoutEffect` 内部的更新计划将被同步刷新
+- 尽可能使用标准的 `useEffect` 以避免阻塞视图更新
 
-```
+来看一张简单的**页面渲染**流程
+
+![domrender](./images/domrender.jpg)
+
+```js
 function LayoutEffect() {
-const [color, setColor] = useState('red');
-useLayoutEffect(()=>{
-alert(color);
-document.getElementById('myDiv').style.background = 'purple';
-});
-useEffect(()=>{
-console.log('color',color);
-});
-return ()
+  const [color, setColor] = useState('red');
+  useLayoutEffect(() => {
+    alert(color);
+  });
+  useEffect(() => {
+    console.log('color', color);
+  });
+  return (
+    <>
+      <div id="myDiv" style={{ background: color }}>
+        颜色
+      </div>
+      <button onClick={() => setColor('red')}>红</button>
+      <button onClick={() => setColor('yellow')}>黄</button>
+      <button onClick={() => setColor('blue')}>蓝</button>
+    </>
+  );
+}
 ```
 
 ## 9. 自定义 Hook
 
-有时候我们会想要在组件之间重用一些状态逻辑
-自定义 Hook 可以让你在不增加组件的情况下达到同样的目的
-Hook 是一种复用状态逻辑的方式，它不复用 state 本身
-事实上 Hook 的每次调用都有一个完全独立的 state
+- 有时候我们会想要在组件之间重用一些状态逻辑
+- 自定义 `Hook` 可以让你在不增加组件的情况下达到同样的目的
+- `Hook` 是一种复用状态逻辑的方式，它不复用 `state` 本身
+- 事实上 `Hook` 的每次调用都有一个完全独立的 `state`
 
+### 9.1.自定义计数器
+
+```js
+function useNumber() {
+  const [number, setNumber] = useState(0);
+  useEffect(() => {
+    console.log('开启一个新的定时器');
+    const $timer = setInterval(() => {
+      setNumber(number + 1);
+    }, 1000);
+    return () => {
+      console.log('销毁老的定时器');
+      clearInterval($timer);
+    };
+  });
+  return number;
+}
+function Counter1() {
+  let number1 = useNumber();
+  return (
+    <>
+      <p>{number1}</p>
+    </>
+  );
+}
+function Counter2() {
+  let number = useNumber();
+  return (
+    <>
+      <p>{number}</p>
+    </>
+  );
+}
+function App() {
+  return (
+    <>
+      <Counter1 />
+      <Counter2 />
+    </>
+  );
+}
 ```
-function useNumber(){
-const [number,setNumber] = useState(0);
-useEffect(() => {
-console.log('开启一个新的定时器')
-const $timer = setInterval(()=>{
-setNumber(number+1);
-},1000);
-return ()=>{
-console.log('销毁老的定时器')
-clearInterval($timer);
+
+### 9.2 中间件
+
+#### 9.2.1 logger
+
+实现**埋点日志**功能
+
+```js
+import React, { useEffect, useState, useReducer } from 'react';
+import ReactDOM from 'react-dom';
+const initialState = 0;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { number: state.number + 1 };
+    case 'decrement':
+      return { number: state.number - 1 };
+    default:
+      throw new Error();
+  }
 }
+function init(initialState) {
+  return { number: initialState };
+}
+function useLogger(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchWithLogger = action => {
+    console.log('老状态', state);
+    dispatch(action);
+  };
+  useEffect(
+    function() {
+      console.log('新状态', state);
+    },
+    [state]
+  );
+  return [state, dispatchWithLogger];
+}
+function Counter() {
+  const [state, dispatch] = useLogger(reducer, initialState, init);
+  return (
+    <>
+      Count: {state.number}
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+    </>
+  );
+}
+ReactDOM.render(<Counter />, document.getElementById('root'));
+```
+
+#### 9.2.2 promise
+
+支持 promise
+
+```js
+import React, { useEffect, useState, useReducer } from 'react';
+import ReactDOM from 'react-dom';
+const initialState = 0;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { number: state.number + 1 };
+    case 'decrement':
+      return { number: state.number - 1 };
+    default:
+      throw new Error();
+  }
+}
+function init(initialState) {
+  return { number: initialState };
+}
+function useLogger(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchWithLogger = action => {
+    console.log('老状态', state);
+    dispatch(action);
+  };
+  useEffect(
+    function() {
+      console.log('新状态', state);
+    },
+    [state]
+  );
+  return [state, dispatchWithLogger];
+}
+function usePromise(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchPromise = action => {
+    if (action.payload && action.payload.then) {
+      action.payload.then(payload => dispatch({ ...action, payload }));
+    } else {
+      dispatch(action);
+    }
+  };
+  return [state, dispatchPromise];
+}
+function Counter() {
+  const [state, dispatch] = usePromise(reducer, initialState, init);
+  return (
+    <>
+      Count: {state.number}
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'increment',
+            payload: new Promise(resolve => {
+              setTimeout(resolve, 1000);
+            })
+          })
+        }
+      >
+        delay
+      </button>
+    </>
+  );
+}
+ReactDOM.render(<Counter />, document.getElementById('root'));
+```
+
+#### 9.2.3 thunk
+
+```js
+import React, { useEffect, useState, useReducer } from 'react';
+import ReactDOM from 'react-dom';
+const initialState = 0;
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { number: state.number + 1 };
+    case 'decrement':
+      return { number: state.number - 1 };
+    default:
+      throw new Error();
+  }
+}
+function init(initialState) {
+  return { number: initialState };
+}
+function useLogger(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchWithLogger = action => {
+    console.log('老状态', state);
+    dispatch(action);
+  };
+  useEffect(
+    function() {
+      console.log('新状态', state);
+    },
+    [state]
+  );
+  return [state, dispatchWithLogger];
+}
+function usePromise(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchPromise = action => {
+    if (action.payload && action.payload.then) {
+      action.payload.then(payload => dispatch({ ...action, payload }));
+    } else {
+      dispatch(action);
+    }
+  };
+  return [state, dispatchPromise];
+}
+function useThunk(reducer, initialState, init) {
+  const [state, dispatch] = useReducer(reducer, initialState, init);
+  let dispatchPromise = action => {
+    if (typeof action === 'function') {
+      action(dispatchPromise, () => state);
+    } else {
+      dispatch(action);
+    }
+  };
+  return [state, dispatchPromise];
+}
+function Counter() {
+  const [state, dispatch] = useThunk(reducer, initialState, init);
+  return (
+    <>
+      Count: {state.number}
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button
+        onClick={() =>
+          dispatch(function(dispatch, getState) {
+            setTimeout(function() {
+              dispatch({ type: 'increment' });
+            }, 1000);
+          })
+        }
+      >
+        delay
+      </button>
+    </>
+  );
+}
+ReactDOM.render(<Counter />, document.getElementById('root'));
+```
+
+##### async+await
+
+client
+
+```js
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import ReactDOM from 'react-dom';
+function useRequest(url) {
+  let limit = 5;
+  let [offset, setOffset] = useState(0);
+  let [data, setData] = useState([]);
+  async function loadMore() {
+    setData(null);
+    let pageData = await fetch(`${url}?offset=${offset}&limit=${limit}`).then(response =>
+      response.json()
+    );
+    setData([...data, ...pageData]);
+    setOffset(offset + pageData.length);
+  }
+  useEffect(() => {
+    loadMore();
+  }, []);
+  return [data, loadMore];
+}
+
+function App() {
+  const [users, loadMore] = useRequest('http://localhost:8000/api/users');
+  if (users === null) {
+    return <div>正在加载中....</div>;
+  }
+  return (
+    <>
+      <ul>
+        {users.map((item, index) => (
+          <li key={index}>
+            {item.id}:{item.name}
+          </li>
+        ))}
+      </ul>
+      <button onClick={loadMore}>加载更多</button>
+    </>
+  );
+}
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+server
+
+```js
+let express = require('express');
+let app = express();
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  next();
 });
-return number;
-<>
-<div id="myDiv" style={{background:color}}>颜色</div>
-<button onClick={()=>setColor('red')}>红</button>
-<button onClick={()=>setColor('yellow')}>黄</button>
-<button onClick={()=>setColor('blue')}>蓝</button>
-</>
-);
+app.get('/api/users', function(req, res) {
+  let offset = parseInt(req.query.offset);
+  let limit = parseInt(req.query.limit);
+  let result = [];
+  for (let i = offset; i < offset + limit; i++) {
+    result.push({ id: i + 1, name: 'name' + (i + 1) });
+  }
+  res.json(result);
+});
+app.listen(8000);
+```
+
+### 9.4 动画
+
+```js
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+function useMove(initialClassName) {
+  const [className, setClassName] = useState(initialClassName);
+  const [state, setState] = useState('');
+  function start() {
+    setState('bigger');
+  }
+  useEffect(() => {
+    if (state === 'bigger') {
+      setClassName(`${initialClassName} ${initialClassName}-bigger`);
+    }
+  }, [state]);
+  return [className, start];
 }
+
+function App() {
+  const [className, start] = useMove('circle');
+  return (
+    <div>
+      <button onClick={start}>start</button>
+      <div className={className}></div>
+    </div>
+  );
 }
-function Counter1(){
-let number1 = useNumber();
-return ()
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+```css
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: red;
+  transition: all 0.5s;
+}
+.circle-bigger {
+  width: 200px;
+  height: 200px;
+}
 ```
 
 ## 10.附录
 
 ### 10.1 浏览器是如何呈现一张页面的
 
-解析 HTML，并生成一棵 DOM tree
-解析各种样式并结合 DOM tree 生成一棵 Render tree
-对 Render tree 的各个节点计算布局信息，比如 box 的位置与尺寸
-根据并利用浏览器的 UI 层进行绘制
+1. 解析 HTML，并生成一棵 DOM tree
+2. 解析各种样式并结合 DOM tree 生成一棵 Render tree
+3. 对 Render tree 的各个节点计算布局信息，比如 box 的位置与尺寸
+4. 根据并利用浏览器的 UI 层进行绘制
+
+继续引用上面那张页面渲染流程图
+
+![domrender](./images/domrender.jpg)
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
