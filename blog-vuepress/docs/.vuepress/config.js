@@ -192,7 +192,15 @@ module.exports = {
                         '/views/network/http-interview.md',
                         '/views/network/tcp-interview.md',
                     ],
-                }
+                },
+                {
+                    title: '前端应知应会的Nginx知识',
+                    collapsable: false,
+                    children: [
+                        '/views/nginx/nginx-details.md',
+                    ],
+                },
+
             ],
         }
     },
