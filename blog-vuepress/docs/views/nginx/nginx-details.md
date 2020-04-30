@@ -342,10 +342,61 @@ location [ = | ~ | ~* | ^~] uri {
 
 ### 5.2 全局变量
 
+Nginx 有一些常用的全局变量，你可以在配置的任何位置使用它们，如下表：
+
+| 全局变量名         | 功能                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `$host`            | 请求信息中的 `HostHost`，如果请求中没有 `Host` 行，则等于设置的服务器名，不包含端口                    |
+| `$request_method`  | 客户端请求类型，如 `GET、POST`                                                                         |
+| `$remote_addr`     | 客户端的 `IP` 地址                                                                                     |
+| `$args`            | 请求中的参数                                                                                           |
+| `$arg_PARAMETER`   | `GET` 请求中变量名 `PARAMETER` 参数的值，例如：`$http_user_agent`(`Uaer-Agent` 值), `$http_referer`... |
+| `$content_length`  | 请求头中的 `Content-length` 字段                                                                       |
+| `$http_user_agent` | 客户端 `agent` 信息                                                                                    |
+| `$http_cookie`     | 客户端 `cookie` 信息                                                                                   |
+| `$remote_addr`     | 客户端的 `IP` 地址                                                                                     |
+| `$remote_port`     | 客户端的端口                                                                                           |
+| `$server_protocol` | 请求使用的协议，如 `HTTP/1.0`、`HTTP/1.1`                                                              |
+| `$server_addr`     | 服务器地址                                                                                             |
+| `$server_name`     | 服务器名称                                                                                             |
+| `$server_port`     | 服务器的端口号                                                                                         |
+| `$scheme`          | `HTTP` 方法（如 `http`，`https`）                                                                      |
+
+还有更多的内置预定义变量，可以直接搜索关键字`「nginx内置预定义变量」`可以看到一堆博客写这个，这些变量都可以在配置文件中直接使用。
+
+## 6. 设置二级域名虚拟主机
+
+在某某云 ☁️ 上购买了域名之后，就可以配置虚拟主机了，一般配置的路径在 `域名管理 -> 解析 -> 添加记录` 中添加**二级域名**，配置后某某云会把**二级域名**也解析到我们配置的服务器 `IP` 上，然后我们在 `Nginx` 上配置一下`虚拟主机的访问监听`，就可以拿到从这个`二级域名过来的请求`了。
+
+![171c4e96a168c66a](./images/171c4e96a168c66a.png)
+
+现在我自己的服务器上配置了一个 `fe` 的二级域名，也就是说在外网访问 `fe.sherlocked93.club` 的时候，也可以访问到我们的服务器了。
+
+由于默认配置文件 `/etc/nginx/nginx.conf` 的 `http` 模块中有一句 `include /etc/nginx/conf.d/_.conf` 也就是说 `conf.`d 文件夹下的所有 `_.conf` 文件都会**作为`子配置项`被引入配置文件中**。为了维护方便，我在 `/etc/nginx/conf.d` 文件夹中新建一个 `fe.sherlocked93.club.conf` ：
+
+```bash
+# /etc/nginx/conf.d/fe.sherlocked93.club.conf
+
+server {
+  listen 80;
+    server_name fe.sherlocked93.club;
+
+    location / {
+        root  /usr/share/nginx/html/fe;
+        index index.html;
+    }
+}
+
+```
+
+然后在 `/usr/share/nginx/html` 文件夹下新建 `fe` 文件夹，前面说过，这个是用来存放静态资源的文件夹，新建文件 `index.html`，内容随便写点，改完 `nginx -s reload` 重新加载(重启`nginx`)，浏览器中输入 `fe.sherlocked93.club`，发现从二级域名就可以访问到我们刚刚新建的 `fe` 文件夹：
+
+![171c4e96a60a5e51](./images/171c4e96a60a5e51.png)
+
+## 7. 配置反向代理
+
 未完待续~
 
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
-
- <comment/>
