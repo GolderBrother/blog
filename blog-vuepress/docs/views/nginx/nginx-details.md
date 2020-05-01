@@ -214,7 +214,7 @@ yum install git   # git 安装
 
 ## 4. Nginx 操作常用命令
 
-Nginx 的命令在控制台中输入 `nginx -h` 就可以看到完整的命令，这里列举几个常用的命令：
+`Nginx` 的命令在控制台中输入 `nginx -h` 就可以看到完整的命令，这里列举几个常用的命令：
 
 ```bash
 nginx -s reload  # 向主进程发送信号，重新加载配置文件，热重启
@@ -342,7 +342,7 @@ location [ = | ~ | ~* | ^~] uri {
 
 ### 5.2 全局变量
 
-Nginx 有一些常用的全局变量，你可以在配置的任何位置使用它们，如下表：
+`Nginx` 有一些常用的全局变量，你可以在配置的任何位置使用它们，如下表：
 
 | 全局变量名         | 功能                                                                                                   |
 | ------------------ | ------------------------------------------------------------------------------------------------------ |
@@ -395,7 +395,607 @@ server {
 
 ## 7. 配置反向代理
 
-未完待续~
+反向代理是工作中最常用的服务器功能，经常被用来解决跨域问题，下面简单介绍一下如何实现反向代理。
+
+首先进入 Nginx 的主配置文件：
+
+```bash
+vim /etc/nginx/nginx.conf
+
+```
+
+为了看起来方便，把行号显示出来 `:set nu` （个人习惯），然后我们去 `http` 模块的 `server` 块中的 `location /`，增加一行将默认网址重定向到最大学习网站 `Bilibili` 的 `proxy_pass` 配置 🤓 ：
+
+![171c4e96a6d7033c](./images/171c4e96a6d7033c.png)
+
+改完保存退出，`nginx -s reload` **重新加载(重启)**，进入默认网址，那么现在就直接跳转到 `B` 站了，实现了一个简单的代理。
+
+实际使用中，可以将请求转发到本机另一个服务器上，也可以根据访问的路径跳转到不同端口的服务中。
+
+比如我们监听 `9001` 端口，然后把访问不同路径的请求进行反向代理：
+
+举个栗子:
+
+1. 把访问 `http://127.0.0.1:9001/edu` 的请求转发到 `http://127.0.0.1:8080`
+2. 把访问 `http://127.0.0.1:9001/vod` 的请求转发到 `http://127.0.0.1:8081`
+
+这种要怎么配置呢，首先同样打开主配置文件，然后在 `http` 模块下增加一个 `server` 块：
+
+```bash
+server {
+  listen 9001;
+  server_name *.sherlocked93.club;
+
+  location ~ /edu/ {
+    proxy_pass http://127.0.0.1:8080;
+  }
+
+  location ~ /vod/ {
+    proxy_pass http://127.0.0.1:8081;
+  }
+}
+```
+
+反向代理还有一些其他的指令，可以了解一下：
+
+1. `proxy_set_header`：在将客户端请求发送给后端服务器之前，更改来自客户端的请求头信息。
+2. `proxy_connect_timeout`：配置 `Nginx` 与后端代理服务器尝试建立连接的超时时间。
+3. `proxy_read_timeout`：配置 `Nginx` 向后端服务器组发出 `read` 请求后，等待相应的超时时间。
+4. `proxy_send_timeout`：配置 `Nginx` 向后端服务器组发出 `write` 请求后，等待相应的超时时间。
+5. `proxy_redirect`：用于修改后端服务器返回的响应头中的 `Location` 和 `Refresh`
+
+## 8. 跨域 CORS 配置
+
+关于`简单请求、非简单请求、跨域`的概念，前面已经介绍过了，还不了解的可以看看前面的讲解。现在前后端分离的项目一统天下，经常本地起了前端服务，需要访问不同的后端地址，不可避免遇到跨域问题。
+
+![171c4e96b16214cc](./images/171c4e96b16214cc.png)
+
+要解决跨域问题，我们来制造一个跨域问题。首先和前面设置二级域名的方式一样，先设置好 `fe.sherlocked93.club` 和 `be.sherlocked93.club` 二级域名，都指向本云服务器地址，虽然对应 IP 是一样的，但是在 `fe.sherlocked93.club` 域名发出的请求访问 `be.sherlocked93.club` 域名的请求还是跨域了，因为访问的 `host` 不一致（如果不知道啥原因参见前面跨域的内容）。
+
+### 8.1 使用反向代理解决跨域
+
+在前端服务地址为 `fe.sherlocked93.club` 的页面请求 `be.sherlocked93.club` 的后端服务导致的跨域，可以这样配置：
+
+```bash
+server {
+  listen 9001;
+  server_name fe.sherlocked93.club;
+
+  # 反向代理地址
+  location / {
+    proxy_pass be.sherlocked93.club;
+  }
+}
+```
+
+这样就将对前一个域名 `fe.sherlocked93.club` 的请求全都代理到了 `be.sherlocked93.club`，前端的请求都被我们用服务器代理到了后端地址(`be.sherlocked93.club`)下，**绕过了跨域**。
+
+这里对静态文件的请求和后端服务的请求都以 `fe.sherlocked93.club` 开始，不易区分，所以为了实现对后端服务请求的统一转发，通常我们会约定对后端服务的请求加上 `/apis/` 前缀或者其他的 `path` 来和对静态资源的请求加以区分，此时我们可以这样配置：
+
+```bash
+# 请求跨域，约定代理后端服务请求path以/apis/开头
+location ^~/apis/ {
+    # 这里重写了请求，将正则匹配中的第一个分组的path拼接到真正的请求后面，并用break停止后续匹配
+    rewrite ^/apis/(.*)$ /$1 break;
+    proxy_pass be.sherlocked93.club;
+
+    # 两个域名之间cookie的传递与回写
+    proxy_cookie_domain be.sherlocked93.club fe.sherlocked93.club;
+}
+
+```
+
+这样，静态资源我们使用 `fe.sherlocked93.club/xx.html`，动态资源我们使用 `fe.sherlocked93.club/apis/getAwo`，浏览器页面看起来仍然访问的前端服务器，绕过了浏览器的同源策略，毕竟我们看起来并没有跨域。
+
+也可以统一一点，直接把静态资源和后端服务器地址直接都转发到另一个 `server.sherlocked93.club`，只通过在后面添加的 `path` 来**区分**请求的是**静态资源**还是**后端服务**，这个就看需求了。
+
+### 8.2 配置 header 解决跨域
+
+当浏览器在访问跨源的服务器时，也可以在跨域的服务器上直接通过 Nginx 设置**允许跨域**，从而前端就可以无感地开发，不用把实际上访问后端的地址改成前端服务的地址，这样可适性更高。
+
+比如前端站点是 `fe.sherlocked93.club`，这个地址下的前端页面请求 `be.sherlocked93.club` 下的资源，比如前者的 `fe.sherlocked93.club/index.html` 内容是这样的：
+
+```html
+<html>
+<body>
+    <h1>welcome fe.sherlocked93.club!!<h1>
+    <script type='text/javascript'>
+    var xmlhttp = new XMLHttpRequest()
+    // 请求了另外一台服务器的静态资源，毫无疑问，浏览器会报跨域
+    xmlhttp.open("GET", "http://be.sherlocked93.club/index.html", true);
+    xmlhttp.send();
+    </script>
+</body>
+</html>
+
+```
+
+打开浏览器访问 `fe.sherlocked93.club/index.html` 的结果如下：
+
+![171c4e96b99b44b7](./images/171c4e96b99b44b7.png)
+
+这样就解决了跨域问题，其实这种方式的类似后端的 [`CORS`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)(跨域资源共享) 方案。
+
+## 9. 开启 gzip 压缩
+
+`gzip` 是一种常用的网页压缩技术，传输的网页经过 `gzip` 压缩之后大小通常可以变为原来的**一半**甚至更小（官网原话），更小的网页体积也就意味着**带宽的节约**和**传输速度的提升**，特别是对于访问量巨大的大型网站来说，每一个静态资源体积的减小，都会带来可观的**流量与带宽的节省**。
+
+百度可以找到很多检测站点来查看目标网页有没有开启 `gzip` 压缩，在下随便找了一个 [<网页 `GZIP` 压缩检测>](http://tool.chinaz.com/Gzips/Default.aspx?q=juejin.im) 输入掘金 `juejin.im` 来偷窥下掘金有没有开启 `gzip`。
+
+![171c4e96dc471f0b](./images/171c4e96dc471f0b.png)
+
+这里可以看到掘金是开启了 `gzip` 的，压缩效果还挺不错，达到了 `52%` 之多，本来 `34kb` 的网页体积，压缩完只需要 `16kb`，可以想象网页传输速度提升了不少。
+
+### 9.1 Nginx 配置 gzip
+
+使用 `gzip` 不仅需要 `Nginx` 配置，浏览器端也需要配合，需要在`请求消息头`中包含 `Accept-Encoding: gzip`（IE5 之后所有的浏览器都支持了，是现代浏览器的默认设置）。一般在请求 `html` 和 `css` 等**静态资源**的时候，支持的浏览器在 `request` 请求静态资源的时候，会加上 `Accept-Encoding: gzip` 这个 `header`，表示自己支持 `gzip` 的压缩方式，`Nginx` 在拿到这个请求的时候，如果有相应配置，就会返回经过 `gzip` 压缩过的文件给浏览器，并在 `response` 相应的时候加上 `content-encoding: gzip` 来告诉浏览器自己采用的**压缩方式**（因为浏览器在传给服务器的时候一般还告诉服务器自己支持好几种**压缩方式**），浏览器拿到压缩的文件后，根据自己的**解压方式**进行解析。
+
+先来看看 `Nginx` 怎么进行 `gzip` 配置，和之前的配置一样，为了方便管理，还是在 `/etc/nginx/conf.d/` 文件夹中新建配置文件 `gzip.conf` ：
+
+```bash
+# /etc/nginx/conf.d/gzip.conf
+
+gzip on; # 默认off，是否开启gzip
+gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+# 上面两个开启基本就能跑起了，下面的愿意折腾就了解一下
+gzip_static on;
+gzip_proxied any;
+gzip_vary on;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+# gzip_min_length 1k;
+gzip_http_version 1.1;
+
+```
+
+这里稍微解释一下：
+
+1. `gzip_types`：要采用 `gzip` 压缩的 `MIME` 文件类型，其中 `text/html` 被系统强制启用；
+2. `gzip_static`：默认 `off`，该模块启用后，`Nginx` 首先检查是否存在请求静态文件的 `gz` 结尾的文件，如果有则直接返回该 `.gz` 文件内容；
+3. `gzip_proxied`：默认 `off`，`nginx` 做为反向代理时启用，用于设置启用或禁用从代理服务器上收到相应内容 `gzip` 压缩；
+4. `gzip_vary`：用于在响应消息头中添加 `Vary：Accept-Encoding`，使代理服务器根据请求头中的 `Accept-Encoding` 识别是否启用 `gzip` 压缩；
+5. `gzip_comp_level`：`gzip` 压缩比，压缩级别是 `1-9`，**1 压缩级别最低，9 最高**，**级别越高压缩率越大**，压缩时间越长，建议 `4-6`；
+6. `gzip_buffers`：获取多少内存用于缓存压缩结果，`16 8k` 表示以 `8k\*16` 为单位获得；
+7. `gzip_min_length`：允许压缩的页面最小字节数，页面字节数从 `header` 头中的 `Content-Length` 中进行获取。默认值是 `0`，不管页面多大都压缩。建议设置成大于 `1k` 的字节数，小于 `1k` 可能会越压越大；
+8. `gzip_http_version`：默认 `1.1`，启用 `gzip` 所需的 **HTTP 最低版本**；
+
+这个配置可以插入到 `http` 模块整个服务器的配置里，也可以插入到需要使用的虚拟主机的 `server` 或者下面的 `location` 模块中，当然像上面我们这样写的话就是被 `include` 到 `http` 模块中了。
+
+其他更全的配置信息可以查看 [<官网文档 ngx_http_gzip_module>](http://nginx.org/en/docs/http/ngx_http_gzip_module.html)，配置前是这样的：
+
+![171c4e96dd2b5019](./images/171c4e96dd2b5019.png)
+
+配置之后 `response` 的 `header` 里面多了一个 `Content-Encoding: gzip`，说明返回信息被**压缩**了
+
+![171c4e96def4db0f](./images/171c4e96def4db0f.png)
+
+注意了，一般 `gzip` 的配置建议加上 `gzip_min_length 1k`，不加的话：
+
+![171c4e96ee3279e8](./images/171c4e96ee3279e8.png)
+
+由于文件太小，`gzip` 压缩之后得到了 `-48%` 的体积优化，压缩之后体积还比压缩之前体积大了，emmmmm~~ 所以最好设置低于 `1kb` 的文件就不要 `gzip` 压缩了 🤪
+
+### 9.2 Webpack 的 gzip 配置
+
+如果当前端项目使用 `Webpack` 进行打包的时候，也可以开启 `gzip` 压缩：
+
+```js
+// vue-cli3 的 vue.config.js 文件
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+
+module.exports = {
+  // gzip 配置
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      // 生产环境
+      return {
+        plugins: [new CompressionWebpackPlugin({
+          test: /\.js$|\.html$|\.css/,    // 匹配文件名
+          threshold: 10240,               // 文件压缩阈值，对超过10k的进行压缩
+          deleteOriginalAssets: false     // 是否删除源文件
+        })]
+      }
+    }
+  },
+  ...
+}
+
+```
+
+由此打包出来的文件如下图：
+
+![171c4e96f98708c7](./images/171c4e96f98708c7.png)
+
+这里可以看到某些打包之后的文件下面有一个对应的带`.gz` 后缀的文件, 这就是经过 `gzip` 压缩之后的文件，这是因为这个文件超过了 `10kb`，有的文件没有超过 `10kb` 就没有进行 `gzip` 打包，如果你期望压缩文件的体积阈值小一点，可以在 `compression-webpack-plugin` 这个插件的配置里进行对应配置。
+
+那么为啥这里 `Nginx` 已经有了 `gzip` 压缩，`Webpack` 这里又整了个 `gzip` 呢，因为如果全都是使用 `Nginx` 来压缩文件，会耗费服务器的计算资源，如果服务器的 `gzip_comp_level` 配置的比较高，就更增加服务器的开销，相应增加客户端的请求时间，得不偿失。
+
+如果压缩的动作在前端打包的时候就做了，把**打包之后的高压缩等级文件**作为静态资源放在服务器上，`Nginx` 会**优先查找**这些压缩之后的文件返回给客户端，相当于把压缩文件的动作从 `Nginx` 提前给 `Webpack` 打包的时候完成，**节约了服务器资源**，所以一般推荐在生产环境应用 `Webpack` 配置 `gzip` 压缩。
+
+## 10. 配置负载均衡
+
+负载均衡在之前已经介绍了相关概念了，主要思想就是把**负载均匀合理地分发到多个服务器上**，实现**压力分流**的目的。
+
+主要配置如下：
+
+```bash
+http {
+  upstream myserver {
+  	# ip_hash;  # ip_hash 方式
+    # fair;   # fair 方式
+    server 127.0.0.1:8081;  # 负载均衡目的服务地址
+    server 127.0.0.1:8080;
+    server 127.0.0.1:8082 weight=10;  # weight 方式，不写默认为 1
+  }
+
+  server {
+    location / {
+    	proxy_pass http://myserver;
+      proxy_connect_timeout 10;
+    }
+  }
+}
+
+```
+
+`Nginx` 提供了好几种分配方式，默认为**轮询**，就是轮流来。有以下几种分配方式：
+
+1. **轮询**，默认方式，每个请求**按时间顺序**逐一分配到不同的后端服务器，如果后端服务挂了，能自动剔除；
+2. **weight**，**权重分配**，指定轮询几率，**权重越高，在被访问的概率越大**，用于后端服务器性能不均的情况；
+3. **ip_hash**，每个请求按访问 `IP` 的 `hash` 结果分配，这样每个访客固定访问一个后端服务器，可以解决动态网页 `session` 共享问题。负载均衡每次请求都会**重新定位**到服务器集群中的某一个，那么已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的；
+4. `fair`（第三方），按后端服务器的**响应时间**分配，**响应时间**短的优先分配，依赖第三方插件 `nginx-upstream-fair`，需要先安装；
+
+## 11. 配置动静分离
+
+动静分离在之前也介绍过了，就是把动态和静态的**请求分开**。方式主要有两种，一种 是纯粹把静态文件**独立成单独的域名**，放在**独立的服务器**上，也是目前**主流推崇**的方案。另外一种方法就是动态跟静态文件**混合**在一起发布， 通过 **Nginx 配置**来分开。
+
+通过 `location` 指定**不同的后缀名**实现**不同的请求转发**。通过 `expires` 参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。具体 `expires` 定义：是给一个资源设定一个**过期时间**，也就是说无需去服务端验证，直接通过**浏览器自身确认是否过期**即可，所以不会产生额外的流量。此种方法非常适合**不经常变动**的资源。（如果**经常更新的文件**，不建议使用 `expires` 来缓存），我这里设置 `3d`，表示在这 `3 天之内`访问这个 `URL`，发送一个请求，比对服务器该文件**最后更新时间**没有变化。则不会从服务器抓取，返回状态码 `304`，如果有修改，则直接从服务器重新下载，返回状态码 `200`。
+
+```nginx
+server {
+  location /www/ {
+  	root /data/;
+    index index.html index.htm;
+  }
+
+  location /image/ {
+  	root /data/;
+    autoindex on;
+  }
+}
+
+```
+
+## 12. 配置高可用集群（双机热备）
+
+当主 Nginx 服务器宕机之后，可以切换到`备份 Nginx 服务器`。
+
+![img](<./images/2020-03-13-shuangjirebei(1).png>)
+
+首先安装 `keepalived`
+
+```bash
+yum install keepalived -y
+
+```
+
+然后编辑 `/etc/keepalived/keepalived.conf` 配置文件，并在配置文件中增加 `vrrp_script` 定义一个外围检测机制，并在 `vrrp_instance` 中通过定义 `track_script` 来**追踪脚本执行**过程，实现**节点转移**：
+
+```nginx
+global_defs{
+   notification_email {
+        acassen@firewall.loc
+   }
+   notification_email_from Alexandre@firewall.loc
+   smtp_server 127.0.0.1
+   smtp_connect_timeout 30 // 上面都是邮件配置，没卵用
+   router_id LVS_DEVEL     // 当前服务器名字，用hostname命令来查看
+}
+vrrp_script chk_maintainace { // 检测机制的脚本名称为chk_maintainace
+    script "[[ -e/etc/keepalived/down ]] && exit 1 || exit 0" // 可以是脚本路径或脚本命令
+    // script "/etc/keepalived/nginx_check.sh"    // 比如这样的脚本路径
+    interval 2  // 每隔2秒检测一次
+    weight -20  // 当脚本执行成立，那么把当前服务器优先级改为-20
+}
+vrrp_instanceVI_1 {   // 每一个vrrp_instance就是定义一个虚拟路由器
+    state MASTER      // 主机为MASTER，备用机为BACKUP
+    interface eth0    // 网卡名字，可以从ifconfig中查找
+    virtual_router_id 51 // 虚拟路由的id号，一般小于255，主备机id需要一样
+    priority 100      // 优先级，master的优先级比backup的大
+    advert_int 1      // 默认心跳间隔
+    authentication {  // 认证机制
+        auth_type PASS
+        auth_pass 1111   // 密码
+    }
+    virtual_ipaddress {  // 虚拟地址vip
+       172.16.2.8
+    }
+}
+
+```
+
+其中检测脚本 `nginx_check.sh`，这里提供一个：
+
+```sh
+#!/bin/bash
+A=`ps -C nginx --no-header | wc -l`
+if [ $A -eq 0 ];then
+    /usr/sbin/nginx # 尝试重新启动nginx
+    sleep 2         # 睡眠2秒
+    if [ `ps -C nginx --no-header | wc -l` -eq 0 ];then
+        killall keepalived # 启动失败，将keepalived服务杀死。将vip漂移到其它备份节点
+    fi
+fi
+
+```
+
+复制一份到备份服务器，备份 `Nginx` 的配置要将 `state` 后改为 `BACKUP，priority` 改为比主机小。
+
+设置完毕后各自 `service keepalived start` 启动，经过访问成功之后，可以把 `Master` 机的 `keepalived` 停掉，此时 `Master` 机就不再是主机了 `service keepalived stop`，看访问虚拟 `IP` 时是否能够自动切换到备机 `ip addr`。
+
+再次启动 `Master` 的 `keepalived`，此时 `vip` 又变到了主机上。
+
+## 13. 适配 PC 或移动设备
+
+根据**用户设备**不同**返回不同样式的站点**，以前经常使用的是纯前端的自适应布局，但无论是复杂性和易用性上面还是不如分开编写的好，比如我们常见的淘宝、京东......这些大型网站就都没有采用自适应，而是用**分开制作**的方式，根据用户请求的 `user-agent`(用户设备信息) 来判断是返回 `PC` 还是 `H5` 站点。
+
+首先在 `/usr/share/nginx/html` 文件夹下 `mkdir` 分别新建两个文件夹 `PC` 和 `mobile`，`vim` 编辑两个 `index.html` 随便写点内容。
+
+然后和设置二级域名虚拟主机时候一样，去 `/etc/nginx/conf.d` 文件夹下新建一个配置文件 `fe.sherlocked93.club.conf` ：
+
+```nginx
+# /etc/nginx/conf.d/fe.sherlocked93.club.conf
+
+server {
+  listen 80;
+	server_name fe.sherlocked93.club;
+
+	location / {
+		root  /usr/share/nginx/html/pc;
+    if ($http_user_agent ~* '(Android|webOS|iPhone|iPod|BlackBerry)') {
+      root /usr/share/nginx/html/mobile;
+    }
+		index index.html;
+	}
+}
+
+```
+
+配置基本没什么不一样的，主要多了一个 `if` 语句，然后使用 `$http_user_agent` 全局变量来判断**用户请求**的 `user-agent`，指向不同的 静态资源 `root` 路径，返回对应站点。
+
+在浏览器访问这个站点，然后 `F12` 中模拟使用手机访问：
+
+![171c4e97062c5124](./images/171c4e97062c5124.png)
+
+可以看到在模拟使用移动端访问的时候，Nginx 返回的站点变成了移动端对应的 html 了。
+
+## 14. 配置 HTTPS
+
+具体配置过程网上挺多的了，也可以使用你购买的某某云，一般都会有[免费申请](https://cloud.tencent.com/document/product/400/6814)的服务器证书，安装直接看所在云的操作指南即可。
+
+我购买的腾讯云提供的亚洲诚信机构颁发的免费证书只能一个域名使用，二级域名什么的需要另外申请，但是申请审批比较快，一般几分钟就能成功，然后下载证书的压缩文件，里面有个 `nginx` 文件夹，把 `xxx.crt`(证书文件) 和 `xxx.key`(私钥文件) 文件拷贝到服务器目录
+
+再这样配置：
+
+```nginx
+server {
+  listen 443 ssl http2 default_server;   # SSL 访问端口号为 443
+  server_name sherlocked93.club;         # 填写绑定证书的域名
+
+  ssl_certificate /etc/nginx/https/1_sherlocked93.club_bundle.crt;   # 证书文件地址
+  ssl_certificate_key /etc/nginx/https/2_sherlocked93.club.key;      # 私钥文件地址
+  ssl_session_timeout 10m;
+
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;      #请按照以下协议配置
+  ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+  ssl_prefer_server_ciphers on;
+
+  location / {
+    root         /usr/share/nginx/html;
+    index        index.html index.htm;
+  }
+}
+
+```
+
+写完 `nginx -t -q` 校验一下配置文件是否正确，没问题就 `nginx -s reload` 重启 `nginx`，现在去访问 `https://sherlocked93.club/` 就能访问 `HTTPS` 版的网站了。
+
+一般还可以加上几个增强安全性的命令：
+
+```nginx
+add_header X-Frame-Options DENY;           # 减少点击劫持
+add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
+add_header X-Xss-Protection 1;             # 防XSS攻击
+
+```
+
+## 15. 一些常用技巧
+
+### 15.1 静态服务
+
+```nginx
+server {
+  listen       80;
+  server_name  static.sherlocked93.club;
+  charset utf-8;    # 防止中文文件名乱码
+
+  location /download {
+    alias	          /usr/share/nginx/html/static;  # 静态资源目录
+
+    autoindex               on;    # 开启静态资源列目录
+    autoindex_exact_size    off;   # on(默认)显示文件的确切大小，单位是byte；off显示文件大概大小，单位KB、MB、GB
+    autoindex_localtime     off;   # off(默认)时显示的文件时间为GMT时间；on显示的文件时间为服务器时间
+  }
+}
+
+```
+
+### 15.2 图片防盗链
+
+```nginx
+server {
+  listen       80;
+  server_name  *.sherlocked93.club;
+
+  # 图片防盗链
+  location ~* \.(gif|jpg|jpeg|png|bmp|swf)$ {
+    valid_referers none blocked 192.168.0.2;  # 只允许本机 IP 外链引用
+    if ($invalid_referer){
+      return 403;
+    }
+  }
+}
+
+```
+
+### 15.3 请求过滤
+
+```nginx
+# 非指定请求全返回 403
+if ( $request_method !~ ^(GET|POST|HEAD)$ ) {
+  return 403;
+}
+
+location / {
+  # IP访问限制（只允许IP是 192.168.0.2 机器访问）
+  allow 192.168.0.2;
+  deny all;
+
+  root   html;
+  index  index.html index.htm;
+}
+
+```
+
+### 15.4 配置图片、字体等静态文件缓存
+
+由于图片、字体、音频、视频等**静态文件**在打包的时候通常会增加了 `hash`，所以缓存可以设置的长一点，先设置`强制缓存`，再设置`协商缓存`；如果存在没有 hash 值的静态文件，建议不设置强制缓存，仅通过`协商缓存`判断是否需要使用缓存。
+
+```bash
+# 图片缓存时间设置
+location ~ .*\.(css|js|jpg|png|gif|swf|woff|woff2|eot|svg|ttf|otf|mp3|m4a|aac|txt)$ {
+	expires 10d;
+}
+
+# 如果不希望缓存
+expires -1;
+
+```
+
+### 15.5 单页面项目 history 路由配置
+
+```nginx
+server {
+  listen       80;
+  server_name  fe.sherlocked93.club;
+
+  location / {
+    root       /usr/share/nginx/html/dist;  # vue 打包后的文件夹
+    index      index.html index.htm;
+    try_files  $uri $uri/ /index.html @rewrites;
+
+    expires -1;                          # 首页一般没有强制缓存
+    add_header Cache-Control no-cache;
+  }
+
+  # 接口转发，如果需要的话
+  #location ~ ^/api {
+  #  proxy_pass http://be.sherlocked93.club;
+  #}
+
+  location @rewrites {
+    rewrite ^(.+)$ /index.html break;
+  }
+}
+
+```
+
+### 15.6 HTTP 请求转发到 HTTPS
+
+配置完 `HTTPS` 后，浏览器还是可以访问 `HTTP` 的地址 `http://sherlocked93.club/` 的，可以做一个 `301` 跳转，把对应域名的 `HTTP` 请求重定向到 `HTTPS` 上
+
+```nginx
+server {
+    listen      80;
+    server_name www.sherlocked93.club;
+
+    # 单域名重定向
+    if ($host = 'www.sherlocked93.club'){
+        return 301 https://www.sherlocked93.club$request_uri;
+    }
+    # 全局非 https 协议时就重定向
+    if ($scheme != 'https') {
+        return 301 https://$server_name$request_uri;
+    }
+
+    # 或者全部重定向
+    return 301 https://$server_name$request_uri;
+
+    # 以上配置选择自己需要的即可，不用全部加
+}
+
+```
+
+### 15.7 泛域名路径分离
+
+这是一个非常实用的技能，经常有时候我们可能需要配置一些二级或者三级域名，希望通过 `Nginx` 自动指向对应目录，比如：
+
+1. `test1.doc.sherlocked93.club` 自动指向 `/usr/share/nginx/html/doc/test1` 服务器地址；
+2. `test2.doc.sherlocked93.club` 自动指向 `/usr/share/nginx/html/doc/test2` 服务器地址；
+
+```nginx
+server {
+    listen       80;
+    server_name  ~^([\w-]+)\.doc\.sherlocked93\.club$;
+
+    # $1指的是 .doc 前面的分组
+    root /usr/share/nginx/html/doc/$1;
+}
+
+```
+
+### 15.8 泛域名转发
+
+和之前的功能类似，有时候我们希望把二级或者三级域名链接重写到我们希望的路径，让后端就可以根据路由解析不同的规则：
+
+1. test1.serv.sherlocked93.club/api?name=a 自动转发到 127.0.0.1:8080/test1/api?name=a；
+2. test2.serv.sherlocked93.club/api?name=a 自动转发到 127.0.0.1:8080/test2/api?name=a ；
+
+```nginx
+server {
+    listen       80;
+    server_name ~^([\w-]+)\.serv\.sherlocked93\.club$;
+
+    location / {
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header        Host $http_host;
+        proxy_set_header        X-NginX-Proxy true;
+        # $1 为 .serv 前面匹配到的分组
+        proxy_pass              http://127.0.0.1:8080/$1$request_uri;
+    }
+}
+
+```
+
+## 16. 最佳实践
+
+1. 为了使 `Nginx` 配置更易于维护，建议为**每个服务创建一个单独的配置文件**，存储在 `/etc/nginx/conf.d` 目录，根据需求可以创建**任意多个独立的配置文件**。
+2. **独立的配置文件**，建议遵循以下命名约定 `<服务>.conf`，比如域名是 `sherlocked93.club`，那么你的配置文件的应该是这样的 `/etc/nginx/conf.d/sherlocked93.club.conf`，如果部署**多个服务**，也可以在文件名中加上 `Nginx` 转发的**端口号**，比如 `sherlocked93.club.8080.conf`，如果是二级域名，建议也都加上 `fe.sherlocked93.club.conf`。
+3. **常用的、复用频率比较高**的配置可以放到 `/etc/nginx/snippets` 文件夹，在 `Nginx` 的配置文件中需要用到的位置 `include` 进去，以**功能**来命名，并在每个 `snippet` 配置文件的**开头注释标明主要功能和引入位置**，方便管理。比如之前的 `gzip`、`cors` 等常用配置，我都设置了 `snippet`。
+4. `Nginx` 日志相关目录，内以 `域名.type.log` 命名（比如 `be.sherlocked93.club.access.log` 和 `be.sherlocked93.club.error.log` ）位于 `/var/log/nginx/` 目录中，为每个**独立的服务**配置**不同的访问权限**和**错误日志**文件，这样查找错误时，会更加方便快捷。
+
+## 参考文档
+
+1. [Nginx 中文文档](https://www.nginx.cn/doc/)
+2. [Nginx 安装，目录结构与配置文件详解](https://www.cnblogs.com/liang-io/p/9340335.html)
+3. [Keepalived 安装与配置](https://blog.csdn.net/xyang81/article/details/52554398)
+4. [Nginx 与前端开发](https://juejin.im/post/5bacbd395188255c8d0fd4b2#comment)
+5. [跨域资源共享 CORS 详解 - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/04/cors.html)
+6. [前端开发者必备的 nginx 知识](http://www.conardli.top/blog/article/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E8%80%85%E5%BF%85%E5%A4%87%E7%9A%84nginx%E7%9F%A5%E8%AF%86.html#nginx%E5%9C%A8%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E4%BD%9C%E7%94%A8)
+7. [nginx 重定向，全局 https，SSL 配置，反代配置参考](https://blog.xinac.cn/archives/nginx%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%82%E8%80%83%E5%A4%A7%E5%85%A8)
+8. [Nginx 入门教程](https://xuexb.github.io/learn-nginx/)
 
 ## 最后
 
