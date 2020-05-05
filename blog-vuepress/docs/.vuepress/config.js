@@ -200,7 +200,13 @@ module.exports = {
                         '/views/nginx/nginx-details.md',
                     ],
                 },
-
+                {
+                    title: '前端必不可少的git知识',
+                    collapsable: false,
+                    children: [
+                        '/views/git/git-command-animation.md',
+                    ],
+                },
             ],
         }
     },
