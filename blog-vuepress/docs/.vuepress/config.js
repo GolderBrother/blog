@@ -207,6 +207,13 @@ module.exports = {
                         '/views/git/git-command-animation.md',
                     ],
                 },
+                {
+                    title: '前端性能优化专题，让你的网站飞起来吧',
+                    collapsable: false,
+                    children: [
+                        '/views/performance/code-split.md',
+                    ],
+                },
             ],
         }
     },
