@@ -127,6 +127,10 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/react/react-hooks.md',
+                        '/views/react/react-lifecycle.md',
+                        '/views/react/react-skill.md',
+                        '/views/react/react-nice-library.md',
+                        '/views/react/react-interview.md',
                     ],
                 },
                 {
