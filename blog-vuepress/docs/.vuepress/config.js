@@ -96,6 +96,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/h5/h5-demo1.md',
+                        '/views/mobile/mobile-optmization.md',
                     ]
                 },
                 {
