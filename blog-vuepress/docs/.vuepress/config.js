@@ -161,6 +161,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/algorithms/sort.md',
+                        '/views/algorithms/interview.md',
                     ],
                 },
                 {
@@ -173,6 +174,7 @@ module.exports = {
                         '/views/fe-interview/webpack-principle.md',
                         '/views/fe-interview/webpack-HMR.md',
                         '/views/fe-interview/chrome-start-process.md',
+                        '/views/fe-interview/dns-prefetch.md',
                         '/views/fe-interview/browser-cache.md',
                         '/views/fe-interview/send-content-to-browser.md',
                         '/views/fe-interview/browser-render.md',
@@ -188,6 +190,7 @@ module.exports = {
                         '/views/fe-interview/node-eventLoop.md',
                         '/views/fe-interview/browser-eventLoop.md',
                         '/views/fe-interview/setTimeout&setImmediate.md',
+                        '/views/fe-interview/js-interview.md',
                     ],
                 },
                 {
