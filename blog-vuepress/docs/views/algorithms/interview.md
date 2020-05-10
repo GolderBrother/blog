@@ -17,17 +17,267 @@
 
 ## 数据结构类题目
 
+### 链表
+
+#### 006. 从尾到头打印链表
+
+输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+
+```txt
+示例 1：
+
+输入：head = [1,3,2]
+输出：[2,3,1]
+```
+
+第一种方式：`reverse()` 输出
+
+实现代码如下:
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {number[]}
+ */
+var reversePrint = function(head) {
+  if (head == null) return [];
+  const reverseList = [];
+  while (head) {
+    reverseList.push(head.val);
+    head = head.next;
+  }
+  return reverseList.reverse();
+};
+```
+
+第二种方式：递归反转链表
+
+实现代码如下：
+
+```js
+var reversePrint = function(head) {
+  if (head == null || head.next == null) return head;
+  const next = reversePrint(head.next);
+  head.next.next = head; // 指针反转
+  head.next = null;
+  return next; // 返回反转后的扁头
+};
+```
+
+### 树
+
+#### 07. 重建二叉树
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
+```txt
+例如，给出
+
+前序遍历 preorder = [3,9,20,15,7]
+中序遍历 inorder = [9,3,15,20,7]
+
+返回如下的二叉树：
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+```
+
+实现代码如下：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {number[]} preorder
+ * @param {number[]} inorder
+ * @return {TreeNode}
+ */
+var buildTree = function(preorder, inorder) {
+  // 前序和中序遍历的结果，有一个为空，直接返回
+  if (!preorder.length || !inorder.length) return null;
+  // 从前序遍历的结果中找出根节点
+  const root = preorder[0];
+  const node = new TreeNode(root);
+
+  // 这边的index有两个含义：一个是找出根节点在中序遍历结果中的索引；另一个是前序遍历结果的左子树节点个数
+  let index = 0;
+  for (; index < inorder.length; index++) {
+    if (inorder[index] === root) break;
+  }
+
+  // 递归构建左右子树
+  node.left = buildTree(preorder.slice(1, index + 1), inorder.slice(0, index));
+  node.right = buildTree(preorder.slice(index + 1), inorder.slice(index + 1));
+  return node;
+};
+```
+
+### 栈 & 队列
+
+#### 09. 用两个栈实现队列
+
+用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead  操作返回 -1 )
+
+```txt
+示例 1：
+
+输入：
+["CQueue","appendTail","deleteHead","deleteHead"]
+[[],[3],[],[]]
+输出：[null,null,3,-1]
+示例 2：
+
+输入：
+["CQueue","deleteHead","appendTail","appendTail","deleteHead","deleteHead"]
+[[],[],[5],[2],[],[]]
+输出：[null,-1,null,null,5,2]
+
+```
+
+实现思路：
+
+可以利用栈的特性：后入先出。根据题目提示，使用 2 个栈即可。一个栈 `inStack` 用来**存储插入队列的数据**，一个栈 `outStack` 用来**从队列中取出数据**。
+
+算法分为**入队**和**出**队过程。
+
+入队过程(`压栈`)：将元素放入 `inStack` 中。
+
+出队过程(`弹栈`)：
+
+- `outStack` 不为空：弹出元素
+- `outStack` 为空：将 inStack 元素依次弹出，放入到 `outStack` 中（在数据转移过程中，顺序已经从**后入先出**(栈)变成了**先入先出**(队列)）
+
+  时间复杂度是 `O(N)`，空间复杂度是 `O(N)`。
+
+实现代码如下:
+
+```js
+var CQueue = function() {
+  // 用来存储入栈元素(先进后出)
+  this.inStack = [];
+  // 用来存储出栈元素(先进先出)
+  this.outStack = [];
+};
+
+/**
+ * 在队列尾部插入整数(入栈 push)
+ * @param {number} value
+ * @return {void}
+ */
+CQueue.prototype.appendTail = function(value) {
+  this.inStack.push(value);
+};
+
+/**
+ * 在队列头部删除整数(弹栈 pop)
+ * @return {number}
+ */
+CQueue.prototype.deleteHead = function() {
+  const { inStack = [], outStack = [] } = this;
+  // 出栈元素弹栈(先进先出)
+  if (outStack.length) return outStack.pop();
+  while (inStack.length) {
+    // 栈转成队列：先进后出(栈) -> 先进先出(队列)
+    outStack.push(inStack.pop());
+  }
+  // 若队列中没有元素，deleteHead 操作返回 -1
+  return outStack.length ? outStack.pop() : -1;
+};
+
+/**
+ * Your CQueue object will be instantiated and called as such:
+ * var obj = new CQueue()
+ * obj.appendTail(value)
+ * var param_2 = obj.deleteHead()
+ */
+```
+
 ## 具体算法类题目
+
+### 斐波那契数列
+
+#### 10-I. 斐波那契数列
+
+写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+
+```txt
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+```
+
+斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+实现代码如下：
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var fib = function(n) {
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  // curr = prevOne + prevTwo
+  // f(3) = f(2) + f(1) = (f(1) + f(0)) + f(1)
+  let prevTwo = 0, // 前两个数 F(N - 2)
+    prevOne = 1; // 前一个数 F(N - 1)
+  for (let i = 1; i < n; i++) {
+    const current = prevTwo;
+    // 下一次的第一个数就是从上一次的第二个数开始
+    prevTwo = prevOne;
+    // 取模
+    prevOne = (current + prevOne) % 1000000007;
+  }
+  return prevOne;
+};
+```
+
+#### 10- II. 青蛙跳台阶问题
+
+一只青蛙一次可以跳上 1 级台阶，也可以跳上 2 级台阶。求该青蛙跳上一个 n  级的台阶总共有多少种跳法。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+```txt
+示例 1：
+
+输入：n = 2
+输出：2
+示例 2：
+
+输入：n = 7
+输出：21
+```
+
+实现代码如下：
 
 ### 搜索算法
 
-### 003. 数组中重复的数字
+#### 03. 数组中重复的数字
 
 找出数组中重复的数字。
 
 在一个长度为 n 的数组 nums 里的所有数字都在 0 ～ n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
 
-```text
+```txt
 示例 1：
 
 输入：
@@ -54,7 +304,7 @@ var findRepeatNumber = function(nums) {
 console.log(findRepeatNumber([2, 3, 1, 0, 2, 5, 3])); // 2
 ```
 
-#### 004. 二维数组查找
+#### 04. 二维数组查找
 
 在一个 `n * m` 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 
@@ -102,11 +352,11 @@ console.log(findNumberIn2DArray(matrix, 5)); // false
 console.log(findNumberIn2DArray(matrix, 20)); // true
 ```
 
-## 011. 旋转数组的最小数字
+#### 11. 旋转数组的最小数字
 
 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组  [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为 1。
 
-```text
+```txt
 示例 1：
 
 输入：[3,4,5,1,2]
@@ -129,9 +379,13 @@ var minArray = function(numbers) {
 console.log(minArray([2, 2, 2, 0, 1])); // 0
 ```
 
-### 056-1. 数组中数字出现的次数
+#### 56-1. 数组中数字出现的次数
 
 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是 O(n)，空间复杂度是 O(1)。
+
+第一种方式
+
+计算元素出现次数，过滤出只出现一次的元素，然后转数组
 
 实现代码如下：
 
@@ -160,9 +414,53 @@ console.log(singleNumbers([4, 1, 4, 6])); // [ 1, 6 ]
 
 空间复杂度：O(n)。
 
-实际上不满足题目的空间复杂度 O(1)
+第二种方式
+
+使用 `Map` 来存储只出现一次的元素，然后转数组
+
+实现代码如下：
+
+```js
+var singleNumbers2 = function(nums) {
+  const map = new Map();
+  for (const num of nums) {
+    if (map.get(num)) map.delete(num);
+    else map.set(num, true);
+  }
+  console.log('map', map); // Map { 1 => true, 6 => true }
+  return [...map.keys()];
+};
+console.log(singleNumbers2([4, 1, 4, 6])); // [ 1, 6 ]
+```
 
 [可以参考题解](https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/solution/zhen-xin-kan-bu-dong-na-xie-wei-yun-suan-fu-de-hua/)
+
+### 其他算法
+
+#### 05. 替换空格
+
+请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
+
+```txt
+示例 1：
+
+输入：s = "We are happy."
+输出："We%20are%20happy."
+```
+
+直接使用**正则匹配替换**即可
+
+实现代码如下：
+
+```js
+var replaceSpace = function(s) {
+  const str = s.replace(/\s/g, '%20');
+  return str;
+};
+
+const s = 'We are happy.';
+console.log(replaceSpace(s)); // We%20are%20happy.
+```
 
 ## 最后
 

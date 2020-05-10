@@ -62,3 +62,22 @@ var singleNumbers = function(nums) {
 };
 
 console.log(singleNumbers([4, 1, 4, 6])); // [ 1, 6 ]
+
+var singleNumbers2 = function(nums) {
+  const map = new Map();
+  for (const num of nums) {
+    if (map.get(num)) map.delete(num);
+    else map.set(num, true);
+  }
+  console.log('map', map);
+  return [...map.keys()];
+}
+console.log(singleNumbers2([4, 1, 4, 6])); // [ 1, 6 ]
+
+var replaceSpace = function(s) {
+  const str = s.replace(/\s/g, "%20");
+  return str;
+};
+
+const s = "We are happy.";
+console.log(replaceSpace(s)); // We%20are%20happy.
