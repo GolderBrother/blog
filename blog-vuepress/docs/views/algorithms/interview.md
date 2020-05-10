@@ -19,7 +19,7 @@
 
 ### 链表
 
-#### 006. 从尾到头打印链表
+#### 06. 从尾到头打印链表
 
 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
 
@@ -69,6 +69,101 @@ var reversePrint = function(head) {
   head.next = null;
   return next; // 返回反转后的扁头
 };
+```
+
+#### 24. 反转链表
+
+定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+
+```txt
+示例:
+
+输入: 1->2->3->4->5->NULL
+输出: 5->4->3->2->1->NULL
+```
+
+实现思路：
+
+从头节点开始遍历链表，依次将每个节点指向下一个节点的指针改为指向上一个节点的指针，直到尾结点为止，这时候尾结点即新的头结点，直接返回
+
+实现代码：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+  if (head === null || head.next === null) return head;
+  let prev = null,
+    curr = head;
+  while (curr !== null) {
+    const cNext = curr.next; // 记录下一个指针
+    curr.next = prev === null ? null : prev;
+    prev = curr; // 上一个指针往后移
+    curr = cNext; // 当前指针往后移
+  }
+  return prev; // 尾结点即为新的头结点
+};
+
+reverseList([1, 2, 3, 4, 5]); // [5,4,3,2,1]
+```
+
+#### 22. 链表中倒数第 k 个节点
+
+输入一个链表，输出该链表中倒数第 k 个节点。为了符合大多数人的习惯，本题从 1 开始计数，即链表的尾节点是倒数第 1 个节点。例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
+
+```txt
+示例：
+
+给定一个链表: 1->2->3->4->5, 和 k = 2.
+
+返回链表 4->5.
+```
+
+实现思路：
+
+声明两个节点，采用快慢指针方法。让第一个节点先走 k 步，然后第一个节点和第二个节点再同时走, 当第一个节点到达尾结点了，循环结束，第二个节点就到达了第 k 个节点位置
+
+实现代码如下：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode}
+ */
+var getKthFromEnd = function(head, k) {
+  // 声明两个节点，采用快慢指针方法
+  let first = (second = head);
+  // 从1开始计数，让第一个节点先走k步
+  while (k > 0) {
+    first = first.next;
+    k--;
+  }
+  // 然后第一个节点和第二个节点再同时走, 当第一个节点到达尾结点了，循环结束，第二个节点就到达了第k个节点位置
+  while (first) {
+    first = first.next;
+    second = second.next;
+  }
+  return second;
+};
+
+getKthFromEnd([1, 2, 3, 4, 5], 2); // [4,5]
 ```
 
 ### 树
@@ -267,7 +362,33 @@ var fib = function(n) {
 输出：21
 ```
 
+这个可以找出归类，递推公式类似 `斐波那契数列`
+
 实现代码如下：
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var numWays = function(n) {
+  // 就1种跳法
+  if (n <= 0) return 1;
+  // 2级台阶就2种跳法：1,1 2
+  if (n <= 2) return n;
+
+  let pre = 1,
+    cur = 2,
+    i = 2, // 从第3级开始通过循环累加
+    res = 0; // 有多少种跳法
+  while (i++ < n) {
+    res = (pre + cur) % 1000000007;
+    pre = cur; // 更新pre指向下一个值(cur)
+    cur = res; // 更新cur指向下一个值(res)
+  }
+  return res;
+};
+```
 
 ### 搜索算法
 

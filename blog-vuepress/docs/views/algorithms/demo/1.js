@@ -81,3 +81,29 @@ var replaceSpace = function(s) {
 
 const s = "We are happy.";
 console.log(replaceSpace(s)); // We%20are%20happy.
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+  if (head === null || head.next === null) return head;
+  let prev = null,
+    curr = head;
+  while (curr) {
+    const cNext = curr.next; // 记录下一个指针
+    curr.next = prev === null ? null : prev;
+    prev = curr; // 上一个指针往前移
+    curr = cNext; // 当前指针往前移
+  }
+  return prev;
+};
+
+console.log(reverseList([1, 2, 3, 4, 5]));
