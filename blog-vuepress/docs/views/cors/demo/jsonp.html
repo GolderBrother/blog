@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jsonp</title>
+</head>
+
+<body>
+  <script type="text/javascript">
+    // 定义前端执行的回调
+    window.jsonpCallback = function(res) {
+      console.log(res);
+    };
+  </script>
+  <!-- 外链的形式 -->
+  <script src="1.js"></script>
+  <!-- <script src="http://localhost:8080/api/jsonp?msg=hello&cb=jsonpCallback" type="text/javascript"></script> -->
+</body>
+
+</html>
