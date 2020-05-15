@@ -252,6 +252,178 @@ var buildTree = function(preorder, inorder) {
 输出：[4,7,2,9,6,3,1]
 ```
 
+实现思路：
+
+首先要搞清楚镜像的定义，简单来说就是：**从上到下，依次交换每个节点的左右节点**。
+
+实现代码如下：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var mirrorTree = function(root) {
+  if (!root) return null;
+  // 可以使用ES6的数组结构来交换两个值
+  // [root.left, root.right] = [root.right, root.left];
+  // 或者通过中间变量来交换两个值
+  const temp = root.left;
+  (root.left = root.right), (root.right = temp);
+  mirrorTree(root.left);
+  mirrorTree(root.right);
+  return root;
+};
+```
+
+#### 28. 对称的二叉树
+
+请实现一个函数，用来判断一棵二叉树是不是对称的。如果一棵二叉树和它的镜像一样，那么它是对称的。
+
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
+
+```txt
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+```
+
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
+
+```txt
+    1
+   / \
+  2   2
+   \   \
+   3    3
+```
+
+```txt
+示例 1：
+
+输入：root = [1,2,2,3,4,4,3]
+输出：true
+示例 2：
+
+输入：root = [1,2,2,null,3,null,3]
+输出：false
+```
+
+实现思路：
+
+- 如果两个都为空，则是对称的
+- 只要左节点或者右节点有一个为空，或者左节点值不等于右节点值 就是不对称
+- 最后递归判断子节点是否对称的条件：左的左子节点值=右的右子节点值 && 左的右子节点值=右的左子节点值
+
+实现代码如下：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetric = function(root) {
+  function isMirror(root1, root2) {
+    //    如果两个都为空，则是对称的
+    if (root1 == null && root2 == null) return true;
+    //    只要左节点或者右节点有一个为空，或者左节点值不等于右节点值 就是不对称
+    else if (root1 == null || root2 == null || root1.val !== root2.val) return false;
+    //    递归子级继续判断，此时父节点都有值，并且相等，就判断 左的左子节点值=右的右子节点值 && 左的右子节点值=右的左子节点值
+    else return Boolean(isMirror(root1.left, root2.right) && isMirror(root1.right, root2.left));
+  }
+  return isMirror(root, root);
+};
+```
+
+#### 32-I. 从上到下打印二叉树
+
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+```txt
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回：
+
+```js
+[3, 9, 20, 15, 7];
+```
+
+实现思路:
+
+这个是典型的**先序遍历**(本节点 -> 左子节点 -> 右子节点)，也是 **广度优先**思想
+需要使用一个队列来存储有用的节点。
+
+- 将 root 放入队列
+- 取出队首元素，将 val 放入返回的数组中
+- 检查队首元素的子节点，若不为空，则将子节点放入队列
+- 检查队列是否为空，为空，结束并返回数组；不为空，回到第二步
+
+时间复杂度和空间复杂度是 `O(N)`
+
+实现代码如下：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var levelOrder = function(root) {
+  if (!root) return [];
+  // 利用队列先进先出的特性，来存储遍历到的每个节点，然后依次推入data中
+  const data = [],
+    queue = [root];
+  while (queue.length) {
+    // 从队首取出元素(出队)
+    const firstNode = queue.shift();
+    // 节点取值
+    data.push(firstNode.val);
+    // 左、右子节点入队
+    firstNode.left && queue.push(firstNode.left);
+    firstNode.right && queue.push(firstNode.right);
+  }
+  return data;
+};
+```
+
+在 Js 中没有专门的**队列**，都使用**数组**来实现。**队列**的常用操作：
+
+- 入队：`array.push(val)`
+- 出队：`array.shift()`
+- 查看队首元素：`array[0]`
+- 检查是否为空：`!array.length`
+
 ### 栈 & 队列
 
 #### 09. 用两个栈实现队列
@@ -278,7 +450,7 @@ var buildTree = function(preorder, inorder) {
 
 可以利用栈的特性：后入先出。根据题目提示，使用 2 个栈即可。一个栈 `inStack` 用来**存储插入队列的数据**，一个栈 `outStack` 用来**从队列中取出数据**。
 
-算法分为**入队**和**出**队过程。
+算法分为**入队**和**出队**过程。
 
 入队过程(`压栈`)：将元素放入 `inStack` 中。
 
@@ -615,3 +787,5 @@ console.log(replaceSpace(s)); // We%20are%20happy.
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
+
+ <comment/>
