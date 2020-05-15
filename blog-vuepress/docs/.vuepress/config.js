@@ -223,6 +223,14 @@ module.exports = {
                         '/views/performance/code-split.md',
                     ],
                 },
+                {
+                    title: '前端高手进阶专题，告别小菜鸟',
+                    collapsable: false,
+                    children: [
+                        '/views/fe-advanced/ad1.md',
+                        '/views/fe-advanced/ad2.md',
+                    ],
+                }
             ],
         }
     },
