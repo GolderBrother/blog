@@ -456,3 +456,670 @@ let partialDisplay2 = partialFunc(display, '_', 2, '_'); // 使用占位符
 console.log('partialFunc2', partialDisplay2(1, 3, 4, 5, 6, 7, 8));
 // partialFunc2 [ 1, 2, 3, 4, 5, 6, 7, 8 ]
 ```
+
+偏函数和柯里化概念类似，个人认为它们区别在于偏函数会固定你传入的几个参数，再一次性接受剩下的参数，而函数柯里化会根据你传入参数不停的返回函数，直到参数个数满足被柯里化前函数的参数个数
+
+Function.prototype.bind 函数就是一个偏函数的典型代表，它接受的第二个参数开始，为预先添加到绑定函数的参数列表中的参数，与 bind 不同的是，上面的这个函数同样支持占位符
+
+## 13. 斐波那契数列及其优化
+
+```js
+// 斐波那契数列及其优化
+
+// 函数执行耗时分析
+const speed = (fn, num) => {
+  console.time(`${fn.name} time`);
+  const value = fn(num);
+  console.timeEnd(`${fn.name} time`);
+  console.log(`返回值：${value}`);
+};
+
+/**
+ * 斐波那契数列
+ * @param {number} n -第几个位置
+ */
+let fibonacci1 = n => {
+  if (n < 1) throw new Error('参数有误');
+  if (n === 1 || n === 2) return 1;
+  return fibonacci1(n - 1) + fibonacci1(n - 2);
+};
+
+speed(fibonacci1, 35);
+// fibonacci1 time: 65.419ms
+// 返回值：9227465
+
+// 函数记忆
+const memory = function(fn) {
+  const obj = {};
+  return function(n) {
+    if (obj[n] === undefined) obj[n] = fn(n);
+    return obj[n];
+  };
+};
+
+fibonacci1 = memory(fibonacci1);
+speed(fibonacci1, 35);
+// time: 0.109ms
+// 返回值：9227465
+
+/**
+ * @description 斐波那契动态规划版本（最优解）
+ **/
+function fibonacci_DP(n) {
+  let res = 1;
+  if (n === 1 || n === 2) return res;
+  n -= 2;
+  let cur = 1,
+    pre = 1;
+  while (n--) {
+    res = pre + cur;
+    pre = cur; // 更新pre，往前移动
+    cur = res; // 更新cur，往前移动
+  }
+  return res;
+}
+
+speed(fibonacci_DP, 35);
+// fibonacci_DP time: 0.033ms
+// 返回值：9227465
+```
+
+利用函数记忆，将之前运算过的结果保存下来，对于频繁依赖之前结果的计算能够节省大量的时间，例如斐波那契数列，缺点就是闭包中的 obj 对象会额外占用内存
+不过在现如今多核处理器下，我们提倡**空间换取时间**，这种内存消耗可以忽略。
+
+## 14. 实现函数 bind 方法
+
+```js
+```
+
+函数的 bind 方法核心是利用 call，同时考虑了一些其他情况，例如
+
+- bind 返回的函数被 new 调用作为构造函数时，绑定的值会失效并且改为 new 指定的对象
+- 定义了绑定后函数的 length 属性和 name 属性（不可枚举属性）
+- 绑定后函数的原型需指向原来的函数
+
+## 15. 实现函数 call 方法
+
+```js
+// 实现函数 call 方法
+
+const selfCall = function(context, ...args) {
+  // 获取call绑定的函数
+  const func = this;
+  context = context || window;
+  if (typeof func !== 'function') throw new Error('this is not a function');
+  // 将要执行的函数赋值到新的上下文中,这里使用ES6 的 Symbol 类型，为了防止属性冲突
+  const caller = Symbol.for('caller');
+  context[caller] = func;
+  // 执行创建的函数，接受可能传入的参数并传入
+  const res = context[caller](...args);
+  // 执行完，删除临时赋值到上下文函数
+  delete context[caller];
+  // 返回新的执行结果
+  return res;
+};
+
+Function.prototype.selfCall ||
+  Object.defineProperty(Function.prototype, 'selfCall', {
+    value: selfCall,
+    enumerable: false,
+    configurable: true,
+    writable: false
+  });
+const a = 1;
+
+function func() {
+  console.log(this.a);
+}
+let example2 = {
+  a: 2
+};
+func.selfCall(example2);
+console.log(example2);
+
+// 2
+// { a: 2 }
+```
+
+## 16. 简易的 CO 模块
+
+```js
+// 简易的 CO 模块
+
+function run(generatorFunc) {
+  const it = generatorFunc();
+  const result = it.next();
+  return new Promise((resolve, reject) => {
+    const next = function(result) {
+      if (result.done) {
+        resolve(result.value);
+      }
+      // 包装成成功态的Promise
+      result.value = Promise.resolve(result.value);
+      result.value
+        .then(res => {
+          const result = it.next(res);
+          next(result);
+        })
+        .catch(err => reject(err));
+    };
+  });
+}
+
+function* func(data) {
+  const res = yield api1(data);
+  console.log('res', res);
+  const res2 = yield api2(data);
+  console.log('res2', res2);
+  const res3 = yield api3(data);
+  console.log('res3', res3);
+}
+run(func);
+```
+
+`run` 函数接受一个生成器函数，每当 `run` 函数包裹的生成器函数遇到 `yield` 关键字就会**停止**，当 `yield` 后面的 `promise` 被**解析成功**后会自动调用 `next` 方法执行到下个 `yield` 关键字处，最终就会形成每当一个 `promise` 被解析成功就会解析下个 `promise`，当全部解析成功后打印所有解析的结果，
+
+## 17. 函数防抖
+
+```js
+// 函数防抖
+/**
+ * @description 函数防抖
+ * @param {Function} func -需要函数防抖的函数
+ * @param {Number} time -延迟时间
+ * @param {Options} options -配置项
+ * @return {Function} -经过防抖处理的函数
+ **/
+
+/**
+ * @typedef {Object} Options -配置项
+ * @property {Boolean} leading -开始是否需要立即触发一次
+ * @property {Boolean} trailing -结束后是否需要额外触发一次
+ * @property {this} context -上下文
+ **/
+
+function debounce(
+  func,
+  time = 17,
+  options = {
+    leading: true, // leading 为是否在进入时立即执行一次
+    trailing: true, //  trailing 为是否在事件触发结束后额外再触发一次
+    context: null
+  }
+) {
+  let timer;
+  const _debounce = function(...args) {
+    // 如果有上次的定时器在进行，就先清除
+    if (timer) clearTimeout(timer);
+    if (options.leading && !timer) {
+      timer = setTimeout(null, time);
+      func.apply(options.context, args);
+    } else if (options.trailing) {
+      timer = setTimeout(() => {
+        func.apply(options, args);
+        timer = null;
+      }, time);
+    }
+  };
+  _debounce.cancel = function() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  };
+  return _debounce;
+}
+```
+
+## 18. 函数节流
+
+```js
+// 函数节流
+/**
+ * @description 函数节流
+ * @param {Function} func -需要函数节流的函数
+ * @param {Number} time -延迟时间
+ * @param {Options} options -配置项
+ * @return {Function} -经过节流处理的函数
+ **/
+
+/**
+ * @typedef {Object} Options -配置项
+ * @property {Boolean} leading -开始是否需要立即触发一次
+ * @property {Boolean} trailing -结束后是否需要额外触发一次
+ * @property {this} context -上下文
+ **/
+const throttle = (
+  func,
+  time = 17,
+  options = {
+    leading: true,
+    trailing: false,
+    context: null
+  }
+) => {
+  let previous = new Date(0).getTime();
+  let timer;
+  const _throttle = function(...args) {
+    let now = new Date().getTime();
+    if (!options.leading) {
+      // 开始不需要立即触发一次
+      if (timer) return;
+      timer = setTimeout(() => {
+        timer = null;
+        func.apply(options.context, args);
+      });
+    } else if (now - previous > time) {
+      // 如果差时超过了定时时间，则立即执行函数
+      func.apply(options.context, args);
+      // 更新previous
+      previous = now;
+    } else if (options.trailing) {
+      // 结束后需要额外触发一次
+      // 先清除定时器后重新开启
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(options.context, args);
+      }, time);
+    }
+  };
+  _throttle.cancel = function() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  };
+  return _throttle;
+};
+```
+
+和函数防抖类似，区别在于内部额外使用了时间戳作为判断，在一段时间内没有触发事件才允许下次事件触发
+
+## 19. 图片懒加载
+
+### [`getBoundingClientRect`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect) 实现懒加载
+
+```js
+const imgList1 = [...document.querySelectorAll('.get_bounding_rect')];
+let num = imgList1.length;
+
+let lazyload1 = (() => {
+  // 记录图片加载完成个数
+  let count = 0;
+  return () => {
+    imgList1.forEach(img => {
+      const imgRect = img.getBoundingClientRect();
+      // 判断图片是否在视口中了
+      const isInViewPort = imgRect.top < window.innerHeight;
+      if (isInViewPort) {
+        // 加载图片：将假的src替换到真正的src
+        img.src = img.dataset.src;
+        count++;
+        // 当所有图片加载完毕，解绑scroll事件
+        if (count === num) {
+          document.removeEventListener('scroll', lazyload1);
+        }
+      }
+    });
+  };
+})();
+
+// 这里引用了 throttle.js 的节流函数
+lazyLoad1 = proxy(lazyLoad1, 100);
+
+document.addEventListener('scroll', lazyload1);
+// 手动加载一次，否则首屏的图片不触发滚动无法加载
+lazyload1();
+```
+
+### [`IntersectionObserver`](https://developer.mozilla.org/zh-CN/docs/Web/API/IntersectionObserver) 实现懒加载
+
+```js
+let imgList2 = Array.from(document.querySelectorAll('.intersection_observer'));
+
+let lazyload2 = function() {
+  // 实例化observer
+  // 可以用来监听可见区域的特定变化值
+  // MDN: https://developer.mozilla.org/zh-CN/docs/Web/API/IntersectionObserver
+  let observer = new IntersectionObserver(entries => {
+    //entries存储着所有观察被元素的intersectionObserverEntry配置
+    entries.forEach(entry => {
+      // 大于0表示进入视口
+      if (entry.intersectionRatio > 0) {
+        // 加载图片：将假的src替换到真正的src
+        entry.target.src = entry.target.dataset.src;
+        // 取消观察
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+  imgList2.forEach(img => {
+    // 观察img
+    observer.observe(img);
+  });
+};
+
+lazyLoad2();
+```
+
+`intersectionObserver` 的实现方式，实例化一个 `IntersectionObserver` ，并使其**观察**所有 `img` 标签
+
+当 `img` 标签进入可视区域时会执行实例化时的回调，同时给回调传入一个 `entries` 参数，保存着实例观察的所有元素的一些状态，比如每个元素的**边界信息**，当前元素对应的 `DOM` 节点，当前元素进入可视区域的比率，每当一个元素进入可视区域，将真正的图片赋值给当前 `img` 标签，同时解除对其的观察
+
+## 20. new 关键字
+
+```js
+// new 关键字
+
+const isComplexDataType = obj =>
+  (typeof obj === 'object' || typeof obj === 'function') && obj !== null;
+
+const selfNew = function(fn, ...rest) {
+  const instance = Object.create(fn.prototype);
+  const res = fn.apply(instance, rest);
+  // 如果值是对象或者函数类型，则返回对象，否则返回实例
+  return isComplexDataType(res) ? res : instance;
+};
+
+function Person(name, sex) {
+  this.name = name;
+  this.sex = sex;
+}
+
+let newPerson = new Person('zyh', 'male');
+let selfNewPerson = selfNew(Person, 'zyh', 'male');
+
+console.log(newPerson);
+console.log(selfNewPerson);
+
+// Person { name: 'zyh', sex: 'male' }
+// Person { name: 'zyh', sex: 'male' }
+```
+
+## 21. 实现 Object.assign
+
+```js
+// 实现 Object.assign
+
+const isComplexDataType = obj =>
+  obj !== null && (typeof obj === 'object' || typeof obj === 'function');
+
+// 简单实现ES6的Object.assign
+const selfAssign = function(target, ...source) {
+  if (target == null) throw new Error(`Cannot convert undefined or null to object`);
+  return source.reduce((accu, cur) => {
+    // 如果不是复杂数据类型，就包装成基本包装类型
+    !isComplexDataType(accu) && (accu = new Object(accu));
+    //source为null,undefined时忽略
+    if (cur == null) return accu;
+    // 遍历出Symbol属性和可枚举属性
+    [...Object.keys(cur), ...Object.getOwnPropertySymbols(cur)].forEach(key => {
+      accu[key] = cur[key];
+    });
+    return accu;
+  }, target);
+};
+
+Object.selfAssign ||
+  Object.defineProperty(Object, 'selfAssign', {
+    value: selfAssign,
+    configurable: true,
+    enumerable: false,
+    writable: false
+  });
+
+let target = {
+  a: 1,
+  b: 1
+};
+
+let obj1 = {
+  a: 2,
+  b: 2,
+  c: undefined
+};
+
+let obj2 = {
+  a: 3,
+  b: 3,
+  // Symbol类型
+  [Symbol.for('a')]: 3,
+  d: null
+};
+
+console.log(Object.selfAssign(target, obj1, obj2));
+// { a: 3, b: 3, c: undefined, d: null, [Symbol(a)]: 3 }
+console.log(Object.selfAssign('abd', null, undefined));
+```
+
+## 22. instanceof
+
+原理是递归遍历 right 参数的原型链，每次和 left 参数作比较，遍历到原型链终点时则返回 false，找到则返回 true
+
+```js
+// instanceof
+
+const selfInstanceof = function(left, right) {
+  // 获取[原型] left.__proto__
+  let proto = Object.getPrototypeOf(left);
+  // 递归遍历 right 参数的原型链，每次和 left 参数作比较，遍历到原型链终点时则返回 false，找到则返回 true
+  while (true) {
+    // 原型链终点时则返回 false
+    if (proto == null) return false;
+    if (proto == right.prototype) return true;
+    // 继续通过[原型]__proto__ 属性获取原型
+    proto = Object.getPrototypeOf(left);
+  }
+};
+
+console.log(selfInstanceof({}, Array)); // false
+```
+
+## 23. 洗牌算法
+
+早前的 chrome 对于元素小于 10 的数组会采用插入排序，这会导致对数组进行的乱序并不是真正的乱序，即使最新的版本 chrome 采用了原地算法使得排序变成了一个稳定的算法，对于乱序的问题仍没有解决
+
+```js
+// 洗牌算法
+
+// 早前的 chrome 对于元素小于 10 的数组会采用插入排序，这会导致对数组进行的乱序并不是真正的乱序，即使最新的版本 chrome 采用了原地算法使得排序变成了一个稳定的算法，对于乱序的问题仍没有解决
+
+//旧版本的chrome对于10个元素内的数组使用插入算法进行排序(最新版已经修改了排序算法)
+function originSort(arr) {
+  arr = arr.sort(() => Math.random() - 0.5);
+  return arr;
+}
+
+function shuffle(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    // 生成随机索引
+    const randomIndex = i + Math.floor(Math.random() * (arr.length - 1));
+    [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
+  }
+  return arr;
+}
+
+function shuffle2(arr) {
+  let _arr = [];
+  while (arr.length) {
+    let randomIndex = Math.floor(Math.random() * arr.length);
+    _arr.push(arr.splice(randomIndex)[0]);
+  }
+  return _arr;
+}
+
+// 分析概率的函数
+function statistics(fn, arr) {
+  let times = 100000;
+  let res = {};
+  for (let i = 0; i < times; i++) {
+    //每次循环声明一次防止引用同一数组
+    let _arr = [...arr];
+    let key = JSON.stringify(fn(_arr));
+    res[key] ? res[key]++ : (res[key] = 1);
+  }
+
+  // 为了方便展示，转换成百分比
+  Object.keys(res).forEach(key => {
+    res[key] = (res[key] / times) * 100 + '%';
+  });
+
+  console.log(fn.name, res);
+}
+
+statistics(originSort, [1, 2, 3]);
+statistics(shuffle, [1, 2, 3]);
+statistics(shuffle2, [1, 2, 3]);
+
+// originSort { '[2,1,3]': '25.069000000000003%',
+//   '[1,2,3]': '25.085%',
+//   '[1,3,2]': '12.612000000000002%',
+//   '[2,3,1]': '12.519%',
+//   '[3,1,2]': '12.325%',
+//   '[3,2,1]': '12.389999999999999%' }
+```
+
+## 24. 单例模式
+
+```js
+function proxy(func) {
+  let instance;
+  let handler = {
+    construct(target, args) {
+      if (!instance) {
+        // 没有实例就创造一个实例
+        instance = Reflect.construct(func, args);
+      }
+      // 无论如何都会返回一个实例(new关键字)
+      return instance;
+    }
+  };
+  return new Proxy(func, handler);
+}
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const SingletonPerson = proxy(Person);
+
+let person1 = new SingletonPerson('zhl', 22);
+
+let person2 = new SingletonPerson('cyw', 22);
+
+console.log(person1 === person2); // true
+```
+
+通过 ES6 的 Proxy 拦截构造函数的执行方法来实现的单例模式
+
+## 25. promisify
+
+```js
+// 使用 nodejs 运行以下代码
+// 适合err-first风格的异步操作(eg. nodejs)的 promisify 通用函数
+
+const fs = require('fs');
+
+function promisify(asyncFunc) {
+  return function(...args) {
+    return new Promise((resolve, reject) => {
+      args.push(function callback(err, ...values) {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(...values);
+      });
+      asyncFunc.call(this, ...args);
+    });
+  };
+}
+
+const fsp = new Proxy(fs, {
+  get(target, key) {
+    return promisify(target[key]);
+  }
+});
+
+async function generateCommit() {
+  try {
+    let data = await fsp.readFile('./promisify.js', 'utf-8');
+    data += `\n//我是注释`;
+    await fsp.writeFile('./promisify.js', data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+generateCommit();
+```
+
+promisify 函数是将回调函数变为 promise 的辅助函数，适合 error-first 风格（nodejs）的回调函数，原理是给 error-first 风格的回调无论成功或者失败，在执行完毕后都会执行最后一个回调函数，我们需要做的就是让这个回调函数控制 promise 的状态即可
+
+这里还用了 Proxy 代理了整个 fs 模块，拦截 get 方法，使得不需要手动给 fs 模块所有的方法都包裹一层 promisify 函数，更加的灵活
+
+## 26. 优雅的处理 `async/await`
+
+```js
+async function errorCaptured(asyncFunc) {
+  try {
+    let res = await asyncFunc();
+    return [null, res];
+  } catch (error) {
+    return [error, null];
+  }
+}
+// 优雅的处理 async/await
+
+async function errorCaptured(asyncFunc) {
+  try {
+    let res = await asyncFunc();
+    return [null, res];
+  } catch (error) {
+    return [error, null];
+  }
+}
+
+// 使用方法：
+let [err, res] = await errorCaptured(asyncFunc);
+```
+
+无需每次使用 `async/await` 都包裹一层 `try/catch` ，更加的优雅，这里提供另外一个思路，如果使用了 `webpack` 可以编写一个 `loader`，分析 `AST` 语法树，遇到 `await` 语法，自动注入 `try/catch`，这样连辅助函数都不需要使用
+
+## 27. 发布订阅 EventEmitter
+
+```js
+function proxy(func) {
+  let instance;
+  let handler = {
+    construct(target, args) {
+      if (!instance) {
+        // 没有实例就创造一个实例
+        instance = Reflect.construct(func, args);
+      }
+      // 无论如何都会返回一个实例(new关键字)
+      return instance;
+    }
+  };
+  return new Proxy(func, handler);
+}
+
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const SingletonPerson = proxy(Person);
+
+let person1 = new SingletonPerson('zhl', 22);
+
+let person2 = new SingletonPerson('cyw', 22);
+
+console.log(person1 === person2); // true
+```
+
+通过 on 方法注册事件，trigger 方法触发事件，来达到事件之间的松散解耦，并且额外添加了 once 和 off 辅助函数用于注册只触发一次的事件以及注销事件
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
