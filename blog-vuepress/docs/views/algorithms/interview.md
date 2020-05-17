@@ -424,6 +424,200 @@ var levelOrder = function(root) {
 - 查看队首元素：`array[0]`
 - 检查是否为空：`!array.length`
 
+#### 32-I. 从上到下打印二叉树 II
+
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7]
+
+```txt
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其层次遍历结果：
+
+```txt
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+
+实现思路：
+
+从题目中可以看到，本题考察的是二叉树的层序遍历，并且在结果中要体现出“层次”。
+
+稍微改变一下对队列的使用，就可以在遍历过程中体现出层次，大致过程如下：
+
+- 初始化 queue，用于存储当前层的节点
+- 检查 queue 是否为空
+  - 如果不为空：依次遍历当前 queue 内的所有节点，检查每个节点的左右子节点，将不为空的子节点放入 queue，继续循环
+  - 如果为空：跳出循环
+
+实现代码如下：
+
+```js
+const levelOrder = function(root) {
+  if (!root) return [];
+  // 将根元素先放进去
+  const queue = [root];
+  // 存放遍历结果
+  const res = [];
+  // 代表当前遍历层数
+  let level = 0;
+  while (queue.length) {
+    // 用来存放第level层的遍历结果
+    res[level] = [];
+    // 第level层的遍历数量
+    let levelNum = queue.length;
+    while (levelNum--) {
+      const front = queue.shift();
+      // 将值依次推入对应的层级数组里
+      res[level].push(front.val);
+      // 然后获取左右子节点
+      if (front.left) queue.push(front.left);
+      if (front.right) queue.push(front.right);
+    }
+    // 继续到下一个层级
+    level++;
+  }
+  return res;
+};
+```
+
+#### 32 - III. 从上到下打印二叉树 III
+
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+
+```txt
+ 3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回其层次遍历结果：
+
+```txt
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+```
+
+实现思路：
+
+奇数行的入队(`unshift`)，偶数行的入栈(`push`)
+
+实现代码如下
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+const levelOrder = function(root) {
+  if (!root) return [];
+  // 将根元素先放进去
+  const queue = [root];
+  // 存放遍历结果
+  const res = [];
+  // 代表当前遍历层数
+  let level = 0;
+  while (queue.length) {
+    // 用来存放第level层的遍历结果
+    res[level] = [];
+    // 第level层的遍历数量
+    let levelNum = queue.length;
+    while (levelNum--) {
+      const front = queue.shift();
+      // 将值依次推入对应的层级数组里
+      // 然后获取左右子节点
+      if (level & (1 === 1)) {
+        // 奇数行;
+        res[level].unshift(front.val);
+      } else {
+        // 偶数行
+        res[level].push(front.val);
+      }
+      front.left && queue.push(front.left);
+      front.right && queue.push(front.right);
+    }
+    // 继续到下一个层级
+    level++;
+  }
+  return res;
+};
+```
+
+第二种方法：
+
+奇数行的直接将当前行结果反转`reverse()`即可
+
+实现代码如下：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+const levelOrder = function(root) {
+  if (!root) return [];
+  // 将根元素先放进去
+  const queue = [root];
+  // 存放遍历结果
+  const res = [];
+  // 代表当前遍历层数
+  let level = 0;
+  while (queue.length) {
+    // 用来存放第level层的遍历结果
+    res[level] = [];
+    // 第level层的遍历数量
+    let levelNum = queue.length;
+    while (levelNum--) {
+      const front = queue.shift();
+      // 将值依次推入对应的层级数组里
+      res[level].push(front.val);
+      // 然后获取左右子节点
+      front.left && queue.push(front.left);
+      front.right && queue.push(front.right);
+    }
+    if (level & (1 === 1)) {
+      // 奇数行;
+      res[level].reverse();
+    }
+    // 继续到下一个层级
+    level++;
+  }
+  return res;
+};
+```
+
 ### 栈 & 队列
 
 #### 09. 用两个栈实现队列
