@@ -71,22 +71,31 @@ var reversePrint = function(head) {
 };
 ```
 
-#### 24. 反转链表
+#### 18. 删除链表的节点
 
-定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。
+
+返回删除后的链表的头节点。
 
 ```txt
-示例:
+示例 1:
 
-输入: 1->2->3->4->5->NULL
-输出: 5->4->3->2->1->NULL
+输入: head = [4,5,1,9], val = 5
+输出: [4,1,9]
+解释: 给定你链表中值为 5 的第二个节点，那么在调用了你的函数之后，该链表应变为 4 -> 1 -> 9.
+示例 2:
+
+输入: head = [4,5,1,9], val = 1
+输出: [4,5,9]
+解释: 给定你链表中值为 1 的第三个节点，那么在调用了你的函数之后，该链表应变为 4 -> 5 -> 9.
+
 ```
 
 实现思路：
 
-从头节点开始遍历链表，依次将每个节点指向下一个节点的指针改为指向上一个节点的指针，直到尾结点为止，这时候尾结点即新的头结点，直接返回
+在链表问题中，通常借助**哨兵节点**，来简化代码。**哨兵节点**的用法灵活，一般是不保存任何数据的节点。
 
-实现代码：
+实现代码如下：
 
 ```js
 /**
@@ -98,22 +107,27 @@ var reversePrint = function(head) {
  */
 /**
  * @param {ListNode} head
+ * @param {number} val
  * @return {ListNode}
  */
-var reverseList = function(head) {
-  if (head === null || head.next === null) return head;
-  let prev = null,
-    curr = head;
-  while (curr !== null) {
-    const cNext = curr.next; // 记录下一个指针
-    curr.next = prev === null ? null : prev;
-    prev = curr; // 上一个指针往后移
-    curr = cNext; // 当前指针往后移
+var deleteNode = function(head, val) {
+  // 创建个哨兵节点，不存储任何值
+  let pre = new ListNode(-1);
+  // 哨兵节点的下个节点指向头节点，为了最后返回头节点
+  pre.next = head;
+  let node = pre;
+  while (node.next) {
+    if (node.next.val === val) {
+      // 直接将指向下个节点的指针移到下下个节点
+      node.next = node.next.next;
+      break;
+    }
+    // 否则，递归到下个节点
+    node = node.next;
   }
-  return prev; // 尾结点即为新的头结点
+  // 最终返回头节点，不能使用node变量，因为node变量一直在变化
+  return pre.next;
 };
-
-reverseList([1, 2, 3, 4, 5]); // [5,4,3,2,1]
 ```
 
 #### 22. 链表中倒数第 k 个节点
@@ -164,6 +178,294 @@ var getKthFromEnd = function(head, k) {
 };
 
 getKthFromEnd([1, 2, 3, 4, 5], 2); // [4,5]
+```
+
+#### 24. 反转链表
+
+定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+
+```txt
+示例:
+
+输入: 1->2->3->4->5->NULL
+输出: 5->4->3->2->1->NULL
+```
+
+实现思路：
+
+从头节点开始遍历链表，依次将每个节点指向下一个节点的指针改为指向上一个节点的指针，直到尾结点为止，这时候尾结点即新的头结点，直接返回
+
+实现代码：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+  if (head === null || head.next === null) return head;
+  let prev = null,
+    curr = head;
+  while (curr !== null) {
+    const cNext = curr.next; // 记录下一个指针
+    curr.next = prev === null ? null : prev;
+    prev = curr; // 上一个指针往后移
+    curr = cNext; // 当前指针往后移
+  }
+  return prev; // 尾结点即为新的头结点
+};
+
+reverseList([1, 2, 3, 4, 5]); // [5,4,3,2,1]
+```
+
+#### 25. 合并两个排序的链表
+
+输入两个**递增排序**的链表，合并这两个链表并使新链表中的节点仍然是**递增排序**的。
+
+```txt
+示例1：
+
+输入：1->2->4, 1->3->4
+输出：1->1->2->3->4->4
+```
+
+##### 第一种方法
+
+实现思路：
+
+依旧使用熟悉的**哨兵节点**，比对两个节点的值，较小的一方就放到哨兵节点的`next`上, 类似于**归并排序**中的合并过程。
+
+实现代码如下：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(l1, l2) {
+  // 创建一个哨兵节点
+  let current = new ListNode(-1);
+  // 用来记录哨兵节点， next即为头节点
+  const pre = current;
+
+  // 递归l1和l2, 设置当前节点current的next节点
+  while (l1 || l2) {
+    if (!l1) {
+      // l1为空值，就将下个节点指向l2
+      current.next = l2;
+      // 然后直接返回头节点
+      return pre.next;
+    } else if (!l2) {
+      // l2为空值，就将下个节点指向l1
+      current.next = l1;
+      // 然后直接返回头节点
+      return pre.next;
+    }
+    if (l1.val <= l2.val) {
+      current.next = l1;
+      l1 = l1.next;
+    } else {
+      current.next = l2;
+      l2 = l2.next;
+    }
+    // 当前指针往前移动
+    current = current.next;
+  }
+  // 返回头节点
+  return pre.next;
+};
+```
+
+复杂度分析
+
+- 时间复杂度：`O(N)`，其中 `N` 为两个链表节点总数
+- 空间复杂度：加上栈空间的话，空间复杂度为 `O(N)`，其中 `N` 为两个链表节点总数
+
+##### 第二种方法
+
+实现思路：
+
+使用**递归**
+
+实现代码如下：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(l1, l2) {
+  if (l1 === null) return l2;
+  if (l2 === null) return l1;
+  if (l1.val <= l2.val) {
+    // 递归下个节点l1.next
+    l1.next = mergeTwoLists(l1.next, l2);
+    return l1;
+  } else {
+    // 递归下个节点l2.next
+    l2.next = mergeTwoLists(l1, l2.next);
+    return l2;
+  }
+};
+```
+
+复杂度分析
+
+- 时间复杂度为 `O(N)`，其中`N`为两个链表节点总数
+- 空间复杂度为 O(1), 占用的内存空间为**常数级**
+
+#### 52. 两个链表的第一个公共节点
+
+输入两个链表，找出它们的第一个公共节点。
+
+如下面的两个链表：
+
+![link1](./interview/link1.png)
+
+在节点 c1 开始相交。
+
+![link2](./interview/link2.png)
+
+##### 第一种方式
+
+实现思路：
+
+- 开辟哈希表 `map`。`key` 是节点，`value` 是 `boolean`，代表节点是否出现过
+- 对 `list1` 进行遍历，设置 `map[节点]=true`
+- 对 `list2` 进行遍历，如果节点在 `map` 中出现过，那么说明这是两个链表的公共节点，返回
+
+实现代码如下：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function(headA, headB) {
+  // 使用哈希表Map来存储headA的值 map<节点, 是否出现过>
+  const mapA = new Map();
+  let node = headA;
+  while (node) {
+    mapA.set(node, true);
+    node = node.next;
+  }
+
+  node = headB;
+  //  公共节点
+  let globalNode = null;
+  // 遍历node，看是否在mapA中出现过，是就直接返回该节点，否则继续往后寻找
+  while (node) {
+    if (mapA.has(node)) {
+      globalNode = node;
+      break;
+    }
+    node = node.next;
+  }
+
+  return globalNode;
+};
+```
+
+复杂度分析
+
+- 时间复杂度是`O(N)`，两个`N层`循环
+- 空间复杂度是`O(N)`, 因为用到了 `Map` 结构来存储
+
+##### 第二种方式
+
+实现思路：
+
+题目提示了，空间复杂度可以降低到 O(1)O(1)。这时候不能用哈希表，可以使用快慢指针的思路来处理。整体思路如下：
+
+- 遍历得到两个链表的长度，以及长度差 `diff`
+- 将慢指针 `slow` 指向较长链表，快指针 `fast` 指向较短链表
+- `slow` 向前移动 `diff` 个距离(使得 A、B 到公共节点的距离一样)
+- `slow` 和 `fast` **同时向前移动，每次移动一个距离(说明速度一样)**。若存在**公共节点**(`老地方偶遇`)，那么它们一定会遇上
+
+实现代码如下：
+
+```js
+var getIntersectionNode = function(headA, headB) {
+  // 获取链表headA的长度
+  let node = headA,
+    lengthA = 0;
+  while (node) {
+    ++lengthA;
+    node = node.next;
+  }
+  // 空链表，没有公共节点
+  if (!lengthA) return null;
+
+  // 获取链表headB的长度
+  node = headB;
+  let lengthB = 0;
+  while (node) {
+    ++lengthB;
+    node = node.next;
+  }
+  if (!lengthB) return null;
+
+  // 计算快慢指针的长度差 diff
+  let diff = 0,
+    slow, // 慢指针
+    fast; // 快指针
+  // 将慢指针 slow 指向较长链表，快指针 fast 指向较短链表
+  if (lengthA < lengthB) {
+    diff = lengthB - lengthA;
+    slow = headB;
+    fast = headA;
+  } else {
+    diff = lengthA - lengthB;
+    slow = headA;
+    fast = headB;
+  }
+
+  // slow 向前移动 diff 个距离(使得A、B到公共节点的距离一样)
+  while (diff--) {
+    slow = slow.next;
+  }
+
+  // slow 和 fast **同时向前移动，每次移动一个距离(说明速度一样)，直到相遇
+  while (slow !== fast) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+
+  // 这边返回慢或者快指针都可以，因为都是一样的节点了
+  return slow;
+};
 ```
 
 ### 树
@@ -618,7 +920,7 @@ const levelOrder = function(root) {
 };
 ```
 
-### 栈 & 队列
+### 栈(`Stack`) & 队列(`Queue`)
 
 #### 09. 用两个栈实现队列
 
@@ -696,6 +998,113 @@ CQueue.prototype.deleteHead = function() {
  * obj.appendTail(value)
  * var param_2 = obj.deleteHead()
  */
+```
+
+### 堆(Heap)
+
+#### 40. 最小的 k 个数
+
+输入整数数组 arr ，找出其中最小的 k 个数。例如，输入 4、5、1、6、2、7、3、8 这 8 个数字，则最小的 4 个数字是 1、2、3、4。
+
+```txt
+示例 1：
+
+输入：arr = [3,2,1], k = 2
+输出：[1,2] 或者 [2,1]
+示例 2：
+
+输入：arr = [0,1,2,1], k = 1
+输出：[0]
+
+```
+
+##### 第一种方法
+
+这个是最简单、最直观的做法：直接排序。
+
+实现思路：
+
+直接将数组通过 `sort`方法 按照**从小到大**的顺序排序，并且返回前 `k` 个数字。
+
+实现代码如下：
+
+```js
+/**
+ * @param {number[]} arr
+ * @param {number} k
+ * @return {number[]}
+ */
+const getLeastNumbers = function(arr, k) {
+  return arr.sort((a, b) => a - b).slice(0, k);
+};
+```
+
+##### 第二种方法
+
+实现思路：
+
+其实并需要对全部元素进行排序，题目只需要前 k 个元素。
+
+回顾快速排序中的 partition 操作，可以将元素 arr[0]放入排序后的正确位置，并且返回这个位置 index。利用 partition 的特点，算法流程如下：
+
+- 如果`index = k`，说明第 k 个元素已经放入正确位置，返回前 k 个元素
+- 如果`k < index`，前 k 个元素在`[left, index - 1]`之间，缩小查找范围，继续查找
+- 如果`index < k`，前 k 个元素在`[index + 1, right]` 之间，缩小查找范围，继续查找
+
+为了方便理解，可以使用`2, 8, 1, 1, 0, 11, -1, 0`这个例子在纸上画一下过程。
+
+实现代码如下：
+
+```js
+/**
+ * @param {number[]} arr
+ * @param {number} k
+ * @return {number[]}
+ */
+// var getLeastNumbers = function(arr, k) {
+//     return arr.sort((a, b) => a - b).slice(0, k);
+// };
+// 交换元素位置
+// 这边要注意，函数中的参数如果基本类型，则是值的拷贝，如果是引用类型，则拷贝地址，因此这边要传入数组才能真正的改变元素值
+function swap(arr, a, b) {
+  [arr[a], arr[b]] = [arr[b], arr[a]];
+}
+// 快速排序
+function partiton(arr, start, end) {
+  const k = arr[start];
+  let left = start + 1,
+    right = end;
+  while (1) {
+    while (left <= end && arr[left] <= k) ++left;
+    while (right >= start + 1 && arr[right] >= k) --right;
+    if (left >= right) break;
+    //  [arr[left], arr[right]] = [arr[right], arr[left]];
+    swap(arr, left, right);
+    ++left;
+    --right;
+  }
+  //   [arr[right], arr[start]] = [arr[start], arr[right]];
+  swap(arr, right, start);
+  return right;
+}
+var getLeastNumbers = function(arr, k) {
+  const length = arr.length;
+  if (k >= length) return arr;
+  let left = 0,
+    right = length - 1;
+  let index = partiton(arr, left, right);
+  while (index !== k) {
+    if (index < k) {
+      left = index + 1; // 往右移
+      index = partiton(arr, left, right);
+    } else if (index > k) {
+      right = index - 1; // 往左移
+      index = partiton(arr, left, right);
+    }
+  }
+  // 从小到大排序完毕，截取前面k个数即为最小的k个数
+  return arr.slice(0, k);
+};
 ```
 
 ## 具体算法类题目
