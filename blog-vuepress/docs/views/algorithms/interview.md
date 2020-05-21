@@ -1360,6 +1360,62 @@ console.log(singleNumbers2([4, 1, 4, 6])); // [ 1, 6 ]
 
 [可以参考题解](https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/solution/zhen-xin-kan-bu-dong-na-xie-wei-yun-suan-fu-de-hua/)
 
+### 全排列
+
+#### 38. 字符串的排列
+
+输入一个字符串，打印出该字符串中字符的所有排列。
+你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+
+示例:
+
+```txt
+输入：s = "abc"
+输出：["abc","acb","bac","bca","cab","cba"]
+```
+
+实现思路：
+
+- 排列方案数量： 对于一个长度为 n 的字符串（假设字符互不重复），其排列共有 n x (n-1) x (n-2) … x 2 x 1n×(n−1)×(n−2)…×2×1 种方案。
+- 排列方案的生成方法： 根据字符串排列的特点，考虑深度优先搜索所有排列方案。即通过字符交换，先固定第 11 位字符（ n 种情况）、再固定第 22 位字符（ n-1 种情况）、... 、最后固定第 n 位字符（ 1 种情况）。
+
+实现代码如下：
+
+```js
+/**
+ * @param {string} s
+ * @return {string[]}
+ */
+var permutation = function(s) {
+  // 数据不可重复，因此用Set结构来存储需要的数据
+  const res = new Set();
+  function dhs(s, i, len) {
+    //当递归函数到达最后一层，就直接返回，因为此时前面几个位置已经发生了交换
+    if (i === s.length - 1) {
+      res.add(s);
+      return;
+    }
+    // 遍历元素并交换插入
+    for (let j = i; j < s.length; j++) {
+      // 交换一次元素位置，并更新交换后拼接的字符串
+      s = swap(s, i, j);
+      //进入下一层递归
+      dhs(s, i + 1, len);
+      // 返回时交换回来, 还原元素位置，并更新交换后拼接的字符串
+      s = swap(s, i, j);
+    }
+  }
+  // 交换元素位置
+  function swap(str, i, j) {
+    if (i === j) return str;
+    return str.substring(0, i) + str[j] + str.substring(i + 1, j) + str[i] + str.substring(j + 1);
+  }
+  dhs(s, 0, s.length);
+  // Set转换成数组
+  return Array.from(res);
+};
+```
+
 ### 其他算法
 
 #### 05. 替换空格
