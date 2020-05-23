@@ -59,7 +59,7 @@ Nginx 的最重要的几个使用场景：
 跨域是**浏览器的同源策略**决定的，是一个重要的浏览器安全策略，用于限制一个 origin 的文档或者它加载的脚本与另一个源的资源进行交互，它能够帮助阻隔恶意文档，减少可能被攻击的媒介，可以使用 CORS 配置解除这个限制。
 关于跨域网上已经有很多解释，这里就不啰嗦，也可以直接看 `MDN` 的 [`<浏览器的同源策略>`](https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy) 文档进一步了解，这里就列举几个同源和不同源的例子，相信程序员都能看得懂。
 
-```text
+```
 # 同源的例子
 http://example.com/app1/index.html  # 只是路径不同
 http://example.com/app2/index.html
@@ -1000,3 +1000,8 @@ server {
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
+
+ <comment/> 
+ 
+ 
+ <comment/>

@@ -32,7 +32,7 @@
 
 以下协议、域名、端口一致。
 
-```txt
+```
 http://www.example.com:80/a.js
 
 http://www.example.com:80/b.js
@@ -40,7 +40,7 @@ http://www.example.com:80/b.js
 
 以下这种看上去再相似也没有用，都不是同源。
 
-```txt
+```
 http://www.example.com:8080
 
 http://www2.example.com:80
@@ -48,7 +48,7 @@ http://www2.example.com:80
 
 在这里注意一下啊，这里是为了突出端口的区别才写上端口。在默认情况下 `http` 可以省略端口 `80`， `https` 省略 `443`。这别到时候闹笑话了，你和我说 `http://www.example.com:80` 和 `http://www.example.com` 不是同源，他俩是一个东西。
 
-```txt
+```
 http://www.example.com:80 === http://www.example.com
 
 https://www.example.com:443 === https://www.example.com
@@ -164,13 +164,13 @@ axios.defaults.withCredentials = true;
 
 ![cors4.png](./images/corssOrigin-pro/cors4.png)
 
-```txt
+```
 Access to XMLHttpRequest at 'http://127.0.0.1:8080/api/corslist' from origin 'http://127.0.0.1:8000' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
 ```
 
 ![cors5.png](./images/corssOrigin-pro/cors5.png)
 
-```txt
+```
 Access to XMLHttpRequest at 'http://127.0.0.1:8080/api/corslist' from origin 'http://127.0.0.1:8000' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
 ```
 
@@ -751,7 +751,7 @@ server.on('connection', function(socket) {
 
 **「该方式只能用于二级域名相同的情况下，比如 a.test.com 和 b.test.com 适用于该方式」**。只需要给页面添加 `document.domain ='test.com'` 表示二级域名都相同就可以实现跨域。
 
-```txt
+```
 www.   baidu.  com     .
 三级域  二级域   顶级域   根域
 ```
@@ -879,7 +879,7 @@ www.   baidu.  com     .
 
 #### Windows
 
-```txt
+```
 找到你安装的目录
 .\Google\Chrome\Application\chrome.exe --disable-web-security --user-data-dir=xxxx
 ```
@@ -888,7 +888,7 @@ www.   baidu.  com     .
 
 `~/Downloads/chrome-data` 这个目录**可以自定义**.
 
-```txt
+```
 /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary  --disable-web-security --user-data-dir=~/Downloads/chrome-data
 ```
 
@@ -937,3 +937,8 @@ www.   baidu.  com     .
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
+
+ <comment/> 
+ 
+ 
+ <comment/>

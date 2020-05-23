@@ -87,7 +87,9 @@ module.exports = {
                     children: [
                         '/views/css/css-skills1.md',
                         '/views/css/css-knowledge.md',
-                        '/views/css/css-knowledge2.md'
+                        '/views/css/css-knowledge2.md',
+                        '/views/css/css-center.md'
+
                     ]
                 },
                 {
@@ -122,6 +124,8 @@ module.exports = {
                     children: [
                         '/views/vue/vue-ts.md',
                         '/views/vue/vue-lazyload.md',
+                        '/views/vue/vue-skills-36.md',
+                        '/views/vue/vue-interview.md',
                         '/views/vue/vue-interview/part-one/note.md'
                     ],
                 },
@@ -170,6 +174,11 @@ module.exports = {
                     title: '前端面试集锦',
                     collapsable: false,
                     children: [
+                        '/views/fe-interview/alibaba.md',
+                        '/views/fe-interview/bytedance.md',
+                        '/views/fe-interview/tencent.md',
+                        '/views/fe-interview/classic-layout.md',
+
                         '/views/fe-interview/web-safe.md',
                         '/views/fe-interview/http&https.md',
                         '/views/fe-interview/webpack-performance-optimization.md',

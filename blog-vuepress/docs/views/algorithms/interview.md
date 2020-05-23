@@ -23,7 +23,7 @@
 
 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
 
-```txt
+```
 示例 1：
 
 输入：head = [1,3,2]
@@ -77,7 +77,7 @@ var reversePrint = function(head) {
 
 返回删除后的链表的头节点。
 
-```txt
+```
 示例 1:
 
 输入: head = [4,5,1,9], val = 5
@@ -134,7 +134,7 @@ var deleteNode = function(head, val) {
 
 输入一个链表，输出该链表中倒数第 k 个节点。为了符合大多数人的习惯，本题从 1 开始计数，即链表的尾节点是倒数第 1 个节点。例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
 
-```txt
+```
 示例：
 
 给定一个链表: 1->2->3->4->5, 和 k = 2.
@@ -184,7 +184,7 @@ getKthFromEnd([1, 2, 3, 4, 5], 2); // [4,5]
 
 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
 
-```txt
+```
 示例:
 
 输入: 1->2->3->4->5->NULL
@@ -229,7 +229,7 @@ reverseList([1, 2, 3, 4, 5]); // [5,4,3,2,1]
 
 输入两个**递增排序**的链表，合并这两个链表并使新链表中的节点仍然是**递增排序**的。
 
-```txt
+```
 示例1：
 
 输入：1->2->4, 1->3->4
@@ -474,7 +474,7 @@ var getIntersectionNode = function(headA, headB) {
 
 输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
 
-```txt
+```
 例如，给出
 
 前序遍历 preorder = [3,9,20,15,7]
@@ -529,7 +529,7 @@ var buildTree = function(preorder, inorder) {
 
 请完成一个函数，输入一个二叉树，该函数输出它的镜像。
 
-```txt
+```
 例如输入：
 
      4
@@ -547,7 +547,7 @@ var buildTree = function(preorder, inorder) {
 
 ```
 
-```txt
+```
 示例 1：
 
 输入：root = [4,2,7,1,3,6,9]
@@ -591,7 +591,7 @@ var mirrorTree = function(root) {
 
 例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
 
-```txt
+```
 
     1
    / \
@@ -602,7 +602,7 @@ var mirrorTree = function(root) {
 
 但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
 
-```txt
+```
     1
    / \
   2   2
@@ -610,7 +610,7 @@ var mirrorTree = function(root) {
    3    3
 ```
 
-```txt
+```
 示例 1：
 
 输入：root = [1,2,2,3,4,4,3]
@@ -661,7 +661,7 @@ var isSymmetric = function(root) {
 例如:
 给定二叉树: [3,9,20,null,null,15,7],
 
-```txt
+```
     3
    / \
   9  20
@@ -733,7 +733,7 @@ var levelOrder = function(root) {
 例如:
 给定二叉树: [3,9,20,null,null,15,7]
 
-```txt
+```
     3
    / \
   9  20
@@ -743,7 +743,7 @@ var levelOrder = function(root) {
 
 返回其层次遍历结果：
 
-```txt
+```
 [
   [3],
   [9,20],
@@ -800,7 +800,7 @@ const levelOrder = function(root) {
 例如:
 给定二叉树: [3,9,20,null,null,15,7],
 
-```txt
+```
  3
    / \
   9  20
@@ -810,7 +810,7 @@ const levelOrder = function(root) {
 
 返回其层次遍历结果：
 
-```txt
+```
 [
   [3],
   [20,9],
@@ -926,7 +926,7 @@ const levelOrder = function(root) {
 
 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead  操作返回 -1 )
 
-```txt
+```
 示例 1：
 
 输入：
@@ -1006,7 +1006,7 @@ CQueue.prototype.deleteHead = function() {
 
 输入整数数组 arr ，找出其中最小的 k 个数。例如，输入 4、5、1、6、2、7、3、8 这 8 个数字，则最小的 4 个数字是 1、2、3、4。
 
-```txt
+```
 示例 1：
 
 输入：arr = [3,2,1], k = 2
@@ -1115,7 +1115,7 @@ var getLeastNumbers = function(arr, k) {
 
 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
 
-```txt
+```
 F(0) = 0,   F(1) = 1
 F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
 ```
@@ -1155,7 +1155,7 @@ var fib = function(n) {
 
 答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
 
-```txt
+```
 示例 1：
 
 输入：n = 2
@@ -1202,7 +1202,7 @@ var numWays = function(n) {
 
 在一个长度为 n 的数组 nums 里的所有数字都在 0 ～ n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。
 
-```txt
+```
 示例 1：
 
 输入：
@@ -1281,7 +1281,7 @@ console.log(findNumberIn2DArray(matrix, 20)); // true
 
 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。输入一个递增排序的数组的一个旋转，输出旋转数组的最小元素。例如，数组  [3,4,5,1,2] 为 [1,2,3,4,5] 的一个旋转，该数组的最小值为 1。
 
-```txt
+```
 示例 1：
 
 输入：[3,4,5,1,2]
@@ -1369,7 +1369,7 @@ console.log(singleNumbers2([4, 1, 4, 6])); // [ 1, 6 ]
 
 示例:
 
-```txt
+```
 输入：s = "abc"
 输出：["abc","acb","bac","bca","cab","cba"]
 ```
@@ -1422,7 +1422,7 @@ var permutation = function(s) {
 
 请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
 
-```txt
+```
 示例 1：
 
 输入：s = "We are happy."
@@ -1447,4 +1447,9 @@ console.log(replaceSpace(s)); // We%20are%20happy.
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
 
+ <comment/>
+
+ <comment/> 
+ 
+ 
  <comment/>

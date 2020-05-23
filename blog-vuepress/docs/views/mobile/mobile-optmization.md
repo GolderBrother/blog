@@ -79,7 +79,7 @@
 
 这里的渲染包含了 `html、js、css` 的解析，组装成 `Render Tree` 以及最后的绘制。粗略的估算，可以将耗时拆解为：
 
-```text
+```
 总耗时(t) = Webview 初始化耗时(t1) + 下载静态资源耗时(t2) + 数据请求耗时(t3) + 渲染耗时(t4)
 ```
 
@@ -148,4 +148,9 @@
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
 
+ <comment/>
+
+ <comment/> 
+ 
+ 
  <comment/>

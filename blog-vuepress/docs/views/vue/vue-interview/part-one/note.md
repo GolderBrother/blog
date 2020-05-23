@@ -1,10 +1,10 @@
-# Vue 面试题汇总之上篇
+# Vue 面试题汇总
 
 ## 1.谈一下你对`MVVM`原理的理解
 
 <!-- <img src="./note.assets/MVVM.jpg" alt="MVVM" style="zoom: 50%;" /> -->
 
-![img](./note.assets/MVVM.jpg)
+![img](./MVVM.jpg)
 
 - 传统的`MVC`指的是,用户操作(`View`)会请求服务端路由，路由会调用对应的控制器(`Controller`)来处理,控制器会获取数据(`Model`)。将结果返回给前端,页面重新渲染
 - MVVM:传统的前端会将数据手动渲染到页面上, 而 `MVVM` 模式不需要用户操作 `dom` 元素,只需要将数据绑定到 `viewModel` 层上，视图层`View`会自动将数据渲染到页面中，当视图层`View`变化会通知 `ViewModel` 层更新数据。`ViewModel` 就是我们 MVVM 模式中的**桥梁**.
@@ -18,7 +18,7 @@
 
 ### 原理
 
-![响应式数据原理](note.assets/响应式数据原理.png)
+![响应式数据原理](./xiangyingshi.png)
 
 ```javascript
 Object.defineProperty(obj, key, {
@@ -61,7 +61,7 @@ Object.defineProperty(obj, key, {
 
 ### 原理
 
-![数组响应式数据原理](note.assets/数组响应式数据原理.png)
+![数组响应式数据原理](./xiangyingshi2.png)
 
 ```javascript
 const arrayProto = Array.prototype;
@@ -101,7 +101,7 @@ this.observeArray(value); // 进行深度监控
 
 ### 原理
 
-![为何异步渲染](note.assets/为何异步渲染.png)
+![为何异步渲染](./async-render.png)
 
 ```javascript
 update () {
@@ -149,7 +149,7 @@ export function queueWatcher (watcher: Watcher) {
 
 ### 原理
 
-![nextTick原理剖析](note.assets/nextTick原理剖析.png)
+![nextTick原理剖析](./nextTick.png)
 
 ```javascript
 let timerFunc; // 会定义一个异步方法
@@ -221,7 +221,7 @@ export function nextTick(cb?: Function, ctx?: Object) {
 
 ### 原理:
 
-![计算属性](note.assets/计算属性.png)
+![计算属性](./computed.png)
 
 ```javascript
 function initComputed(vm: Component, computed: Object) {
@@ -322,6 +322,8 @@ function _traverse (val: any, seen: SimpleSet) {
 
 ## 8.`Vue`组件的生命周期
 
+![生命周期](./component-lifecycle.png)
+
 ### 理解
 
 #### 要掌握每个生命周期什么时候被调用
@@ -343,11 +345,11 @@ function _traverse (val: any, seen: SimpleSet) {
 - `updated` 可以执行依赖于 DOM 的操作。然而在大多数情况下，你应该避免在此期间更改状态，因为这可能会导致更新无限循环。 该钩子在服务器端渲染期间不被调用。
 - `destroyed` 可以执行一些优化操作,清空定时器，解除绑定事件
 
-![vue-lifecycle](note.assets/lifecycle.png)
+![vue-lifecycle](./lifecycle.png)
 
 ### 原理
 
-![生命周期](note.assets/生命周期.png)
+![生命周期](./lifecycle2.png)
 
 ## 9.`ajax`请求放在哪个生命周期中
 
@@ -634,7 +636,7 @@ export function vnode(tag, data, key, children, text) {
 - 3.比较都有儿子的情况
 - 4.递归比较子节点
 
-![img](note.assets/vue-diff.jpg)
+![img](./vue-diff.jpg)
 
 ### 原理
 
@@ -760,7 +762,7 @@ function updateChildren(parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly)
 
 ## 17.`v-for`中为什么要用`key` (图解)
 
-![vue-diff-key](note.assets/diff-key.jpg)
+![vue-diff-key](./diff-key.jpg)
 
 ## 18.描述组件渲染和更新过程
 
@@ -768,7 +770,7 @@ function updateChildren(parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly)
 
 - 渲染组件时，会通过`Vue.extend`方法构建子组件的构造函数，并进行实例化。最终手动调用`$mount()`进行挂载。更新组件时会进行`patchVnode`流程.核心就是 diff 算法
 
-![组件渲染流程](note.assets/组件渲染流程.png)
+![组件渲染流程](./render-course.png)
 
 ## 19.组件中的 `data`为什么是一个函数?
 
@@ -829,7 +831,7 @@ console.log(r1); // {on:{click}}
 console.log(r2); // {nativeOnOn:{click},on:{click}}
 ```
 
-![](note.assets/事件初始化.png)
+![事件初始化](./event-init.png)
 
 #### 1.原生`dom`的绑定
 
@@ -1266,6 +1268,8 @@ function resolveAsyncComponent(
 
 ## 27.什么是作用域插槽?
 
+![插槽](./slot.png)
+
 ### 理解:
 
 #### 1.插槽：
@@ -1577,3 +1581,7 @@ export default {
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~
+
+ <comment/>
+
+ <comment/>

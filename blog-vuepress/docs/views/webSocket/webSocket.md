@@ -74,7 +74,7 @@ wss.on('connection', socket => {
 - 首先客户端发起协议升级请求
 - 请求采用的是标准的 `HTTP` 报文格式，且只支持 `GET` 方法
 
-```txt
+```
 GET ws://localhost:8888/ HTTP/1.1
 Host: localhost:8888
 Connection: Upgrade
@@ -96,7 +96,7 @@ Sec-WebSocket-Key: IHfMdf8a0aQXbwQO1pkGdA==
   - 状态代码`101`表示**协议已经切换(协议升级)**
 - 到此完成**协议升级**，后续的数据交互都按照新的协议来
 
-```txt
+```
 HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
@@ -175,7 +175,7 @@ console.log(toAcceptKey(webSocketKey)); //aWAY+V/uyz5ILZEoWuWdxjnlb7E=
 
 具体的数据帧格式如下：
 
-```txt
+```
   0                   1                   2                   3
   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-------+-+-------------+-------------------------------+
@@ -436,3 +436,8 @@ exports.Server = Server;
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
+
+ <comment/> 
+ 
+ 
+ <comment/>

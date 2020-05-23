@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<style>
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .container,
+  .left,
+  .right {
+    float: left;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .container .center {
+    margin: 0 200px;
+    min-height: 400px;
+    background: lightsalmon;
+  }
+
+  .left,
+  .right {
+    width: 200px;
+    min-height: 200px;
+    background: lightblue;
+  }
+
+  .left {
+    margin-left: -100%;
+  }
+
+  .right {
+    margin-left: -200px;
+  }
+</style>
+
+<body class="clearfix">
+  <div class="container">
+    <div class="center"></div>
+  </div>
+  <div class="left"></div>
+  <div class="right"></div>
+</body>
+
+</html>

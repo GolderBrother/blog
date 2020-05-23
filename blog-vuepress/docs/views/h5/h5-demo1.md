@@ -79,7 +79,7 @@ body {
 
 移动端触摸事件有三个，分别定义为
 
-```text
+```
 1. touchstart ：手指放在一个DOM元素上。
 2. touchmove ：手指拖曳一个DOM元素(抚摸~)。
 3. touchend ：手指从一个DOM元素上移开。
@@ -103,7 +103,7 @@ body {
 
 ```js
 document.body.addEventListener(
-  "touchmove",
+  'touchmove',
   function(e) {
     if (e._isScroller) return;
     // 阻止默认事件
@@ -175,7 +175,7 @@ document.body.addEventListener(
 
 触发顺序：
 
-```text
+```
 touch -> click
 ```
 
@@ -191,9 +191,9 @@ touch -> click
 
 ```js
 el.addEventListener(
-  "touchstart",
+  'touchstart',
   () => {
-    console.log("ok");
+    console.log('ok');
   },
   false
 );
@@ -235,10 +235,7 @@ this.updateScrollParent(targetElement);
 // Don't send a synthetic click event if the target element is contained within a parent layer that was scrolled
 // and this tap is being used to stop the scrolling (usually initiated by a fling - issue #42).
 scrollParent = targetElement.fastClickScrollParent;
-if (
-  scrollParent &&
-  scrollParent.fastClickLastScrollTop !== scrollParent.scrollTop
-) {
+if (scrollParent && scrollParent.fastClickLastScrollTop !== scrollParent.scrollTop) {
   return true;
 }
 ```
@@ -255,7 +252,7 @@ npm i fastclick -S
 ```
 
 ```js
-import FastClick from "fastclick";
+import FastClick from 'fastclick';
 FastClick.attach(document.body, options);
 ```
 
@@ -283,12 +280,10 @@ FastClick.attach(document.body, options);
 
 ```js
 // 记录原有的视口高度
-const originalHeight =
-  document.body.clientHeight || document.documentElement.clientHeight;
+const originalHeight = document.body.clientHeight || document.documentElement.clientHeight;
 
 window.onresize = function() {
-  var resizeHeight =
-    document.documentElement.clientHeight || document.body.clientHeight;
+  var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
   if (resizeHeight < originalHeight) {
     // 恢复内容区域高度
     // const container = document.getElementById("container")
@@ -311,11 +306,8 @@ const wechatVersion = wechatInfo[1];
 const version = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
 
 // 如果设备类型为iOS 12+ 和wechat 6.7.4+，恢复成原来的视口
-if (+wechatVersion.replace(/\./g, "") >= 674 && +version[1] >= 12) {
-  window.scrollTo(
-    0,
-    Math.max(document.body.clientHeight, document.documentElement.clientHeight)
-  );
+if (+wechatVersion.replace(/\./g, '') >= 674 && +version[1] >= 12) {
+  window.scrollTo(0, Math.max(document.body.clientHeight, document.documentElement.clientHeight));
 }
 ```
 
@@ -407,7 +399,7 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 使用 QRCode 生成二维码
 
 ```js
-import QRCode from "qrcode";
+import QRCode from 'qrcode';
 // 使用 async 生成图片
 const options = {};
 const url = window.location.href;
@@ -427,7 +419,7 @@ async url => {
 主要是使用 `htmlToCanvas` 生成 `canvas` 画布
 
 ```js
-import html2canvas from "html2canvas";
+import html2canvas from 'html2canvas';
 
 html2canvas(document.body).then(function(canvas) {
   document.body.appendChild(canvas);
@@ -497,15 +489,15 @@ html2canvas(document.querySelector('.demo'), { canvas: newCanvas }).then(functio
 1. 注册方法 `bridge.register`
 
 ```js
-bridge.register("enterApp", function() {
-  broadcast.emit("ENTER_APP");
+bridge.register('enterApp', function() {
+  broadcast.emit('ENTER_APP');
 });
 ```
 
 2. 回调方法 `bridge.call`
 
 ```js
-export const getSDKVersion = () => bridge.call("BLT.getSDKVersion");
+export const getSDKVersion = () => bridge.call('BLT.getSDKVersion');
 ```
 
 ### 事件监听与触发法
@@ -521,7 +513,7 @@ const broadcast = {
   _on: function(name, fn, pluralable, once) {
     let eventData = broadcast.data;
     let fnObj = { fn: fn, once: once };
-    if (pluralable && Object.prototype.hasOwnProperty.call(eventData, "name")) {
+    if (pluralable && Object.prototype.hasOwnProperty.call(eventData, 'name')) {
       eventData[name].push(fnObj);
     } else {
       eventData[name] = [fnObj];
@@ -585,7 +577,7 @@ export const getSDKVersion = function() {
 使用方法也很简单，如下：
 
 ```js
-import Vconsole from "vconsole";
+import Vconsole from 'vconsole';
 new Vconsole();
 ```
 
@@ -596,8 +588,8 @@ new Vconsole();
 上述方法仅用于开发和测试。**生产环境中不允许出现，所以，使用时需要对环境进行判断**。
 
 ```js
-import Vconsole from "vconsole";
-if (process.env.NODE_ENV !== "production") {
+import Vconsole from 'vconsole';
+if (process.env.NODE_ENV !== 'production') {
   new Vconsole();
 }
 ```
@@ -614,7 +606,7 @@ sudo npm install spy-debugger -g
 
 2. 手机与电脑置于同一 `wifi` 下，手机设置代理
 
-  设置手机的 `HTTP` 代理，代理 `IP` 地址设置为 `PC` 的 `IP` 地址，端口为 `spy-debugger` 的启动端口
+设置手机的 `HTTP` 代理，代理 `IP` 地址设置为 `PC` 的 `IP` 地址，端口为 `spy-debugger` 的启动端口
 
 - `spy-debugger` 默认端口：`9888`
 
@@ -630,7 +622,7 @@ sudo npm install spy-debugger -g
 
 ## 总结
 
-关于移动端 H5 的文章告一段落了，之后实践中遇到的问题都将在此文中更新。另外可以多关注下 [我的github](https://github.com/GolderBrother) 动态哦！
+关于移动端 H5 的文章告一段落了，之后实践中遇到的问题都将在此文中更新。另外可以多关注下 [我的 github](https://github.com/GolderBrother) 动态哦！
 
 ## 参考资料
 
@@ -643,5 +635,10 @@ sudo npm install spy-debugger -g
 - [DSBridge-Android](https://github.com/wendux/DSBridge-Android) & [DSBridge-iOS](https://github.com/wendux/DSBridge-IOS)
 - [qrcodejs 源码](https://github.com/wendux/DSBridge-IOS)
 - [html2canvas 源码](https://github.com/wendux/DSBridge-IOS)
-- [关于H5页面在iPhoneX适配](https://github.com/wendux/DSBridge-IOS)
+- [关于 H5 页面在 iPhoneX 适配](https://github.com/wendux/DSBridge-IOS)
 - [vant 相关文档](https://youzan.github.io/vant/#/zh-CN/button)
+
+ <comment/> 
+ 
+ 
+ <comment/>
