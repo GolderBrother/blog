@@ -559,15 +559,113 @@ var lengthOfLIS = function(nums) {
 
 [leetcode - 最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/300-zui-chang-shang-sheng-zi-xu-lie-by-alexer-660/)
 
-### 28.二叉树中序遍历
+### 28.二叉树的前序遍历
 
-如果 left 节点存在, 就入栈, 然后跳 left
-如果 left 和 right 都不存在, 则保存当前节点, 然后出栈, 并让 left 等于 null
-如果 right 节点存在, 并且 left 为 null, 则保存当前节点, 然后跳 right
+遍历顺序是：`左 -> 中 -> 右`
 
-![middleMap](./bytedance/img/middleMap.jpg)
+方法一：简单粗暴的递归方法
 
 ```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var preorderTraversal = function(root) {
+  return root ? [root.val, ...preorderTraversal(root.left), ...preorderTraversal(root.right)] : [];
+};
+```
+
+方法二：老老实实用迭代法
+
+```js
+/**
+ *
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var preorderTraversal = function(root) {
+  let res = [],
+    arr = [];
+  root && arr.push(root);
+  while (arr && arr.length) {
+    const current = arr.pop();
+    res.push(current.val);
+    // 栈结构是先进后出,因此先将右节点压栈、再将左节点压栈(右 -> 左)，最后弹栈的顺序是左->右
+    current.right !== null && arr.push(current.right);
+    current.left !== null && arr.push(current.left);
+  }
+  return res;
+};
+```
+
+### 29.二叉树的中序遍历
+
+遍历顺序是：`中 -> 左 -> 右`
+
+方法一：递归大法好
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const inorderTraversal = root => {
+  const res = [];
+  const pushValue = node => {
+    if (node != null) {
+      node.left && pushValue(node.left);
+      res.push(node.val);
+      node.right && pushValue(node.right);
+    }
+  };
+  pushValue(root);
+  return res;
+};
+```
+
+方法二：老老实实用迭代法一
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const inorderTraversal = root => {
+  let res = [];
+  if (root == null) return res;
+  const stack = [];
+  let curr = root;
+  while (curr != null || stack.length > 0) {
+    if (curr) {
+      stack.push(curr);
+      curr = curr.left;
+    } else {
+      const node = stack.pop();
+      res.push(node.val);
+      curr = curr.right;
+    }
+  }
+  return res;
+};
+```
+
+方法二：老老实实用迭代法二
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+// 如果 left 节点存在, 就入栈, 然后跳 left
+// 如果 left 和 right 都不存在, 则保存当前节点, 然后出栈, 并让 left 等于 null
+// 如果 right 节点存在, 并且 left 为 null, 则保存当前节点, 然后跳 right
 const inorderTraversal = root => {
   // 用来保存节点
   let res = [],
@@ -597,9 +695,65 @@ const inorderTraversal = root => {
 };
 ```
 
+### 28.二叉树的后序遍历
+
+遍历顺序是：`左 -> 右 -> 中`
+
+方法一：递归大法好
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var postorderTraversal = function(root) {
+  let res = [];
+  const pushNode = node => {
+    if (node != null) {
+      // 利用栈的特点：先进后出
+      node.left != null && pushNode(node.left);
+      node.right != null && pushNode(node.right);
+      // 一个个压栈
+      res.push(node.val);
+    }
+  };
+  pushNode(root);
+  return res;
+};
+```
+
+方法二：使用迭代
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var postorderTraversal = function(root) {
+  let res = [],
+    stack = [];
+  while (root || stack.length) {
+    // 每次都把值插入到最前面
+    res.unshift(root.val);
+    // 先入左节点，再入右节点(利用栈的特点：先进后出)
+    if (root.left) stack.push(root.left);
+    if (root.right) stack.push(root.right);
+    root = stack.pop();
+  }
+  return res;
+};
+```
+
 ### http 握手原理
 
-[卧槽！牛皮了，头一次见有大佬把 TCP 三次握手四次挥手解释的这么明白](卧槽！牛皮了，头一次见有大佬把TCP三次握手四次挥手解释的这么明白)
+[卧槽！牛皮了，头一次见有大佬把 TCP 三次握手四次挥手解释的这么明白](http://mp.weixin.qq.com/s?__biz=MzAwMjg1NjY3Nw==&mid=2247490651&idx=1&sn=411f4db35942b0eaa0f55c8d7a482609&chksm=9ac55fd1adb2d6c72c506258f329559c2644aed7b29dc03f8e008625f1478086ea6cd6197470&mpshare=1&scene=24&srcid=0522p8riYkHgUnK4UAaptJsF&sharer_sharetime=1590196495993&sharer_shareid=76452b9480c2ac79dee1869b02f66636#rd)
 
 ### 29.react 新版本的特性
 

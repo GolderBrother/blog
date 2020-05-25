@@ -920,6 +920,206 @@ const levelOrder = function(root) {
 };
 ```
 
+#### 二叉树的前、中、后序遍历
+
+先来看张图
+
+![traversal](./interview/traversal.jpg)
+
+各种遍历实现方式
+
+##### 1.二叉树的前序遍历
+
+遍历顺序是：`左 -> 中 -> 右`
+
+方法一：简单粗暴的递归方法
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var preorderTraversal = function(root) {
+  return root ? [root.val, ...preorderTraversal(root.left), ...preorderTraversal(root.right)] : [];
+};
+```
+
+方法二：老老实实用迭代法
+
+```js
+/**
+ *
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var preorderTraversal = function(root) {
+  let res = [],
+    arr = [];
+  root && arr.push(root);
+  while (arr && arr.length) {
+    const current = arr.pop();
+    res.push(current.val);
+    // 栈结构是先进后出,因此先将右节点压栈、再将左节点压栈(右 -> 左)，最后弹栈的顺序是左->右
+    current.right !== null && arr.push(current.right);
+    current.left !== null && arr.push(current.left);
+  }
+  return res;
+};
+```
+
+##### 2.二叉树的中序遍历
+
+遍历顺序是：`中 -> 左 -> 右`
+
+方法一：递归大法好
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const inorderTraversal = root => {
+  const res = [];
+  const pushValue = node => {
+    if (node != null) {
+      node.left && pushValue(node.left);
+      res.push(node.val);
+      node.right && pushValue(node.right);
+    }
+  };
+  pushValue(root);
+  return res;
+};
+```
+
+方法二：老老实实用迭代法一
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+const inorderTraversal = root => {
+  let res = [];
+  if (root == null) return res;
+  const stack = [];
+  let curr = root;
+  while (curr != null || stack.length > 0) {
+    if (curr) {
+      stack.push(curr);
+      curr = curr.left;
+    } else {
+      const node = stack.pop();
+      res.push(node.val);
+      curr = curr.right;
+    }
+  }
+  return res;
+};
+```
+
+方法二：老老实实用迭代法二
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+// 如果 left 节点存在, 就入栈, 然后跳 left
+// 如果 left 和 right 都不存在, 则保存当前节点, 然后出栈, 并让 left 等于 null
+// 如果 right 节点存在, 并且 left 为 null, 则保存当前节点, 然后跳 right
+const inorderTraversal = root => {
+  // 用来保存节点
+  let res = [],
+    // 存放根节点
+    stack = [];
+  while (root || stack.length) {
+    if (root.left) {
+      // 如果 left 节点存在, 就入栈
+      stack.push(root);
+      // 跳到 left
+      root = root.left;
+    } else if (!root.left && !root.right) {
+      // 如果 left 和 right 都不存在, 则保存当前节点
+      res.push(root.val);
+      // 出栈
+      root = stack.pop();
+      // 让 left 等于 null
+      root && (root.left = null);
+    } else if (root.right) {
+      // 如果 right 节点存在, 并且 left 为 null, 则保存当前节点
+      res.push(root.val);
+      // 跳 right
+      root = root.right;
+    }
+  }
+  return res;
+};
+```
+
+##### 3.二叉树的后序遍历
+
+遍历顺序是：`左 -> 右 -> 中`
+
+方法一：递归大法好
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var postorderTraversal = function(root) {
+  let res = [];
+  const pushNode = node => {
+    if (node != null) {
+      // 利用栈的特点：先进后出
+      node.left != null && pushNode(node.left);
+      node.right != null && pushNode(node.right);
+      // 一个个压栈
+      res.push(node.val);
+    }
+  };
+  pushNode(root);
+  return res;
+};
+```
+
+方法二：使用迭代
+
+```js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var postorderTraversal = function(root) {
+  let res = [],
+    stack = [];
+  while (root || stack.length) {
+    // 每次都把值插入到最前面
+    res.unshift(root.val);
+    // 先入左节点，再入右节点(利用栈的特点：先进后出)
+    if (root.left) stack.push(root.left);
+    if (root.right) stack.push(root.right);
+    root = stack.pop();
+  }
+  return res;
+};
+```
+
 ### 栈(`Stack`) & 队列(`Queue`)
 
 #### 09. 用两个栈实现队列
@@ -1452,4 +1652,6 @@ console.log(replaceSpace(s)); // We%20are%20happy.
  <comment/> 
  
  
+ <comment/>
+
  <comment/>
