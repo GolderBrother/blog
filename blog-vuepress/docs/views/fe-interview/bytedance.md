@@ -734,6 +734,8 @@ start();
 
 [JSONP](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html#_4-jsonp)
 
+[10 种跨域解决方案（附终极方案）](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html)
+
 ### 32.js 原型继承 & 原型链
 
 [重新认识构造函数、原型和原型链](https://muyiy.cn/blog/5/5.1.html#%E5%BC%95%E8%A8%80)
@@ -743,55 +745,9 @@ start();
 [Promise](http://www.zhufengpeixun.cn/2020/html/2.Promise.html#t84.3%20%20es6%E6%A8%A1%E6%8B%9FPromise)
 [手写 Promise](https://github.com/GolderBrother/my-promise-all)
 
-### 34.二叉树搜寻算法
+### 34.二叉树搜寻算法(另外一篇文章中)
 
-[二叉树](https://golderbrother.github.io/blog/views/algorithms/interview.html#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B1%BB%E9%A2%98%E7%9B%AE)
-
-### 35.算法：前端做并发请求控制
-
-```js
-const mapLimit = (list, limit, asyncHandle) => {
-  // 然后，等每个异步请求执行完，执行下一个list项
-  const recursion = arr => {
-    return asyncHandle(arr.shift()).then(res => {
-      console.log('data', res);
-      if (arr.length > 0) {
-        return recursion(arr);
-      }
-      return 'finish';
-    });
-  };
-  let asyncList = [];
-  let listCopy = [].concat(list);
-  // 瞬发 limit 个异步请求，我们就得到了并发的 limit 个异步请求
-  while (limit--) {
-    asyncList.push(recursion(listCopy));
-  }
-  // 等list所有的项迭代完之后的回调
-  return Promise.all(asyncList);
-};
-
-const dataLists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 100, 123];
-let count = 0;
-mapLimit(dataLists, 3, curItem => {
-  return new Promise(resolve => {
-    count++;
-    setTimeout(() => {
-      console.log(curItem, '当前并发量:', count--);
-      resolve();
-    }, Math.random() * 5000);
-  });
-}).then(response => {
-  console.log('finish', response);
-});
-
-// 2 '当前并发量:' 3
-// data undefined
-// ...
-// 100 '当前并发量:' 1
-// data undefined
-// finish [ 'finish', 'finish', 'finish' ]
-```
+### 35.算法：前端做并发请求控制(另外一篇文章中)
 
 ### 38. express ctx 中间件代码实现
 
@@ -870,7 +826,9 @@ Node.js API 网关总结
 
 API 网关提供了一个共享层，以通过微服务架构来满足客户需求。它有助于保持您的服务小而专注。您可以将不同的通用逻辑放入您的 API 网关，但是您应该避免 API 网关的过度使用，因为很多逻辑可以从服务团队中获得控制。
 
-### 45.csrf/xss 攻击原理
+### 45.csrf/xss 攻击原理(前端攻击有哪些)
+
+[谈谈 web 安全问题及解决方案](https://golderbrother.github.io/blog/views/fe-interview/web-safe.html#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5)
 
 ### 46.react diff 原理
 
@@ -879,8 +837,12 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 ### 47.事件循环
 
 [EventLoop](http://www.zhufengpeixun.cn/2020/html/94.4.EventLoop.html)
+[事件循环(浏览器/node/版本差异)](https://mp.weixin.qq.com/s/QgfE5Km1xiEkQqADMLmj-Q)
 
 ### 48.react diff 算法，key 的作用，setData 的机制，事件合成
+
+[react fiber 的实现原理](https://juejin.im/post/5dadc6045188255a270a0f85#comment)
+[【React 深入】React 事件机制](https://juejin.im/post/5c7df2e7f265da2d8a55d49d)
 
 ### vue 相关面试题
 
@@ -939,6 +901,39 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 
 ### 92. CSS 伪类和伪元素
 
+- css 伪类
+  css 伪类用于向某些选择器添加特殊的效果。
+  锚伪类：`:link, :visited, :hover, :focus, :active, :lang`
+  css3 新增的伪类：
+  `:first-child, :last-child, :only-child, :first-of-type, :last-of-type, :only-of-type, :nth-child(n), :nth-last-child(n), :nth-of-type(n), :nth-last-of-type(n), :root, :empty, :target, :enabled, :disabled, :checked, :not(selector),`
+
+- css 伪元素
+  css 伪元素用于向某些选择器设置特殊效果。
+  `::first-letter, ::first-line, ::before, ::after`
+  css3 新增的伪元素
+  `::selection`
+
+- css 伪类和伪元素的区别
+
+  1. 为了避免大家混淆伪类和伪元素，css3 中的标准规定伪类使用单冒号“:” ，伪元素使用双冒号“::”，但在此之前都使用的单冒号“:”，所以为了保证兼容伪元素两种使用方法都是可以的。
+  2. 伪类可以叠加使用，而伪元素在一个选择器中只能出现一次，并且只能出现在末尾。
+
+  ```css
+  .box:first-child:hover {
+    color: #000;
+  } //使用伪类
+  .box:first-letter {
+    color: #000;
+  } //使用伪元素
+  .box:first-letter:hover {
+    color: #000;
+  } //错误写法
+  ```
+
+  [CSS 伪类 (Pseudo-classes)](https://www.w3school.com.cn/css/css_pseudo_classes.asp)
+
+  3. 伪类与类优先级相同，伪元素与标签优先级相同。顺便说一下优先级怎么判断，一般是 !important > 行内样式> ID 选择器 > 类选择器 > 标签 > 通配符 > 继承 > 浏览器默认属性。还有一个简单的计算方法，内联样式表的权值为 1000，ID 选择器的权值为 100，Class 类选择器的权值为 10，HTML 标签选择器的权值为 1，权值实际并不是按十进制计算的，用数字表示只是说明思想，我们可以把选择器中规则对应做加法，比较权值大小，权值越大优先级越高，如果权值相同前面的样式会被后面的覆盖。
+
 ### 93.根据条件获取递归树中过的某一节点
 
 ### 94.JavaScript this 的指向；箭头函数的 this 指向
@@ -946,6 +941,8 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 [JavaScript 深入之史上最全--5 种 this 绑定全面解析](https://muyiy.cn/blog/3/3.1.html)
 
 ### 95.Promise / setTimeout 的执行顺序；实际考察知识点：对「事件队列 / 宏任务 / 微任务」的了解
+
+Promise 是微任务，会优先于 setTimeout 执行
 
 ### 96.执行代码求输出，并说明为什么，严格模式下输出有变化吗，为什么
 
@@ -986,9 +983,90 @@ function sendRequest(urls: sring[], max: number, callback: () => void) {
 }
 ```
 
+### 99.弹性盒子中 flex: 0 1 auto 表示什么意思
+
+三个参数分别对应的是 flex-grow, flex-shrink 和 flex-basis，默认值为 0 1 auto。
+
+1.flex-grow: 0; // 增长比例，子项合计宽度小于容器宽度，需要根据每个子项设置的此属性比例对剩下的长度进行分配
+2.flex-shrink: 1; // 回缩比例，子项合计宽度大于容器宽度，需要根据每个子项设置的此属性比例对多出的长度进行分配
+3.flex-basis 属性定义了在分配多余空间之前，项目占据的主轴空间（main size）。
+
+### 100.Promise 相关
+
+(1)`promise` 的链式调用怎么中断？
+返回一个既不成功也不失败的 `promise`, 相当于是返回`pending`状态的 `Promise` 对象
+`return new Promise(resolve,reject) => {})`;
+
+(2)`promise` 如何取消
+
+- `Promise.race` 竞速方法
+
+```js
+let p1 = new Promise((resolve, reject) => {
+  resolve('ok1');
+});
+
+let p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('ok2');
+  }, 10);
+});
+
+Promise.race([p2, p1])
+  .then(result => {
+    console.log(result); //ok1
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+- 当 `Promise` 链中抛出一个错误时，错误信息沿着链路向后传递，直至被捕获。
+
+利用这一特性能跳过链中被捕获前的函数的调用，直至链路终点。
+
+```js
+Promise.resolve()
+  .then(() => {
+    console.log('ok1');
+    throw 'throw error1';
+  })
+  .then(
+    () => {
+      console.log('ok2');
+    },
+    err => {
+      // 捕获错误
+      console.log('err->', err);
+    }
+  )
+  .then(() => {
+    // 该函数将被调用
+    console.log('ok3');
+    throw 'throw error3';
+  })
+  .then(() => {
+    // 错误捕获前的函数不会被调用
+    console.log('ok4');
+  })
+  .catch(err => {
+    console.log('err->', err);
+  });
+```
+
+(3)[手写一个 promise 代码地址](https://github.com/GolderBrother/my-promise-all)
+
+### 101.打开 url 后的流程
+
+[细说浏览器输入 URL 后发生了什么](https://golderbrother.github.io/blog/views/fe-interview/browser-input-url.html#%E6%80%BB%E4%BD%93%E6%A6%82%E8%A7%88)
+
+### 102.怎么解决内存泄漏。还有内存回收的有哪几种方式
+
+[JavaScript 内存泄露的 4 种方式及如何避免](https://blog.csdn.net/weixin_33906657/article/details/90490743)
+
 ## 二面
 
-### 实现一个字符串反转：输入：www.toutiao.com.cn 输出：cn.com.toutiao.www
+### 1.实现一个字符串反转：输入：www.toutiao.com.cn 输出：cn.com.toutiao.www
 
 要求：1.不使用字符串处理函数 2.空间复杂度尽可能小
 
@@ -1013,7 +1091,7 @@ var reverseWords = function(s) {
 };
 ```
 
-### 不借助变量，交换两个数
+### 2.不借助变量，交换两个数
 
 #### 1. 算术交换
 
@@ -1041,13 +1119,13 @@ b = a ^ b;
 a = a ^ b;
 ```
 
-### 3. ES6 的解构(真香~)
+#### 3. ES6 的解构(真香~)
 
 ```js
 [a, b] = [b, a];
 ```
 
-### 观察者模式 vs 发布-订阅模式，说说区别
+### 3.观察者模式 vs 发布-订阅模式，说说区别
 
 #### 观察者模式的概念
 
@@ -1069,7 +1147,7 @@ a = a ^ b;
 
 `观察者模式`需要在单个应用程序地址空间中实现，而`发布-订阅`更像交叉应用模式。
 
-### 与项目无绝对相关的问答题
+### 4. 与项目无绝对相关的问答题
 
 - [vue 事件机制是如何实现的](https://juejin.im/post/59ca5e975188257a8908959b)
 - [vue 的组件通信方式有哪些](http://golderbrother.cn/articleDetail?article_id=5da1ab2255bcb9003009ed89##toc27)
@@ -1078,7 +1156,144 @@ a = a ^ b;
 - vue 转小程序怎么实现(ast/生命周期对齐/跨平台模块兼容/兼容细节点实现过程)（可以看看 mqvue 的实现原理）
 - [性能指标，如何理解 TTI，如何统计，与 FID 有什么区别，如何实现统计，以及性能的东西](https://mp.weixin.qq.com/s/wDKKj5R8SYm-_75Zn1y30A)
 - [说说你所了解的安全问题及防护方法](https://mp.weixin.qq.com/s/rU32rVM6Q-ele01ZB3RFzg)
-- [说说你知道的设计模式，并举个对应的模式例子](https://mp.weixin.qq.com/s/x3OCgS_knmM4D5zNSIVGRg)
+- 说说你知道的设计模式，并举个对应的模式例子
+  - [介绍几个 JavaScript 设计模式及场景应用](https://mp.weixin.qq.com/s/x3OCgS_knmM4D5zNSIVGRg)
+  - [前端需要了解的 9 种设计模式](https://mp.weixin.qq.com/s/MdT9BGmgCEr6yez-1bpF2w)
+
+### 5.http 网络协议
+
+[HTTP 灵魂之问，巩固你的 HTTP 知识体系](https://golderbrother.github.io/blog/views/network/http-interview.html)
+
+### 6.tcp 为什么是可靠的
+
+[TCP 协议为什么可靠?](https://www.jianshu.com/p/ff36b6ab503e)
+
+### 7.solid 原则
+
+[设计模式之 SOLID 原则](https://www.cnblogs.com/suli0827/p/9515842.html)
+
+### 8.柯里化
+
+是把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数而且返回结果的新函数的技术。
+
+示例代码如下：
+
+```js
+const isType = (type, value) => Object.prototype.toString.call(value) === `[object ${type}]`;
+
+const currying = (fn, arr = []) => {
+  const len = fn.length;
+  return (...args) => {
+    let concatArgs = [...arr, ...args];
+    if (concatArgs.length < len) {
+      // 继续curry参数
+      return currying(fn, concatArgs); // 递归不停的产生函数
+    } else {
+      return fn(...concatArgs);
+    }
+  };
+};
+
+const isArray = currying(isType)('Array', []);
+const isString = currying(isType)('String', '');
+const isNumber = currying(isType)('Number', '1');
+
+console.log(`isArray`, isArray); // isArray true
+console.log(`isString`, isString); // isString true
+console.log(`isNumber`, isNumber); // isNumber false
+```
+
+### 9.css 单行和多行截断
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>css处理超出文本截断问题的两种情况（多行或者单行）</title>
+    <style>
+      /* 单行的简单处理方式 */
+      .words {
+        width: 400px;
+
+        /*超过部分不显示*/
+        overflow: hidden;
+        /*超过部分用点点表示*/
+        text-overflow: ellipsis;
+        /*不换行*/
+        white-space: nowrap;
+      }
+
+      /* 规定行数的截断处理方式 */
+      .words {
+        width: 400px;
+
+        text-overflow: ellipsis;
+        /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        /*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-all;
+        /*在任何地方换行*/
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="words">
+      For a long time it seemed to me that life was about to begin , real life. But, there was
+      always some obsacle in the way, something to be gotten through first, some unfinnished
+      business, time still to be served or a debt to be paid. Then life would begin.
+    </div>
+  </body>
+</html>
+```
+
+### 10.手写一个 redux middleware
+
+[Redux 中间件](http://www.zhufengpeixun.cn/2020/html/63.2.redux-middleware.html#t01.%20Redux%E4%B8%AD%E9%97%B4%E4%BB%B6)
+
+### 11.ssr(ssr csr 混合怎么处理)
+
+[React SSR 详解【近 1W 字】+ 2 个项目实战](https://juejin.im/post/5def0816f265da33aa6aa7fe)
+
+### 12.TS 常见问题整理（60 多个，持续更新 ing）
+
+[TS 常见问题整理（60 多个，持续更新 ing）](https://juejin.im/post/5e33fcd06fb9a02fc767c427)
+
+## 三轮
+
+### 1.什么是微前端
+
+[了解什么是微前端](https://mp.weixin.qq.com/s/zw6sNtNEvqnnGgRsPJsW4w)
+
+### 2.浅拷贝深拷贝实现
+
+[js 浅拷贝与深拷贝的区别和实现方式](https://www.jianshu.com/p/1c142ec2ca45)
+
+### 3. redux 和 mobx 的区别
+
+[redux、mobx、concent 特性大比拼, 看后生如何对局前辈](https://juejin.im/post/5e7c18d9e51d455c2343c7c4)
+
+### 4.长列表渲染
+
+[性能优化之长列表渲染——时间分片和虚拟列表](https://blog.csdn.net/superermiao/article/details/105426843)
+
+### 5.redis 数据结构和实现
+
+[Redis 数据结构底层实现](https://blog.csdn.net/Dome_/article/details/93389132)
+
+### 其他
+
+- js 实现依赖注入
+- 接口攻击的方式和防御措施
+- js 多线程如何共享大的数据
+- 二叉树 ，diff 算法，
+- 页面渲染原理，
+- 图像算法 事件循环
 
 ## 最后
 

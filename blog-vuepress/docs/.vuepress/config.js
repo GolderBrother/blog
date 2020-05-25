@@ -176,9 +176,9 @@ module.exports = {
                     children: [
                         '/views/fe-interview/alibaba.md',
                         '/views/fe-interview/bytedance.md',
+                        '/views/fe-interview/bytedance-algorithms.md',
                         '/views/fe-interview/tencent.md',
                         '/views/fe-interview/classic-layout.md',
-
                         '/views/fe-interview/web-safe.md',
                         '/views/fe-interview/http&https.md',
                         '/views/fe-interview/webpack-performance-optimization.md',
