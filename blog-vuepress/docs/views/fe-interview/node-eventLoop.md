@@ -126,8 +126,6 @@ immediate
 timeout
 ```
 
-使用 setImmediate() 相对于setTimeout() 的主要优势是，如果setImmediate()是在 I/O 周期内被调度的，那它将会在其中任何的定时器之前执行，跟这里存在多少个定时器无关
-
 使用 `setImmediate()` 相对于 `setTimeout()` 的主要优势是，如果`setImmediate()`是在 I/O 周期内被调度的，那它将会在其中任何的定时器之前执行，跟这里存在多少个定时器无关
 
 ### process.nextTick
@@ -140,45 +138,53 @@ timeout
 
 ```js
 setImmediate(() => {
-  console.log("timeout1");
-  Promise.resolve().then(() => console.log("promise resolve"));
-  process.nextTick(() => console.log("next tick1"));
+  console.log('timeout1');
+  Promise.resolve().then(() => console.log('promise resolve'));
+  process.nextTick(() => console.log('next tick1'));
 });
 setImmediate(() => {
-  console.log("timeout2");
-  process.nextTick(() => console.log("next tick2"));
+  console.log('timeout2');
+  process.nextTick(() => console.log('next tick2'));
 });
-setImmediate(() => console.log("timeout3"));
-setImmediate(() => console.log("timeout4"));
+setImmediate(() => console.log('timeout3'));
+setImmediate(() => console.log('timeout4'));
+
+// timeout1
+// timeout2
+// timeout3
+// timeout4
+// next tick1
+// next tick2
+// promise resolve
 ```
 
 针对`node`不同的版本，有不同的输出结果：
 
-- 在 **node11 之前**，因为每一个 `eventLoop` 阶段完成后会去检查 `nextTick` 队列，如果里面有任务，会让这部分任务优先于微任务执行，因此上述代码是先进入 `check` 阶段，执行所有 `setImmediate`，完成之后执行 `nextTick` 队列，最后执行**微任务队列**，因此输出为`timeout1=>timeout2=>timeout3=>timeout4=>next tick1=>next tick2=>promise resolve`
+- 在 **node11 之前**，因为每一个 `eventLoop` 阶段完成后会去检查 `nextTick` 队列，如果里面有任务，会让这部分任务**优先于**微任务执行，因此上述代码是先进入 `check` 阶段，执行所有 `setImmediate`，完成之后执行 `nextTick` 队列，最后执行**微任务队列**，因此输出为`timeout1=>timeout2=>timeout3=>timeout4=>next tick1=>next tick2=>promise resolve`
 - 在 **node11 之后**，`process.nextTick` 是微任务的一种,因此上述代码是先进入 `check` 阶段，执行一个 `setImmediate` 宏任务，然后执行其**微任务队列**，再执行**下一个宏任务及其微任务**,因此输出为`timeout1=>next tick1=>promise resolve=>timeout2=>next tick2=>timeout3=>timeout4`。
 
 ## node 版本差异说明
 
-这里主要说明的是 `node11` 前后的差异，因为 `node11` 之后一些特性已经向浏览器看齐了，总的变化一句话来说就是，如果是 `node11` 版本一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行对应的微任务队列(`promise.then(回调)、process.nextTick(回调)`)，一起来看看吧～
+这里主要说明的是 `node11` 前后的差异，因为 `node11` 之后一些特性已经向浏览器看齐了，总的变化一句话来说就是，如果是 `node11` 版本一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行对应的微任务队列(`process.nextTick(回调) > promise.then(回调)`)，一起来看看吧～
 
 ### timers 阶段的执行时机变化
 
 ```js
-setTimeout(()=>{
-    console.log('timer1')
-    Promise.resolve().then(function() {
-        console.log('promise1')
-    })
-}, 0)
-setTimeout(()=>{
-    console.log('timer2')
-    Promise.resolve().then(function() {
-        console.log('promise2')
-    })
-}, 0)
+setTimeout(() => {
+  console.log('timer1');
+  Promise.resolve().then(function() {
+    console.log('promise1');
+  });
+}, 0);
+setTimeout(() => {
+  console.log('timer2');
+  Promise.resolve().then(function() {
+    console.log('promise2');
+  });
+}, 0);
 ```
 
-- 如果是 node11 版本一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行微任务队列，这就跟浏览器端运行一致，最后的结果为`timer1=>promise1=>timer2=>promise2`
+- 如果是 node11 版本一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行这个宏任务里面的微任务队列，这就跟浏览器端运行一致，最后的结果为`timer1=>promise1=>timer2=>promise2`
 - 如果是 node10 及其之前版本要看第一个定时器执行完，第二个定时器是否在完成队列中.
 
   - 如果是第二个定时器还**未在完成队列**中，最后的结果为`timer1=>promise1=>timer2=>promise2`
@@ -189,8 +195,8 @@ setTimeout(()=>{
 ```js
 setImmediate(() => console.log('immediate1'));
 setImmediate(() => {
-    console.log('immediate2')
-    Promise.resolve().then(() => console.log('promise resolve'))
+  console.log('immediate2');
+  Promise.resolve().then(() => console.log('promise resolve'));
 });
 setImmediate(() => console.log('immediate3'));
 setImmediate(() => console.log('immediate4'));
@@ -204,8 +210,8 @@ setImmediate(() => console.log('immediate4'));
 ```js
 setImmediate(() => console.log('timeout1'));
 setImmediate(() => {
-    console.log('timeout2')
-    process.nextTick(() => console.log('next tick'))
+  console.log('timeout2');
+  process.nextTick(() => console.log('next tick'));
 });
 setImmediate(() => console.log('timeout3'));
 setImmediate(() => console.log('timeout4'));
@@ -214,11 +220,11 @@ setImmediate(() => console.log('timeout4'));
 - 如果是 **node11 后** 的版本，会输出`timeout1=>timeout2=>next tick=>timeout3=>timeout4`
 - 如果是 **node11 前** 的版本，会输出`timeout1=>timeout2=>timeout3=>timeout4=>next tick`
 
-以上几个例子，我们能清晰感受到它的变化了，反正记着一个结论，如果是 **node11 版本** 一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行对应的微任务队列(`promise.then(回调)、process.nextTick(回调)`)。
+以上几个例子，我们能清晰感受到它的变化了，反正记着一个结论，如果是 **node11 版本** 一旦执行一个阶段里的一个宏任务(`setTimeout,setInterval和setImmediate`)就立刻执行其对应的微任务队列(`process.nextTick(回调) > promise.then(回调)`)。
 
-## node 和 浏览器 eventLoop的主要区别
+## node 和 浏览器 eventLoop 的主要区别
 
-两者最主要的区别在于浏览器中的**微任务**是在每个相应的**宏任务**中执行的，而**nodejs**中的**微任务**是在**不同阶段**(`timers、check、nextTick`)之间执行的，根据**nodejs的版本**(<10、>=11)有不同的执行顺序过程。
+两者最主要的区别在于浏览器中的**微任务**是在每个相应的**宏任务**中执行的，而**nodejs**中的**微任务**是在**不同阶段**(`timers、check、nextTick`)之间执行的，根据**nodejs 的版本**(<11、>=11)有不同的执行顺序过程。
 
 ## 参考资料
 

@@ -364,15 +364,15 @@ const setStateP = function(state) {
 
 ### 8.redux 基本组成和设计单向数据流
 
-[Redux 数据流](https://www.jianshu.com/p/faee4de8e092)
-[Redux 管理 React 数据流要点浅析](https://segmentfault.com/a/1190000022279239)
-[Redux 入门教程（一）：基本用法](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
-[8k 字 | Redux/react-redux/redux 中间件设计实现剖析](https://juejin.im/post/5def4831e51d45584b585000)
+- [Redux 数据流](https://www.jianshu.com/p/faee4de8e092)
+- [Redux 管理 React 数据流要点浅析](https://segmentfault.com/a/1190000022279239)
+- [Redux 入门教程（一）：基本用法](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
+- [8k 字 | Redux/react-redux/redux 中间件设计实现剖析](https://juejin.im/post/5def4831e51d45584b585000)
 
 ### 9.https 协议的过程
 
-[HTTP 灵魂之问，巩固你的 HTTP 知识体系](https://golderbrother.github.io/blog/views/network/http-interview.html#_001-http-%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F)
-[https](http://www.zhufengpeixun.cn/2020/html/21.https.html)
+- [HTTP 灵魂之问，巩固你的 HTTP 知识体系](https://golderbrother.github.io/blog/views/network/http-interview.html#_001-http-%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F)
+- [https](http://www.zhufengpeixun.cn/2020/html/21.https.html)
 
 ### 10.https 获取加密密钥的过程
 
@@ -387,8 +387,8 @@ const setStateP = function(state) {
 
 ### 13.prototype 继承的实现
 
-[JavaScript 中类式继承和原型式继承的实现方法和区别](https://www.cnblogs.com/langzs/p/6758992.html)
-[JavaScript 常用八种继承方案](https://www.jianshu.com/p/5b7a2a6711f1)
+- [JavaScript 中类式继承和原型式继承的实现方法和区别](https://www.cnblogs.com/langzs/p/6758992.html)
+- [JavaScript 常用八种继承方案](https://www.jianshu.com/p/5b7a2a6711f1)
 
 ### 14.数字千分位处理，正则和非正则都要实现
 
@@ -396,15 +396,15 @@ const setStateP = function(state) {
 
 ### 15.借用构造继承，几种组合继承方式
 
-[js 继承之组合继承（结合原型链继承 和 借用构造函数继承）](https://www.cnblogs.com/sarahwang/p/9098044.html)
-[javascript 实现继承 3 种方式： 原型继承、借用构造函数继承、组合继承，模拟 extends 方法继承](https://www.cnblogs.com/Lin-Yi/p/7446841.html)
+- [js 继承之组合继承（结合原型链继承 和 借用构造函数继承）](https://www.cnblogs.com/sarahwang/p/9098044.html)
+- [javascript 实现继承 3 种方式： 原型继承、借用构造函数继承、组合继承，模拟 extends 方法继承](https://www.cnblogs.com/Lin-Yi/p/7446841.html)
 
 ### 16.看编程代码说出运行结果
 
 Process.nextTick，setImmediate 和 promise.then 的优先级
 
-[解读 setTimeout, promise.then, process.nextTick, setImmediate 的执行顺序](https://www.cnblogs.com/jesse131/p/11708233.html)
-[promise.then,process.nextTick, setTimeout 以及 setImmediate 的执行顺序](https://blog.csdn.net/roamingcode/article/details/81737275)
+- [解读 setTimeout, promise.then, process.nextTick, setImmediate 的执行顺序](https://www.cnblogs.com/jesse131/p/11708233.html)
+- [promise.then,process.nextTick, setTimeout 以及 setImmediate 的执行顺序](https://blog.csdn.net/roamingcode/article/details/81737275)
 
 ### 17.实现一个 bind 函数
 
@@ -444,9 +444,9 @@ Function.prototype.myBind = function(context) {
 
 ### 21.bfc
 
-[CSS 中的 BFC 详解](https://www.cnblogs.com/chen-cong/p/7862832.html)
-[CSS-BFC](https://www.cnblogs.com/chen-cong/p/7862832.html)
-[CSS 中重要的 BFC](https://segmentfault.com/a/1190000013023485)
+- [CSS 中的 BFC 详解](https://www.cnblogs.com/chen-cong/p/7862832.html)
+- [CSS-BFC](https://www.cnblogs.com/chen-cong/p/7862832.html)
+- [CSS 中重要的 BFC](https://segmentfault.com/a/1190000013023485)
 
 ### 22.css 实现正方形 div 水平垂直居中
 
@@ -517,6 +517,8 @@ margin-top 为-(height / 2)，margin-left 为-(width / 2)。当然也可以不�
 ### 24.最后是一个写代码, 处理有依赖的异步任务 加重试
 
 ### 25.自己实现 bind 函数
+
+同上, 17.实现一个 bind 函数
 
 ### 26.什么是闭包
 
@@ -601,10 +603,10 @@ const inorderTraversal = root => {
 
 ### 29.react 新版本的特性
 
-[React 中文官网](https://reactjs.bootcss.com/docs/hooks-state.html)
-[React 新特性实例详解（memo、lazy、suspense、hooks）](http://react-china.org/t/react-memo-lazy-suspense-hooks/28789)
-[渲染原生组件](http://www.zhufengpeixun.cn/2020/html/96.1.react16.html#t337.1%20getDerivedStateFromProps)
-[React.js 小书](http://huziketang.mangojuice.top/books/react/)
+- [React 中文官网](https://reactjs.bootcss.com/docs/hooks-state.html)
+- [React 新特性实例详解（memo、lazy、suspense、hooks）](http://react-china.org/t/react-memo-lazy-suspense-hooks/28789)
+- [渲染原生组件](http://www.zhufengpeixun.cn/2020/html/96.1.react16.html#t337.1%20getDerivedStateFromProps)
+- [React.js 小书](http://huziketang.mangojuice.top/books/react/)
 
 ### 35.上中下三栏布局
 
@@ -732,9 +734,8 @@ start();
 
 ### 31.Jsonp 跨域
 
-[JSONP](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html#_4-jsonp)
-
-[10 种跨域解决方案（附终极方案）](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html)
+- [JSONP](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html#_4-jsonp)
+- [10 种跨域解决方案（附终极方案）](https://golderbrother.github.io/blog/views/cors/corssOrigin-pro.html)
 
 ### 32.js 原型继承 & 原型链
 
@@ -742,8 +743,8 @@ start();
 
 ### 33.promise
 
-[Promise](http://www.zhufengpeixun.cn/2020/html/2.Promise.html#t84.3%20%20es6%E6%A8%A1%E6%8B%9FPromise)
-[手写 Promise](https://github.com/GolderBrother/my-promise-all)
+- [Promise](http://www.zhufengpeixun.cn/2020/html/2.Promise.html#t84.3%20%20es6%E6%A8%A1%E6%8B%9FPromise)
+- [手写 Promise](https://github.com/GolderBrother/my-promise-all)
 
 ### 34.二叉树搜寻算法(另外一篇文章中)
 
@@ -751,9 +752,9 @@ start();
 
 ### 38. express ctx 中间件代码实现
 
-[express 中间件实现原理和源码分析](https://blog.csdn.net/qdmoment/article/details/102564231)
-[学习 koa 源码的整体架构，浅析 koa 洋葱模型原理和 co 原理](https://www.lxchuan12.cn/koa/#%E5%89%8D%E8%A8%80)
-[redux, koa, express 中间件实现对比解析](https://www.ctolib.com/topics-134893.html)
+- [express 中间件实现原理和源码分析](https://blog.csdn.net/qdmoment/article/details/102564231)
+- [学习 koa 源码的整体架构，浅析 koa 洋葱模型原理和 co 原理](https://www.lxchuan12.cn/koa/#%E5%89%8D%E8%A8%80)
+- [redux, koa, express 中间件实现对比解析](https://www.ctolib.com/topics-134893.html)
 
 ### 39.. vue 发布订阅和虚拟 dom 代码实现
 
@@ -836,13 +837,16 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 
 ### 47.事件循环
 
-[EventLoop](http://www.zhufengpeixun.cn/2020/html/94.4.EventLoop.html)
-[事件循环(浏览器/node/版本差异)](https://mp.weixin.qq.com/s/QgfE5Km1xiEkQqADMLmj-Q)
+- [EventLoop](http://www.zhufengpeixun.cn/2020/html/94.4.EventLoop.html)
+- [事件循环(浏览器/node/版本差异)](https://mp.weixin.qq.com/s/QgfE5Km1xiEkQqADMLmj-Q)
 
 ### 48.react diff 算法，key 的作用，setData 的机制，事件合成
 
-[react fiber 的实现原理](https://juejin.im/post/5dadc6045188255a270a0f85#comment)
-[【React 深入】React 事件机制](https://juejin.im/post/5c7df2e7f265da2d8a55d49d)
+- [react fiber 的实现原理](https://juejin.im/post/5dadc6045188255a270a0f85#comment)
+- [【React 深入】React 事件机制](https://juejin.im/post/5c7df2e7f265da2d8a55d49d)
+- [【React 深入】setState 的执行机制](https://segmentfault.com/a/1190000018260218)
+- [【React 深入】深入分析虚拟 DOM 的渲染原理和特性](https://segmentfault.com/a/1190000018891454)
+- [【React 深入】从 Mixin 到 HOC 再到 Hook](https://segmentfault.com/a/1190000018811476)
 
 ### vue 相关面试题
 
@@ -854,9 +858,9 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 
 ### 59.[1,2,3].map(parseInt) 执行结果
 
-- parseInt('1', 0); // radix 为 0 时，使用默认的 10 进制。
-- parseInt('2', 1); // radix 值在 2-36，无法解析，返回 NaN
-- parseInt('3', 2); // 基数为 2，2 进制数表示的数中，最大值小于 3，无法解析，返回 NaN
+- `parseInt('1', 0);` // radix 为 0 时，使用默认的 10 进制。
+- `parseInt('2', 1);` // radix 值在 2-36，无法解析，返回 NaN
+- `parseInt('3', 2);` // 基数为 2，2 进制数表示的数中，最大值小于 3，无法解析，返回 NaN
 
 ### 67.hybrid 实现 bridge 的方法
 
@@ -873,8 +877,8 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 
 ### 79.webpack 打包的原理，webpack 有没有针对打包过程做一些优化提升打包速度
 
-[说说 webpack 打包的原理](https://golderbrother.github.io/blog/views/fe-interview/webpack-principle.html#%E7%AE%80%E4%BB%8B)
-[Webpack 性能优化你知道哪些](https://golderbrother.github.io/blog/views/fe-interview/webpack-performance-optimization.html#webpack-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%BD%A0%E7%9F%A5%E9%81%93%E5%93%AA%E4%BA%9B)
+- [说说 webpack 打包的原理](https://golderbrother.github.io/blog/views/fe-interview/webpack-principle.html#%E7%AE%80%E4%BB%8B)
+- [Webpack 性能优化你知道哪些](https://golderbrother.github.io/blog/views/fe-interview/webpack-performance-optimization.html#webpack-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%BD%A0%E7%9F%A5%E9%81%93%E5%93%AA%E4%BA%9B)
 
 ### 85.小程序架构优化
 
@@ -886,8 +890,8 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 
 ### 88.vuex mobx
 
-[vue 中的状态管理](http://www.zhufengpeixun.cn/2020/html/66-9.vuex-apply.html)
-[mobx](http://www.zhufengpeixun.cn/2020/html/62.7.react-mobx.html)
+- [vue 中的状态管理](http://www.zhufengpeixun.cn/2020/html/66-9.vuex-apply.html)
+- [mobx](http://www.zhufengpeixun.cn/2020/html/62.7.react-mobx.html)
 
 ### 91.CSS 栅格布局
 
@@ -935,6 +939,42 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
   3. 伪类与类优先级相同，伪元素与标签优先级相同。顺便说一下优先级怎么判断，一般是 !important > 行内样式> ID 选择器 > 类选择器 > 标签 > 通配符 > 继承 > 浏览器默认属性。还有一个简单的计算方法，内联样式表的权值为 1000，ID 选择器的权值为 100，Class 类选择器的权值为 10，HTML 标签选择器的权值为 1，权值实际并不是按十进制计算的，用数字表示只是说明思想，我们可以把选择器中规则对应做加法，比较权值大小，权值越大优先级越高，如果权值相同前面的样式会被后面的覆盖。
 
 ### 93.根据条件获取递归树中过的某一节点
+
+```js
+const orgTreeData = {
+  nodeId: '19A5B',
+  nodeName: '预分析用户：1313.85万人',
+  nodeType: 'root',
+  expand: true,
+  dataCnt: 13138494,
+  children: [
+    {
+      nodeId: '19A5B_19A5C',
+      nodeName: '客户状态',
+      nodeType: 'tag',
+      children: [{}]
+    }
+  ]
+};
+const findParentNodeById = (data, nodeId) => {
+  //设置结果
+  let result;
+  if (!data) return; //如果data传空，直接返回
+  for (let i = 0; i < data.children.length; i++) {
+    let item = data.children[i];
+    //找到id相等的则返回父节点
+    if (item.nodeId == nodeId) return (result = data);
+    else if (item.children && item.children.length > 0) {
+      //如果有子集，则把子集作为参数重新执行本方法
+      result = findParentNodeById(item, nodeId);
+      //关键，千万不要直接return本方法，不然即使没有返回值也会将返回return，导致最外层循环中断，直接返回undefined,要有返回值才return才对
+      if (result) return result;
+    }
+  }
+  //如果执行循环中都没有return，则在此return
+  return result;
+};
+```
 
 ### 94.JavaScript this 的指向；箭头函数的 this 指向
 
@@ -1054,7 +1094,15 @@ Promise.resolve()
   });
 ```
 
-(3)[手写一个 promise 代码地址](https://github.com/GolderBrother/my-promise-all)
+(3)`Promise.prototype.finally`的使用场景
+
+- 隐藏 `AJAX` 请求的 `loading` 效果
+- 关掉打开的文件
+- 不管操作完成的状态是成功还是失败都想要记录日志
+
+等等这些情况下，就需要用 finally
+
+(4)[手写一个 promise 代码地址](https://github.com/GolderBrother/my-promise-all)
 
 ### 101.打开 url 后的流程
 
