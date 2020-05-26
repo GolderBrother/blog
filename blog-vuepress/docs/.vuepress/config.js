@@ -156,6 +156,13 @@ module.exports = {
                     ],
                 },
                 {
+                    title: '前端设计模式之美',
+                    collapsable: false,
+                    children: [
+                        '/views/fe-design/fe-design-9.md',
+                    ],
+                },
+                {
                     title: '前端数据结构之美',
                     collapsable: false,
                     children: [
