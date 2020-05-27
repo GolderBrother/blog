@@ -914,6 +914,40 @@ start();
 
 ### 40. 请实现如下的函数，可以批量请求数据，所有的 URL 地址在 urls 参数中，同时可以通过 max 参数控制请求的并发度，当所有请求结束之后，需要执行 callback 回调函数。发请求的函数可以直接使用 fetch 即可
 
+```js
+function sendRequest(arr, max, callback) {
+  let fetchArr = [], // 存储并发max的promise数组
+    i = 0;
+
+  function toFetch() {
+    if (i === arr.length) {
+      // 所有的都处理完了， 返回一个resolve
+      return Promise.resolve();
+    }
+
+    let one = fetch(arr[i++]); // 取出第i个url， 放入fetch里面 , 每取一次i++
+    fetchArr.push(one); //将当前的promise存入并发数组中，先push进去，再等promise执行完了之后再删除。
+    one.then(() => {
+      fetchArr.splice(fetchArr.indexOf(one), 1);
+    }); // 当promise执行完毕后，从数组删除
+
+    let p = Promise.resolve();
+    if (fetchArr.length >= max) {
+      // 当并行数量达到最大后， 用race比较 第一个完成的， 然后再调用一下函数自身。
+      p = Promise.race(fetchArr);
+    }
+    return p.then(() => toFetch());
+  }
+
+  // arr循环完后， 现在fetchArr里面剩下最后max个promise对象， 使用all等待所有的都完成之后执行callback
+  toFetch()
+    .then(() => Promise.all(fetchArr))
+    .then(() => {
+      callback();
+    });
+}
+```
+
 ### 41.二叉树遍历
 
 [从上到下打印二叉树](https://golderbrother.github.io/blog/views/algorithms/interview.html#_32-i-%E4%BB%8E%E4%B8%8A%E5%88%B0%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91)
@@ -992,7 +1026,9 @@ API 网关提供了一个共享层，以通过微服务架构来满足客户需�
 ### 47.事件循环
 
 - [EventLoop](http://www.zhufengpeixun.cn/2020/html/94.4.EventLoop.html)
-- [事件循环(浏览器/node/版本差异)](https://mp.weixin.qq.com/s/QgfE5Km1xiEkQqADMLmj-Q)
+- 事件循环(浏览器/node/版本差异)
+  - [浏览器](https://golderbrother.github.io/blog/views/fe-interview/browser-eventLoop.html)
+  - [node](https://golderbrother.github.io/blog/views/fe-interview/node-eventLoop.html#%E5%AE%8F%E4%BB%BB%E5%8A%A1%E5%92%8C%E5%BE%AE%E4%BB%BB%E5%8A%A1)
 
 ### 48.react diff 算法，key 的作用，setData 的机制，事件合成
 
