@@ -88,8 +88,8 @@ module.exports = {
                         '/views/css/css-skills1.md',
                         '/views/css/css-knowledge.md',
                         '/views/css/css-knowledge2.md',
-                        '/views/css/css-center.md'
-
+                        '/views/css/css-center.md',
+                        '/views/css/css-flex.md'
                     ]
                 },
                 {
@@ -246,6 +246,8 @@ module.exports = {
                     children: [
                         '/views/fe-advanced/ad1.md',
                         '/views/fe-advanced/ad2.md',
+                        '/views/fe-advanced/ad3.md',
+                        '/views/fe-advanced/ad6.md'
                     ],
                 }
             ],
