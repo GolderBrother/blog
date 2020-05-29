@@ -1677,15 +1677,87 @@ var hammingWeight = function(n) {
 };
 ```
 
+### 50. 第一个只出现一次的字符
+
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+示例:
+
+```
+s = "abaccdeff"
+返回 "b"
+
+s = ""
+返回 " "
+```
+
+实现思路:
+
+- 使用 map 结构来记录元素出现的次数
+- 查找第一次出现一次的 key,找到了直接返回
+- 否则返回单个空格的字符串
+
+实现代码如下：
+
+```js
+/**
+ * @param {string} s
+ * @return {character}
+ */
+var firstUniqChar = function(s) {
+  if (!s) return ' ';
+  const arr = s.split('');
+  // 使用map结构来记录元素出现的次数
+  const map = new Map();
+  for (const n of arr) {
+    const count = map.has(n) ? map.get(n) + 1 : 1;
+    map.set(n, count);
+  }
+  for (const key of map.keys()) {
+    // 查找第一次出现一次的key,找到了直接返回
+    if (map.get(key) === 1) return key;
+  }
+  // 否则返回单个空格的字符串
+  return ' ';
+};
+```
+
+### 42. 连续子数组的最大和
+
+输入一个整型数组，数组里有正数也有负数。数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+
+要求时间复杂度为 O(n)。
+
+示例 1:
+
+```
+输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出: 6
+解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
+```
+
+实现思路
+
+[参考力扣第 22 题](https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+
+实现代码如下
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function(nums) {
+  let max = nums[0];
+  for (let i = 0, len = nums.length; i < len - 1; i++) {
+    // 排除相加到负数的干扰
+    nums[i + 1] += Math.max(nums[i], 0);
+    max = Math.max(max, nums[i + 1]);
+  }
+  return max;
+};
+```
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
-
- <comment/>
-
- <comment/> 
- 
- 
- <comment/>
-
- <comment/>
