@@ -109,6 +109,8 @@ module.exports = {
                         '/views/javascript/js-skills.md',
                         '/views/javascript/js-skills2.md',
                         '/views/javascript/js-utils.md',
+                        '/views/javascript/js-utils2.md',
+
                     ]
                 },
                 {
