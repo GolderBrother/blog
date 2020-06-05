@@ -34,15 +34,15 @@ module.exports = {
         repoLabel: 'GitHub',
         smoothScroll: true,
         nav: [{
-                text: 'Home',
+                text: '首页',
                 link: '/'
             },
             {
-                text: 'Guide',
+                text: '主页',
                 link: '/guide/'
             },
             {
-                text: 'Views',
+                text: '大前端',
                 link: '/views/'
             },
             // {
@@ -118,6 +118,8 @@ module.exports = {
                     collapsable: false,
                     children: [
                         '/views/typescript/ts-demo.md',
+                        '/views/typescript/ts-difficult.md',
+                        '/views/typescript/ts-problem.md',
                     ]
                 },
                 {
