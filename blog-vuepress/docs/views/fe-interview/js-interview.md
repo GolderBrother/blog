@@ -138,7 +138,6 @@ function C() {}
 function D() {}
 
 var o = new C();
-
 console.log(myInstanceOf(o, C)); // true
 console.log(myInstanceOf(o, D)); // false
 ```
