@@ -1504,6 +1504,99 @@ var minArray = function(numbers) {
 console.log(minArray([2, 2, 2, 0, 1])); // 0
 ```
 
+#### 53-I. [在排序数组中查找数字 I](https://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/)
+
+统计一个数字在排序数组中出现的次数。
+
+示例 1:
+
+```
+输入: nums = [5,7,7,8,8,10], target = 8
+输出: 2
+```
+
+示例  2:
+
+```
+输入: nums = [5,7,7,8,8,10], target = 6
+输出: 0
+```
+
+##### 方法一 使用 hash 结构来存储元素出现次数
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function(nums, target) {
+  const map = new Map();
+  for (const n of nums) {
+    let hasNum = map.get(n);
+    hasNum ? map.set(n, ++hasNum) : map.set(n, 1);
+  }
+  return map.get(target) || 0;
+};
+```
+
+##### 方法二 二分查找 思路清晰
+
+解题思路
+
+- 1.二分查找到等于当前值的索引，把索引赋值给 left，或者直到左指针大于等于右指针停下
+- 2.判断 nums[left] 是否等于 target，不等，返回 0
+- 3.从 left 指针的位置往两边找，看看这个数重复几次，返回
+
+实现代码如下
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+
+/*
+  二分查找
+*/
+var search = function(nums, target) {
+  let count = 0,
+      n = nums.length,
+      left = 0,
+      right = n - 1;
+
+  while (left < right) {
+    let mid = (left + right) >> 1;
+    if (nums[mid] === target) {
+      left = mid;
+      break;
+    } else if (nums[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  if (nums[left] !== target) return 0;
+
+  // 找到起始位置, 从当前位置往两边找，看看重复几次
+  let copy = left - 1;
+  while (copy >= 0 && nums[copy] === target) {
+    copy--;
+    count++;
+  }
+
+  while (nums[left] === target && left < n) {
+    left++;
+    count++;
+  }
+
+  return count;
+};
+
+```
+
 #### 56-1. 数组中数字出现的次数
 
 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是 O(n)，空间复杂度是 O(1)。
