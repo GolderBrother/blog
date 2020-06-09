@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>setTimeout</title>
+</head>
+<body>
+  setTimeout
+  <script>
+    let i = 0;
+    function fn(i, time){
+      setTimeout(fn, time, i);
+    }
+    fn(i, 100);
+  </script>
+</body>
+</html>

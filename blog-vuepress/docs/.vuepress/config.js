@@ -251,7 +251,8 @@ module.exports = {
                         '/views/fe-advanced/ad1.md',
                         '/views/fe-advanced/ad2.md',
                         '/views/fe-advanced/ad3.md',
-                        '/views/fe-advanced/ad6.md'
+                        '/views/fe-advanced/ad6.md',
+                        '/views/fe-advanced/ad7.md',
                     ],
                 }
             ],
