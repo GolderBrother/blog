@@ -122,7 +122,7 @@
 
 - [`HotModuleReplacementPlugin`](https://www.webpackjs.com/plugins/hot-module-replacement-plugin/)：**模块热替换**插件，能够实现修改、添加或删除前端页面中的模块代码，而且是在页面不刷新的前提下
 
-- [`webpack-bundle-analyzer`][https://github.com/webpack-contrib/webpack-bundle-analyzer]: `webpack` **打包模块分析工具**
+- [`webpack-bundle-analyzer`](https://github.com/webpack-contrib/webpack-bundle-analyzer): `webpack` **打包模块分析工具**
 
 ## 5.source map 是什么？生产环境怎么用？
 
