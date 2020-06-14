@@ -1,4 +1,4 @@
-# 前端需要了解的 9 种设计模式(详细篇)
+# 前端应知应会的 9 种设计模式(详细篇)
 
 ## 一、设计原则
 
@@ -293,6 +293,8 @@ class Automobile implements Running, Flying, Swimming {
 }
 ```
 
+### 其他原则
+
 #### 迪米特法则
 
 Law of Demeter，LOD
@@ -426,6 +428,8 @@ class Person {
 
 ![facade-pattern2](./fe-design-9/facade-pattern2.jpg)
 
+#### 实现代码
+
 ```js
 // 绑定事件
 function addEvent(element, event, handler) {
@@ -475,7 +479,7 @@ function removeEvent(element, event, handler) {
 
 ![proxystar](./fe-design-9/proxystar.png)
 
-#### 代码
+#### 实现代码
 
 ```ts
 abstract class Star {
@@ -540,6 +544,8 @@ angelababyAgent.answerPhone();
 
 StockPriceAPI：
 
+实现代码
+
 ```js
 function StockPriceAPI() {
   // Subject Interface实现
@@ -567,6 +573,8 @@ function StockPriceAPI() {
 我们不希望每次都去请求远程接口，而是增加缓存机制，当有缓存的时候就直接从缓存中获取，否则再去请求远程接口。我们可以通过一个 proxy 来实现：
 
 StockPriceAPIProxy：
+
+实现代码
 
 ```js
 function StockPriceAPIProxy() {
@@ -690,7 +698,7 @@ let greenColorfulShape = new GreenColorfulShape(rectangle);
 greenColorfulShape.draw();
 ```
 
-#### 应用场景
+#### 使用场景
 
 ##### 装饰器
 
@@ -987,7 +995,7 @@ export const after = function(afterFn) {
 
 ![my-adapter](./fe-design-9/my-adapter.jpg)
 
-#### 实现代码如下
+#### 实现代码
 
 ```ts
 class Socket {
@@ -1344,7 +1352,7 @@ console.log(Cafe.order('Cappuccino'));
 
 ![factory-method](./fe-design-9/factory-method.png)
 
-实现代码如下：
+#### 实现代码
 
 ```ts
 export {};
@@ -1425,7 +1433,7 @@ console.log(Cafe.order('Cappuccino'));
 
 ![abstract-factory2](./fe-design-9/abstract-factory2.png)
 
-实现代码如下
+#### 实现代码
 
 ```ts
 export {};
@@ -1480,9 +1488,10 @@ console.log(luckinCafeFactory.createCappuccinoCoffee());
 console.log(luckinCafeFactory.createLatteCoffee());
 ```
 
-#### 2. 单例模式（Singleton Pattern）
+### 2. 单例模式（Singleton Pattern）
 
 ![singleton-pattern](./fe-design-9/singleton-pattern.png)
+![singleton-pattern](./fe-design-9/singleton-pattern2.png)
 
 顾名思义，单例模式中 Class 的实例个数最多为 1。当需要一个对象去贯穿整个系统执行某些任务时，单例模式就派上了用场。而除此之外的场景尽量避免单例模式的使用，因为单例模式会引入全局状态，而一个健康的系统应该避免引入过多的全局状态。
 
@@ -1616,7 +1625,7 @@ app.use('/login/social', function(req, res) {
 2. 代码更简洁，避免使用大量的条件判断
 3. 关注分离，每个 strategy 类控制自己的算法逻辑，strategy 和其使用者之间也相互独立
 
-#### 2. 迭代器模式（Iterator Pattern）
+### 2. 迭代器模式（Iterator Pattern）
 
 迭代器模式(Iterator Pattern)用于顺序地访问聚合对象内部的元素，又无需知道对象内部结构。使用了迭代器之后，使用者不需要关心对象的内部构造，就可以按序访问其中的每个元素。
 
@@ -1841,9 +1850,8 @@ for (let node of rightOrder(tree)) {
 console.log(result);
 ```
 
-### 2. 观察者模式（Observer Pattern）
+### 3. 观察者模式（Observer Pattern）
 
-<!-- ![observer-pattern](./fe-design-9/observer-pattern.png) -->
 ![observer-pattern](./fe-design-9/observer-pattern2.png)
 
 观察者模式又称发布订阅模式（`Publish/Subscribe Pattern`），是我们经常接触到的设计模式，日常生活中的应用也比比皆是，比如你订阅了某个博主的频道，当有内容更新时会收到推送；又比如 JavaScript 中的事件订阅响应机制。观察者模式的思想用一句话描述就是：**被观察对象（subject）内部维护一组观察者（observer），当被观察对象状态改变时，通过调用观察者的某个方法将这些变化通知到观察者**。
@@ -2248,7 +2256,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
 }
 ```
 
-### 3. 发布订阅模式（Publish/Subscribe Pattern）
+### 4. 发布订阅模式（Publish/Subscribe Pattern）
 
 #### 区别
 
@@ -2264,7 +2272,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
 
 ![publish-subscribe](./fe-design-9/publish-subscribe.png)
 
-实现代码如下：
+#### 实现代码
 
 ```ts
 class Agency {
@@ -2322,6 +2330,8 @@ SUBSCRIBE channel_a
 PUBLISH channel_a golderbrother
 ```
 
+##### 实现代码
+
 ```js
 let redis = require('redis');
 let client1 = redis.createClient(6379, '127.0.0.1');
@@ -2342,7 +2352,7 @@ setTimeout(() => {
 }, 3000);
 ```
 
-### 4. 中介者模式（Mediator Pattern）
+### 5. 中介者模式（Mediator Pattern）
 
 ![mediator-pattern](./fe-design-9/mediator-pattern.jpg)
 
@@ -2419,3 +2429,7 @@ bruce to frank: Hey frank
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
 
  <comment/>
+
+ 
+ <comment/> 
+ 
