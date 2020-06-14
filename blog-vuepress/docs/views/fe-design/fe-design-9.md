@@ -1,4 +1,4 @@
-# 前端需要了解的 9 种设计模式
+# 前端需要了解的 9 种设计模式(详细篇)
 
 ## 一、设计原则
 
@@ -843,7 +843,7 @@ calculator.add(1, 2);
 1. 创建项目
 
 ```bash
-create-react-app zhufeng_tract
+create-react-app james_tract
 yarn add customize-cra react-app-rewired --dev
 ```
 
@@ -1180,7 +1180,7 @@ function promisify(readFile: any) {
       let vm = new Vue({
         el: '#root',
         data: {
-          name: 'zfpx'
+          name: 'golderbrother'
         },
         computed: {
           upperName() {
@@ -1575,7 +1575,7 @@ function LocalStragegy() {
 function PhoneStragety() {
   this.login = ({ phone, verifyCode }) => {
     console.log(phone, verifyCode);
-    // authenticating with hone and verifyCode...
+    // authenticating with phone and verifyCode...
   };
 }
 
@@ -1843,14 +1843,15 @@ console.log(result);
 
 ### 2. 观察者模式（Observer Pattern）
 
-![observer-pattern](./fe-design-9/observer-pattern.png)
+<!-- ![observer-pattern](./fe-design-9/observer-pattern.png) -->
+![observer-pattern](./fe-design-9/observer-pattern2.png)
 
 观察者模式又称发布订阅模式（`Publish/Subscribe Pattern`），是我们经常接触到的设计模式，日常生活中的应用也比比皆是，比如你订阅了某个博主的频道，当有内容更新时会收到推送；又比如 JavaScript 中的事件订阅响应机制。观察者模式的思想用一句话描述就是：**被观察对象（subject）内部维护一组观察者（observer），当被观察对象状态改变时，通过调用观察者的某个方法将这些变化通知到观察者**。
 
 那他跟`发布订阅模式`的区别在哪呢？
 
-观察者模式：被观察者(`Subject`)中存放了观察者`Observer`，两者有关系
-发布订阅模式：发布者(`publish`)和订阅者(`subscribe`)是通过中间方`调度中心`来通信的，两者没有关系
+- 观察者模式：被观察者(`Subject`)中存放了观察者`Observer`，两者有关系
+- 发布订阅模式：发布者(`publish`)和订阅者(`subscribe`)是通过中间方`调度中心`来通信的，两者没有关系
 
 比如给 DOM 元素绑定事件的 `addEventListener()` 方法：
 
@@ -1900,12 +1901,12 @@ abstract class GlobalObserver {
 
 class ObserverA extends GlobalObserver {
   public update() {
-    console.log(this.subject.getState() + ', 喝不起');
+    console.log(this.subject.getState() + ' 喝不起');
   }
 }
 class ObserverB extends GlobalObserver {
   public update() {
-    console.log(this.subject.getState() + ', 走 来一杯');
+    console.log(this.subject.getState() + ' 走 来一杯');
   }
 }
 class Subject {
@@ -2254,7 +2255,7 @@ export default function createStore(reducer, preloadedState, enhancer) {
 - 订阅者把自己想订阅的事件注册到**调度中心**
 - 当该事件触发时候，发布者发布该事件到**调度中心**,由**调度中心**统一调度订阅者注册到**调度中心**的处理代码。
 - 虽然两种模式都存在订阅者和发布者（`观察者可认为是订阅者、被观察者可认为是发布者`）
-- 但是观察者模式是由被观察者调度的，而发布/订阅模式是统一由**调度中心**调的
+- 但是观察者模式是由被观察者调度的，而发布/订阅模式是统一由**调度中心**管理的
 - 所以观察者模式的订阅者与发布者之间是**存在依赖的**，而发布/订阅模式则不会。
 
 ![subscribe-pattern](./fe-design-9/subscribe-pattern.jpg)
@@ -2302,8 +2303,10 @@ let poor = new Tenant(agent, '北漂');
 let landlord = new Landlord(agent);
 rich.order('豪宅');
 poor.order('单间');
-landlord.lend('豪宅', 10000, 1000000);
-landlord.lend('单间', 10, 1000);
+// 1环豪宅 每平方100万
+landlord.lend('豪宅', 1, 1000000);
+// 5环单间 每个月1000
+landlord.lend('单间', 5, 1000);
 ```
 
 #### 使用场景
@@ -2341,35 +2344,38 @@ setTimeout(() => {
 
 ### 4. 中介者模式（Mediator Pattern）
 
-![mediator-pattern](./fe-design-9/mediator-pattern.png)
+![mediator-pattern](./fe-design-9/mediator-pattern.jpg)
 
 在中介者模式中，中介者（Mediator）包装了一系列对象相互作用的方式，使得这些对象不必直接相互作用，而是由中介者协调它们之间的交互，从而使它们可以松散偶合。当某些对象之间的作用发生改变时，不会立即影响其他的一些对象之间的作用，保证这些作用可以彼此独立的变化。
 
-中介者模式和观察者模式有一定的相似性，都是一对多的关系，也都是集中式通信，不同的是中介者模式是处理同级对象之间的交互，而观察者模式是处理 Observer 和 Subject 之间的交互。中介者模式有些像婚恋中介，相亲对象刚开始并不能直接交流，而是要通过中介去筛选匹配再决定谁和谁见面。中介者模式比较常见的应用比如聊天室，聊天室里面的人之间并不能直接对话，而是通过聊天室这一媒介进行转发。一个简易的聊天室模型可以实现如下：
+中介者模式和观察者模式有一定的相似性，都是一对多的关系，也都是集中式通信，不同的是中介者模式是处理同级对象之间的交互，而观察者模式是处理 Observer 和 Subject 之间(**不同级**)的交互。中介者模式有些像婚恋中介，相亲对象刚开始并不能直接交流，而是要通过中介去筛选匹配再决定谁和谁见面。中介者模式比较常见的应用比如聊天室，聊天室里面的人之间并不能直接对话，而是通过聊天室这一媒介进行转发。一个简易的聊天室模型可以实现如下：
 
 聊天室成员类：
 
 ```ts
-function Member(name) {
-  this.name = name;
-  this.chatroom = null;
-}
 
-Member.prototype = {
+class Member {
+  name: string;
+  chatroom: Chatroom;
+  constructor(name: string) {
+    this.name = name;
+    this.chatroom = null;
+  }
   // 发送消息
-  send: function(message, toMember) {
+  send(message: string, toMember: Member) {
     this.chatroom.send(message, this, toMember);
-  },
+  }
   // 接收消息
-  receive: function(message, fromMember) {
+  receive(message: string, fromMember: Member) {
     console.log(`${fromMember.name} to ${this.name}: ${message}`);
   }
-};
+}
 ```
 
 聊天室类：
 
 ```ts
+
 class Chatroom {
   public members: any;
   constructor() {
