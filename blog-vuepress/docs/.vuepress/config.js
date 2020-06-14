@@ -34,17 +34,17 @@ module.exports = {
         repoLabel: 'GitHub',
         smoothScroll: true,
         nav: [{
-                text: '首页',
-                link: '/'
-            },
-            {
-                text: '主页',
-                link: '/guide/'
-            },
-            {
-                text: '大前端',
-                link: '/views/'
-            },
+            text: '首页',
+            link: '/'
+        },
+        {
+            text: '主页',
+            link: '/guide/'
+        },
+        {
+            text: '大前端',
+            link: '/views/'
+        },
             // {
             //     text: 'Vue',
             //     items: [
@@ -89,7 +89,8 @@ module.exports = {
                         '/views/css/css-knowledge.md',
                         '/views/css/css-knowledge2.md',
                         '/views/css/css-center.md',
-                        '/views/css/css-flex.md'
+                        '/views/css/css-flex.md',
+                        '/views/css/css-BFC.md'
                     ]
                 },
                 {

@@ -291,7 +291,7 @@ console.log(countOccurrences([1, 1, 2, 3, 3, 3, 3, 4, 6, 6], 3)); // 4
 
 每个函数都有 prototype 属性，除了 Function.prototype.bind()，该属性指向原型。
 
-每个对象都有 `__proto__` 属性，指向了创建该对象的构造函数的原型。其实这个属性指向了 [[prototype]]，但是 [[prototype]] 是内部属性，我们并不能访问到，所以使用 _proto_ 来访问。
+每个对象都有 `__proto__` 属性，指向了创建该对象的构造函数的原型。其实这个属性指向了 [[prototype]]，但是 [[prototype]] 是内部属性，我们并不能访问到，所以使用 `__proto__` 来访问。
 
 对象可以通过 `__proto__` 来寻找不属于该对象的属性，`__proto__` 将对象连接起来组成了原型链。
 
@@ -318,6 +318,24 @@ JavaScript 的 promise 一直是该语言的一大胜利——它们引发了异
 2. 该实例具有 signal 属性
 3. 将 signal 传递给 fetch option 的 signal
 4. 调用 AbortController 的 abort 属性来取消所有使用该信号的 fetch。
+
+实现代码
+
+```js
+const controller = new AbortController();
+const { signal } = controller;
+
+fetch("http://localhost:8000", { signal }).then(response => {
+  console.log(`Request 1 is complete!`);
+}).catch(e => {
+  if(e.name === "AbortError") {
+    // We know it's been canceled!
+  }
+});
+
+// Abort request
+controller.abort();
+```
 
 ### 5.eventloop
 
