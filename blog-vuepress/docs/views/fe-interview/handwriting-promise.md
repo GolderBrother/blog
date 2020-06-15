@@ -6,66 +6,60 @@
 
 ```js
 const PENDING = 'PENDING';
-const SUCCESS = 'FULFILLED';
+const SUCCESS = 'RESOLVED';
 const FAIL = 'REJECTED';
-// Promise A+ 规范：https://promisesaplus.com/
-// 需要来个方法来处理.then方法的返回值
-// Promise Resolution Procedure
-// resolvePromise
-// (1)普通值表示不是Promise，也不是错误,没有返回值(undefined),也算是普通值
-// (2)如果返回promise，这个promise会执行，然后会采用他的状态，并返回给外层的then中
-// 成功(resolve态)就走then方法中的成功函数(resolve)
-// 失败(reject态 or throw new Error)就走then方法中的失败函数(reject)
-// (3).then方法返回的不是this，也就不是之前的promise，所以必须返回一个新的Promise
-// promise2是.then方法执行完返回的那个新的promise，x 是then方法里面的返回值（上一个Promise的值）
+/* 
+有必要来解释一波 
+Promise A+ 规范：https://promisesaplus.com/
+需要来个方法来处理.then方法的返回值
+Promise Resolution Procedure
+resolvePromise
+(1)普通值表示不是Promise，也不是错误,没有返回值(undefined),也算是普通值
+(2)如果返回promise，这个promise会执行，然后会采用他的状态，并返回给外层的then中
+成功(resolve态)就走then方法中的成功函数(resolve)
+失败(reject态 or throw new Error)就走then方法中的失败函数(reject)
+(3).then方法返回的不是this，也就不是之前的promise，所以必须返回一个新的Promise
+promise2是.then方法执行完返回的那个新的promise，x 是then方法中两个函数（resolve和reject）执行的结果（上一个Promise的值）
+
+resolve和reject的区别在于，resolve会等待里面的promise执行完成，reject不会有等待效果
+
+防止别人写了这样的恶意代码
+let obj = {};
+Object.defineProperty(obj, then, {
+  get(){
+    throw new Error('失败')
+  }
+})
+*/
 // 严谨 应该判断 别人的promise 如果失败了就不能在调用成功 如果成功了不能在调用失败
-
-// resolve和reject的区别在于，resolve会等待里面的promise执行完成，reject不会有等待效果
-
-// 防止别人写了这样的恶意代码
-// let obj = {};
-// Object.defineProperty(obj, then, {
-//     get(){
-//     	throw new Error('失败')
-//     }
-// })
 function resolvePromise(promise2, x, resolve, reject) {
   if (promise2 === x) {
     // 自己等自己，死循环
     return reject(new TypeError('TypeError: Chaining cycle detected for promise #<Promise>'));
   }
-  let called; // 防止called被调用多次
+  let called; // 防止promise被调用多次
   if (typeof x === 'function' || (typeof x === 'object' && x != null)) {
     try {
       // If retrieving the property x.then results in a thrown exception e, reject promise with e as the reason
-      let then = x.then; // then 可能是getter object.defineProperty
-      if (typeof then === 'function') {
-        // {then:null}
+      let then = x.then;  // then 可能是getter object.defineProperty
+      if (typeof then === 'function') {  // {then:null}
         // If then is a function, call it with x as this, first argument resolvePromise, and second argument rejectPromise
         // then.call => x.then()  x.then()方法会再取一次then方法，不太好
         // y => resolve(y) 这里面的y
-        then.call(
-          x,
-          y => {
-            // 如果是一个promise，就采用这个promise的结果, 并且使用call绑定x,保证then里面的this指向x
-            if (called) return; // 1) 为了辨别这个promise 不能调用多次
-            called = true;
-            // If/when resolvePromise is called with a value y, run [[Resolve]](promise, y)
-            // y有可能也是个promise,需要实现递归解析，直到y为一个常量，然后直接resolve即可
-            resolvePromise(promise2, y, resolve, reject);
-          },
-          r => {
-            // r => reject(r),If/when rejectPromise is called with a reason r, reject promise with r.
-            // 只要调用失败了，就不用管reject(r) 这里面的r值是否为promise,直接失败
-            if (called) return; // 2) 为了辨别这个promise 不能调用多次
-            called = true;
-            reject(r);
-          }
-        );
+        then.call(x, y => { // 如果是一个promise，就采用这个promise的结果, 并且使用call绑定x来保证指向返回的x这个Promise实例
+          if (called) return; // 1) 为了辨别这个promise 不能调用多次
+          called = true;
+          // If/when resolvePromise is called with a value y, run [[Resolve]](promise, y)
+          // y有可能也是个promise,需要实现递归解析，直到y为一个常量，然后直接resolve即可  
+          resolvePromise(promise2, y, resolve, reject);
+        }, r => { // r => reject(r),If/when rejectPromise is called with a reason r, reject promise with r.
+          // 只要调用失败了，就不用管reject(r) 这里面的r值是否为promise,直接失败
+          if (called) return; // 2) 为了辨别这个promise 不能调用多次
+          called = true;
+          reject(r);
+        })
       } else {
-        // 普通值，因为不会再走reject,直接resolve即可
-        if (called) return; // 3) 为了辨别这个promise 不能调用多次
-        called = true;
+        // 普通值不用判断，因为不会再走reject,直接resolve即可
         resolve(x);
       }
     } catch (e) {
@@ -74,32 +68,37 @@ function resolvePromise(promise2, x, resolve, reject) {
       reject(e);
     }
   } else {
-    // 普通值，因为不会再走reject,直接resolve即可
+    // 普通值不用判断，因为不会再走reject,直接resolve即可
     resolve(x);
   }
 }
+
 class Promise {
   constructor(executor) {
-    this.status = PENDING;
-    this.value = undefined;
-    this.reason = undefined;
-    this.onResolvedCallbacks = [];
-    this.onRejectedCallbacks = [];
+    this.status = PENDING; // Promise的初始状态'PENDING'
+    this.value = undefined; // 成功态的值
+    this.reason = undefined; // 失败态的原因
+    this.onResolvedCallbacks = []; // 存储成功的所有的回调 只有pending的时候才存储
+    this.onRejectedCallbacks = []; // 存储失败的所有的回调 只有pending的时候才存储
     const resolve = value => {
       if (value instanceof Promise) {
         // resolve的结果是一个promise
         return value.then(resolve, reject); // 那么会让这个promise执行，将执行后的结果在传递给 resolve或者reject中(递归解析resolve中的参数，直到这个值是个普通值)
       }
+      // 立即执行
       if (this.status === PENDING) {
         this.value = value;
         this.status = SUCCESS;
+        // 取出一个个回调依次执行
         this.onResolvedCallbacks.forEach(fn => fn());
       }
     };
+    // 立即执行
     const reject = reason => {
       if (this.status === PENDING) {
         this.reason = reason;
         this.status = FAIL;
+        // 取出一个个回调依次执行
         this.onRejectedCallbacks.forEach(fn => fn());
       }
     };
@@ -117,8 +116,8 @@ class Promise {
       typeof onRejected === 'function'
         ? onRejected
         : err => {
-            throw err;
-          };
+          throw err;
+        };
     let promise2;
     // 这边 new 的是 自己的 Promise
     promise2 = new Promise((resolve, reject) => {
@@ -175,6 +174,8 @@ class Promise {
   }
 }
 
+// Promise的相关方法(原型、静态)
+
 // 希望测试一下这个库是否符合我们的promise A+规范
 // promises-aplus-tests
 // 没人用了
@@ -186,22 +187,26 @@ Promise.defer = Promise.deferred = function() {
   });
   return defer;
 };
+
 // Promise上的静态方法 创建了一个成功的Promise
 Promise.resolve = function(value) {
   return new Promise((resolve, reject) => {
     resolve(value);
   });
 };
+
 // Promise上的静态方法 创建了一个失败的Promise
 Promise.reject = function(value) {
   return new Promise((resolve, reject) => {
     reject(value);
   });
 };
+
 Promise.prototype.catch = function(errorFn) {
   // catch实际上就是特殊的then方法，只是onfulfilled函数为null，返回 errorFn 错误函数
   return this.then(null, errorFn);
 };
+
 // Promise.all 表示全部成功才成功 有任意一个失败 都会失败
 Promise.all = function(promises) {
   return new Promise((resolve, reject) => {
@@ -232,6 +237,7 @@ Promise.race = function(promises) {
     }
   });
 };
+
 // Promise.finally() 最终的，无论如何finally中传递的回调函数 必须会执行，如果返回一个promise,会等待这个Promise执行完成
 Promise.prototype.finally = function(callback) {
   return this.then(
@@ -266,6 +272,7 @@ Promise.defer = Promise.deferred = function() {
   });
   return dfd;
 };
+
 module.exports = Promise;
 // 全局安装
 // npm i promises-aplus-tests -g
@@ -283,3 +290,7 @@ module.exports = Promise;
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
+
+ 
+ <comment/> 
+ 

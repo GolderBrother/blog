@@ -325,13 +325,15 @@ JavaScript 的 promise 一直是该语言的一大胜利——它们引发了异
 const controller = new AbortController();
 const { signal } = controller;
 
-fetch("http://localhost:8000", { signal }).then(response => {
-  console.log(`Request 1 is complete!`);
-}).catch(e => {
-  if(e.name === "AbortError") {
-    // We know it's been canceled!
-  }
-});
+fetch('http://localhost:8000', { signal })
+  .then(response => {
+    console.log(`Request 1 is complete!`);
+  })
+  .catch(e => {
+    if (e.name === 'AbortError') {
+      // We know it's been canceled!
+    }
+  });
 
 // Abort request
 controller.abort();
@@ -484,7 +486,32 @@ Function.prototype.myBind = function(context) {
 }
 ```
 
-margin-top 为-(height / 2)，margin-left 为-(width / 2)。当然也可以不用 margin，即 top 为 calc(100% - height) / 2，left 为 calc(100% - width) / 2，但是建议可以不用 calc()就不要用。
+margin-top 为`-(height / 2)`，margin-left 为`-(width / 2)`。当然也可以不用 `margin`，即 top 为 `calc(100% - height) / 2`，left 为 `calc(100% - width) / 2`，但是建议可以不用 `calc()` 就不要用。
+
+就像这样
+
+```css
+.box {
+  width: 400px;
+  height: 200px;
+  position: absolute;
+  top: calc((100% - 100px) / 2);
+  left: calc((100% - 400px) / 2);
+}
+```
+
+也可以不用 `margin` 用 `translate()`，如下：
+
+```css
+.box {
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+```
 
 #### 2. div 宽高不固定
 
@@ -505,19 +532,6 @@ margin-top 为-(height / 2)，margin-left 为-(width / 2)。当然也可以不�
 
 注意，这适用于宽高需指定的情况，比如使用百分比或者用 js 动态修改，不然可能被当成 100%处理。
 
-也可以不用 `margin` 用 `translate()`，如下：
-
-```css
-.box {
-  width: 50%;
-  height: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-}
-```
-
 #### 3. CSS3 不定宽高水平垂直居中
 
 ```css
@@ -536,7 +550,7 @@ margin-top 为-(height / 2)，margin-left 为-(width / 2)。当然也可以不�
 
 ### 25.自己实现 bind 函数
 
-同上, 17.实现一个 bind 函数
+[同上](https://golderbrother.github.io/blog/views/fe-interview/bytedance.html#%E4%B8%80%E8%BD%AE)
 
 ### 26.什么是闭包
 
@@ -785,51 +799,79 @@ var postorderTraversal = function(root) {
 flex
 
 ```html
-<style>
-  .container  {
-      display: flex;
-      height: 100%;
-      flex-direction: column;
-  }
-  header,
-   footer  {
-      min-height: 100px;
-  }
-  main  {
-      flex: 1;
-  }
-</style>
-<div class="container">
-  <header></header>
-  <main>
-    <div></div>
-  </main>
-  <footer></footer>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <style>
+      .container {
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      header,
+      footer {
+        min-height: 100px;
+        background-color: aqua;
+      }
+
+      main {
+        flex: 1;
+      }
+    </style>
+    <div class="container">
+      <header></header>
+      <main>
+        <div></div>
+      </main>
+      <footer></footer>
+    </div>
+  </body>
+</html>
 ```
 
 考虑兼容性
 
 ```html
-<style>
-  .container  {
-      box-sizing: border-box;
-      min-height: 100vh;
-      padding-bottom: 100px;
-  }
-  header,
-   footer  {
-      height: 100px;
-  }
-  footer  {
-      margin-top: -100px;
-  }
-</style>
-<div class="container">
-  <header></header>
-  <main></main>
-</div>
-<footer></footer>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <style>
+      .container {
+        box-sizing: border-box;
+        min-height: 100vh;
+        padding-bottom: 100px;
+      }
+
+      header,
+      footer {
+        background-color: aqua;
+        height: 100px;
+      }
+
+      footer {
+        margin-top: -100px;
+      }
+    </style>
+    <div class="container">
+      <header></header>
+      <main></main>
+    </div>
+    <footer></footer>
+  </body>
+</html>
 ```
 
 ### 37.实现一个子类实例可以继承父类的所有方法
@@ -839,11 +881,11 @@ flex
 ```js
 function sum() {
   // 类数组转换成真正的数组，也可以用 [...arguments] or Array.from(arguments)
-  // 接受第一次传入的参数
+  // 接收第一次传入的参数 -> 1
   const args = [].slice.call(arguments);
 
   const fn = function() {
-    // 接受后面调用传入的参数
+    // 接收后面调用传入的参数, [1] -> [1,2] -> [1,2,3]多个参数不断收集到数组中
     const args2 = [].slice.call(arguments);
     return sum.apply(null, args.concat(args2));
   };
@@ -859,22 +901,23 @@ console.log(sum(1)(2)(3).valueOf()); // 6
 
 ### 串行异步任务
 
-```
+```js
 taskSum(1000,()=>{console.log(1)}).task(1200,()=>{console.log(2)}).task(1300,()=>{console.log(3)})，这里等待 1s，打印 1，之后等待 1.2s，打印 2，之后打印 1.3s，打印 3
 ```
 
 ```js
 class Queue {
   constructor() {
-    this.q = [];
+    this.queue = [];
   }
   task(f, ms) {
-    this.q.push({ f, ms });
+    this.queue.push({ f, ms });
     return this;
   }
   async run() {
-    while (this.q.length > 0) {
-      let { f, ms } = this.q.shift();
+    while (this.queue.length > 0) {
+      // 遵循队列的先进先出原则，取出最前面一项来执行
+      let { f, ms } = this.queue.shift();
       // 等待promise成功，阻塞后面的同步代码执行
       await sleep(f, ms);
     }
