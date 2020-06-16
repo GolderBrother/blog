@@ -134,11 +134,41 @@ app.use(async (ctx, next) => {
 
 为了方便也可以直接使用中间件
 
+express
+
+安装
+
+```bash
+npm install cors
+```
+
+使用
+
 ```js
-const cors = require('koa-cors');
+// 在app.js里面
+const cors = require('cors');
+app.use(cors());
+```
+
+[文档地址](https://github.com/expressjs/cors)，这个用的不多
+
+koa2
+
+安装
+
+```bash
+npm install @koa/cors --save
+```
+
+使用
+
+```js
+const cors = require('@koa/cors');
 
 app.use(cors());
 ```
+
+[文档地址](https://www.npmjs.com/package/@koa/cors)，这个用的多点
 
 ### 关于 cors 的 cookie 问题
 
@@ -322,7 +352,40 @@ module.exports = {
 
 例如 `vue-cli 2 proxy` 、 `webpack proxy`、`react proxy` 等等.... 基本会搜到有官网的配置答案，通用且 `nice`。
 
-#### b.使用自己的代理工具
+#### b.本地 nodeJS 端代理
+
+相当于是前端 -> 请求 node 端接口地址 -> 请求真正的目标接口地址
+
+在 koa2 中使用
+
+安装
+
+```bash
+npm i request-promise -S
+# yarn i request-promise
+```
+
+代码
+
+```js
+const request = require('request-promise');
+
+const res = await request({
+  uri: `${url}/test`,
+  method: 'POST',
+  json: true,
+  headers: {
+    'content-type': 'application/json'
+  },
+  body: data
+})
+  .then(res => Promise.resolve(res))
+  .catch(err => Promise.reject(err));
+ctx.status = 200;
+ctx.body = res;
+```
+
+#### c.使用自己的代理工具
 
 cors-anywhere
 
@@ -373,7 +436,7 @@ cors_proxy
 
 无法传递 `cookie`，原因是因为这个是一个**代理库**，作者觉得中间传递 `cookie` [太不安全](https://github.com/Rob--W/cors-anywhere/issues/208#issuecomment-575254153)了。
 
-#### c.charles
+#### d.charles
 
 介绍
 
@@ -657,7 +720,7 @@ app.listen(8080);
 
 ![cors20.png](./images/corssOrigin-pro/cors20.png)
 
-你仔细品，细细品，是不是 `jsonp` 有的优势就是 `script` 加载 `js` 的优势，加载的方式只不过换了一种说法, 相当于加载外链资源的内容(**可以是请求返回的内容**)，最终会放入到`<script>外链的内容</script>`中。这也告诉我们一个道理，很多东西并没有那么神奇，是在你所学的知识范围内。就好比，桃树和柳树，如果你把他们当成很大跨度的东西去记忆理解，那么世上这么多树，你真的要累死了，你把他们都当成是树，哦吼？你会突然发现，你对世界上所有的树都有所了解，他们都会长叶子，光合作用....当然也有个例，但是你只需要去记忆这些细微的差别，抓住主干。。。嗯，反正就这么个道理。
+你仔细品，细细品，是不是 `jsonp` 有的优势就是 `script` 加载 `js` 的优势，加载的方式只不过换了一种说法, 相当于加载外链资源的内容(**可以是请求返回的内容**)，最终会放入到`<script>外链的内容</script>`中，然后浏览器会解析`script`标签并执行里面的代码。这也告诉我们一个道理，很多东西并没有那么神奇，是在你所学的知识范围内。就好比，桃树和柳树，如果你把他们当成很大跨度的东西去记忆理解，那么世上这么多树，你真的要累死了，你把他们都当成是树，哦吼？你会突然发现，你对世界上所有的树都有所了解，他们都会长叶子，光合作用....当然也有个例，但是你只需要去记忆这些细微的差别，抓住主干。。。嗯，反正就这么个道理。
 
 ### 5.Websocket
 
