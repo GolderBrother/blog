@@ -82,6 +82,13 @@ module.exports = {
                     ],
                 },
                 {
+                    title: '浏览器工作原理',
+                    collapsable: false,
+                    children: [
+                        '/views/browser/input-url-course.md'
+                    ]
+                },
+                {
                     title: 'css',
                     collapsable: false,
                     children: [
@@ -214,6 +221,7 @@ module.exports = {
                         '/views/fe-interview/browser-eventLoop.md',
                         '/views/fe-interview/setTimeout&setImmediate.md',
                         '/views/fe-interview/js-interview.md',
+                        '/views/fe-interview/fuck-interview.md'
                     ],
                 },
                 {

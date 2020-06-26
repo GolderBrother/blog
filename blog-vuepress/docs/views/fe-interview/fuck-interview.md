@@ -1,0 +1,260 @@
+# 那些恶心的面试题
+
+> 请写出下方代码的输出结果
+
+## 1、请写出下方代码的输出结果
+
+```js
+{} + 0 ? console.log('ok') : console.log('no'); // no
+0 + {} ? console.log('ok') : console.log('no'); // yes
+```
+
+分析
+`{ } + 0` 将对象转换为基本类型 `{} -> 0`, `0+0 = 0`, -> `no`
+`0 + {}`，会将对象转换为基本类型，先调用对象 `valueOf()` 方法，然后再调用 `toString` 方法
+`-> 0 + '[object Object]' -> '0[object Object]' -> yes`
+
+## 2、请写出下方代码的输出结果
+
+```js
+let arr = ['20.5px', 30, '0001', 123, 234.22];
+arr = arr.map(parseInt);
+console.log(arr); //  [20, NaN, 1, 5, 11]
+```
+
+分析
+parseInt MDN 定义如下
+如果 parseInt 遇到的字符不是指定 radix 参数中的数字，它将忽略该字符以及所有后续字符，并返回到该点为止已解析的整数值。 parseInt 将数字截断为整数值。 允许前导和尾随空格。
+
+- (1)分析：**radix 小于 2 或大于 36, 将除了 0, 10, 其他都返回 NaN**
+
+`parseInt('20.5px', 0)` -> 20
+
+- (2)分析：同上
+
+`parseInt(30, 1)` -> NaN
+
+- (3)分析：`1 * 2 ^ 0 = 1`
+
+`parseInt('0001', 2)` -> 1
+
+- (4)分析：最后一位 3 不是指定 radix 参数中的数字，会被忽略掉
+`1 * 3^1 + 2 * 3^0 = 3 + 2 = 5`
+
+`parseInt(123, 3)` -> `5`
+
+- (5)分析：`parseInt`函数产生一个由字符串参数内容解析过来的整数值
+`2 * 4 ^ 1 + 3 * 4 ^ 0 = 8 + 3 = 11`
+
+`parseInt(234.22, 4)`-> `11`
+
+## 3、请写出下方代码的输出结果
+
+```js
+var x = 5,
+  y = 6;
+function func() {
+  x += y;
+  func = function(y) {
+    console.log(y + --x);
+  };
+  console.log(x, y);
+}
+func(3); // 11 6
+func(4); // 14
+console.log(x, y); // 10 6
+```
+
+分析
+- func(4); -> func 所指向的函数已经被改变，并且这边传入实参 4，相当于在私有上下(`AO`)文创建了个变量 y，值为 4，因此内部的 4+(--11) = 4 +10 = 14
+- console.log(x, y); -> 全局对象(`GO`)和全局变量对象(`VO`)中的 x 和 y
+
+## 4、请写出下方代码的输出结果
+
+```js
+var  x = 1;
+function func(
+  x,
+  y = function anonymous1() {
+    x = 2;
+  }
+) {
+  console.log(x); // 5 形参接收的实参值5
+  console.log(y); // ƒ anonymous1(){x = 2} 走形参默认值
+  var x = 3;
+  console.log(x); // 3
+  var y = function anonymous2() {
+    x = 4;
+  };
+  y();
+  console.log(x); // 4 当前函数的私有上下文(AO)没有x变量，往父级找 找到了就直接改值
+}
+func(5);
+console.log(x); // 1
+```
+
+## 5、请写出下方代码的输出结果
+
+```js
+function fn1() {
+  console.log('fn1');
+}
+function fn2() {
+  console.log('fn2');
+}
+fn1.call(fn2); // fn1
+fn1.call.call(fn2); // fn2
+fn1.call.call.call(fn2); // fn2
+fn1.call.call.call.call(fn2); // fn2
+// Function.prototype.call(fn1);
+Function.prototype.call.call.call(fn1); // fn1
+
+// 分析
+// 就是说只要一个方法中call 出现两次或者两次以上，他都会在最后一步call，把前面的行为主体变成你传入的参数(第一个) ，然后让其执行call()
+// 所以fn1.call.call(fn2) => fn1.call.… .call(fn2) => fn2()
+```
+
+## 6、实现函数 fn，让其具有如下功能
+
+```js
+// 可以使用柯里化思想来解决
+const fn = (...outerArgs) => (...innerArgs) =>
+  [...outerArgs, ...innerArgs].reduce((accu, cur) => accu + cur, 0);
+const res = fn(1, 2)(3);
+console.log(res); // 6
+```
+
+## 7、实现数组或对象的深拷贝
+
+```js
+function cloneDeep(obj) {
+  // 传递进来的如果不是对象，则无需处理，直接返回原始的值即可（一般Symbol和Function也不会进行处理的）
+  if (typeof obj !== 'object' || obj == null) return obj;
+
+  // 过滤掉特殊的对象（正则对象或者日期对象）：直接使用原始值创建当前类的一个新的实例即可，这样克隆后的是新的实例，但是值和之前一样
+  if (obj instanceof RegExp) return new RegExp(obj);
+  if (obj instanceof Date) return new Date(obj);
+
+  // obj.constructor 获取当前值的构造器（Array/Object）
+  objConstructor = new obj.constructor();
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      // 循环原始数据中的每一项，把每一项赋值给新的对象
+      objConstructor[key] = cloneDeep(obj[key]);
+    }
+  }
+
+  return obj;
+}
+const obj = {
+  name: 'james',
+  age: 18,
+  getName() {
+    return this.name;
+  },
+  sym: Symbol.for('Symbol'),
+  regexp: new RegExp(/\d+/),
+  date: new Date()
+};
+const obj2 = JSON.parse(JSON.stringify(obj));
+const obj3 = cloneDeep(obj);
+console.log(`obj2`, obj2);
+// {
+//   age: 18,
+//   date: "2020-06-26T14:29:07.388Z",
+//   name: "james",
+//   regexp: {}
+// }
+console.log(`obj3`, obj3);
+// {
+//   age: 18,
+//   date: 'Fri Jun 26 2020 22: 29: 07 GMT + 0800(中国标准时间) { }',
+//   getName: getName(),
+//   name: "james",
+//   regexp: /\d+/,
+//   sym: Symbol(Symbol)
+// }
+```
+
+## 8、请写出下方代码的输出结果
+
+```js
+{
+  function foo() {}
+  foo = 1;
+}
+console.log(foo); // ƒ foo(){}
+{
+  function foo() {}
+  foo = 1;
+  function foo() {}
+}
+console.log(foo); // 1
+{
+  function foo() {}
+  foo = 3;
+  function foo() {}
+  foo = 2;
+}
+console.log(foo); // 1
+```
+
+## 9、请写出下方代码的输出结果
+
+```js
+var b = 10;
+(function b() {
+  b = 20;
+  console.log(b);
+  // ƒ b(){
+  //   b = 20;
+  //   console.log(b);
+  // }
+})();
+console.log(b); // 10
+```
+
+分析
+自执行命名函数里面的 console.log(b);
+因为命名函数的函数名是不能被更改的，非严格模式下静默失败，因此 b = 20; 不起作用，打印出命名函数 b 的函数体
+
+console.log(b); // 10
+外层的 b 就是来源于全局对象(GO)和全局变量对象(VO)中的 b
+
+假如把命名函数的 b=20 改为 var b = 20 就不一样了
+
+```js
+var b = 10;
+(function b() {
+  var b = 20;
+  console.log(b); // 20 来源于当前函数私有上下文(AO)创建的变量b的值
+})();
+console.log(b); // 1
+```
+
+## 10、已知基于 instanceof 可以实现检测：实例是否属于某个类，现在需要自己编写这样的一个方法，实现出 instanceof 的效果
+
+```js
+function instance_of(example, classFunc) {
+  // 1. 获取类型的原型
+  const proto = classFunc.prototype;
+
+  // 2. 获取实例的[[原型]]
+  let objProto = example.__proto__;
+
+  // 递归判断实例的原型链上是否存在类型的原型
+  while (true) {
+    if (objProto == null) return false;
+    // 找到了级直接返回true
+    if (objProto === proto) return true;
+    // 否则不断从原型链上查找
+    objProto = example.__proto__;
+  }
+}
+// console.log(instance_of([12,23,34], Array)); // true
+// console.log(instance_of([12, 23, 34], String)); // true
+```
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~

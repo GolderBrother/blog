@@ -207,3 +207,7 @@ URL 请求
 - 9.8 合成和显示
   - 9.8.1 绘制图块命令——`DrawQuad`，提交给浏览器进程；
   - 9.8.2 浏览器进程的 viz 组件，接收合成线程发过来的 `DrawQuad` 命令，根据 `DrawQuad` 命令，绘制在屏幕上。
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
