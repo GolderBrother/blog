@@ -173,11 +173,11 @@ var twoSum = function(nums, target) {
 };
 ```
 
+## 挑战字符串
+
 ### 6.无重复字符的最长子串
 
 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
-
-给定一个字符串，请你找出其中不含有重复字符的   最长子串   的长度。
 
 示例  1:
 
@@ -214,19 +214,189 @@ var twoSum = function(nums, target) {
 var lengthOfLongestSubstring = function(s) {
   if (!s || !s.length) return 0;
   let i = 0,
-    res = 0,
-    n = 0;
+    index = 0,
+    res = '';
   for (let j = 0, len = s.length; j < len; j++) {
-    n = s.slice(i, j).indexOf(s[j]);
-    if (n === -1) {
-      // 这边需要从
-      res = Math.max(res, j + 1 - i);
+    index = s.slice(i, j).indexOf(s[j]);
+    if (index === -1) {
+      // 没找到，就获取长度最大值(尾 - 头 + 1)
+      res = Math.max(res, j - i + 1);
     } else {
-      // 从下一位开始
-      i += n + 1;
+      // 找到了，就从下一位重新开始
+      i += index + 1;
     }
   }
   return res;
+};
+```
+
+### 14. 最长公共前缀
+
+编写一个函数来查找字符串数组中的最长公共前缀。
+
+如果不存在公共前缀，返回空字符串 ""。
+
+示例  1:
+
+```
+输入: ["flower","flow","flight"]
+输出: "fl"
+```
+
+示例  2:
+
+```
+输入: ["dog","racecar","car"]
+输出: ""
+解释: 输入不存在公共前缀。
+```
+
+思路：
+
+- 标签：链表
+- 当字符串数组长度为 0 时则公共前缀为空，直接返回
+- 令最长公共前缀 res 的值为第一个字符串，进行初始化
+- 遍历后面的字符串，依次将其与 res 进行比较，两两找出公共前缀，最终结果即为最长公共前缀
+- 如果查找过程中出现了 res 为空的情况，则公共前缀不存在直接返回
+- 时间复杂度：O(s)O(s)，s 为所有字符串的长度之和
+
+实现代码
+
+```js
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+  // 当字符串数组长度为 0 时则公共前缀为空，直接返回
+  if (!strs || !strs.length) return '';
+  // 令最长公共前缀 res 的值为第一个字符串，进行初始化
+  let res = strs[0];
+  for (let i = 1, len = strs.length; i < len; i++) {
+    let j = 0;
+    const str = strs[i];
+    while (j < str.length && j < res.length) {
+      // 遍历后面的字符串，依次将其与 res 进行比较，两两找出公共前缀，最终结果即为最长公共前缀
+      if (res[j] !== str[j]) break;
+      j++;
+    }
+    res = res.substring(0, j);
+    // 如果查找过程中出现了 res 为空的情况，则公共前缀不存在直接返回
+    if (!res) return '';
+  }
+  return res;
+};
+```
+
+### 字符串的排列
+
+给定两个字符串 s1 和 s2，写一个函数来判断 s2 是否包含 s1 的排列。
+
+换句话说，第一个字符串的排列之一是第二个字符串的子串。
+
+示例 1:
+
+```
+输入: s1 = "ab" s2 = "eidbaooo"
+输出: True
+解释: s2 包含 s1 的排列之一 ("ba").
+```
+
+示例 2:
+
+```
+输入: s1= "ab" s2 = "eidboaoo"
+输出: False
+```
+
+思路
+
+代码
+
+```js
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var checkInclusion = function(s1, s2) {
+  var permutation = function(s) {
+    // 数据不可重复，因此用Set结构来存储需要的数据
+    const res = new Set();
+    function dhs(s, i, len) {
+      //当递归函数到达最后一层，就直接返回，因为此时前面几个位置已经发生了交换
+      if (i === s.length - 1) {
+        res.add(s);
+        return;
+      }
+      // 遍历元素并交换插入
+      for (let j = i, _len = s.length; j < _len; j++) {
+        // 交换一次元素位置，并更新交换后拼接的字符串
+        s = swap(s, i, j);
+        //进入下一层递归
+        dhs(s, i + 1, len);
+        // 返回时交换回来, 还原元素位置，并更新交换后拼接的字符串
+        s = swap(s, i, j);
+      }
+    }
+    // 交换元素位置
+    function swap(str, i, j) {
+      if (i === j) return str;
+      return str.substring(0, i) + str[j] + str.substring(i + 1, j) + str[i] + str.substring(j + 1);
+    }
+    dhs(s, 0, s.length);
+    // Set转换成数组
+    return Array.from(res);
+  };
+  const allStr = permutation(s1);
+  // 查看第一个字符串的排列之一是第二个字符串的子串
+  return allStr.some(_str => s2.includes(_str));
+};
+```
+
+### 字符串相乘
+
+给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+
+示例 1:
+
+```
+输入: num1 = "2", num2 = "3"
+输出: "6"
+```
+
+示例  2:
+
+```
+输入: num1 = "123", num2 = "456"
+输出: "56088"
+```
+
+说明：
+
+1. num1  和  num2  的长度小于 110。
+2. num1 和  num2 只包含数字  0-9。
+3. num1 和  num2  均不以零开头，除非是数字 0 本身。
+4. 不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
+
+代码
+
+```js
+/**
+ * @param {string} num1
+ * @param {string} num2
+ * @return {string}
+ */
+var multiply = function(num1, num2) {
+  const numsArr = num2.split('').reverse();
+  let multiply = 0;
+  for (let i = 0, len = numsArr.length; i < len; i++) {
+    let _multiply = Number(num1) * Number(numsArr[i]);
+    // 除了第一位，其他位需要进位补0，也就是乘上10的幂方
+    if (i > 0) _multiply *= 10 ** i;
+    multiply += _multiply;
+  }
+  return String(multiply);
 };
 ```
 
@@ -560,7 +730,7 @@ var reverseWords = function(s) {
 
 ```js
 var reverseWords = function(s) {
-  // 先取出受控空格，然后通过替换多个空格为一个，再桶改过空格分割成数组，最后反转再通过空格连接还原
+  // 先去除前后空格，然后将中间的多个空格串替换为一个，根据空格分隔成数组，反转，然后空格拼接回来
   return s
     .trim()
     .replace(/\s+/g, ' ')
@@ -569,3 +739,333 @@ var reverseWords = function(s) {
     .join(' ');
 };
 ```
+
+### 复原 IP 地址
+
+给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+
+有效的 IP 地址正好由四个整数（每个整数位于 0 到 255 之间组成），整数之间用 '.' 分隔。
+
+示例:
+
+```
+输入: "25525511135"
+输出: ["255.255.11.135", "255.255.111.35"]
+```
+
+代码：
+
+```js
+/**
+ * @param {string} s
+ * @return {string[]}
+ */
+var restoreIpAddresses = function(s) {
+  let result = [];
+  function handler(s, last, segments) {
+    if (segments == 3) {
+      if (s.length <= 3 && parseInt(s.slice(0, 3)) <= 255) {
+        if (s.length >= 2 && s.charAt(0) == '0') {
+          return;
+        }
+        let item = last.concat(s);
+        result.push(item);
+        return;
+      }
+    }
+    if (segments < 3) {
+      let item = last.concat(s.slice(0, 1)).concat('.');
+      handler(s.slice(1), item, segments + 1);
+      if (s.charAt(0) != '0') {
+        item = last.concat(s.slice(0, 2)).concat('.');
+        handler(s.slice(2), item, segments + 1);
+        if (parseInt(s.slice(0, 3)) <= 255) {
+          item = last.concat(s.slice(0, 3)).concat('.');
+          handler(s.slice(3), item, segments + 1);
+        }
+      }
+    }
+  }
+  handler(s, '', 0);
+  return result;
+};
+```
+
+### 合并两个有序链表
+
+将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+
+示例：
+
+```
+输入：1->2->4, 1->3->4
+输出：1->1->2->3->4->4
+```
+
+思路：
+
+递归思想
+
+代码：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(l1, l2) {
+  if (l1 == null) return l2;
+  if (l2 == null) return l1;
+  if (l1.val <= l2.val) {
+    // 递归下个节点l1.next合并l2
+    l1.next = mergeTwoLists(l1.next, l2);
+    return l1;
+  } else {
+    // 递归下个节点l2.next合并l1
+    l2.next = mergeTwoLists(l2.next, l1);
+    return l2;
+  }
+};
+```
+
+### 反转链表
+
+反转一个单链表。
+
+示例:
+
+```
+输入: 1->2->3->4->5->NULL
+输出: 5->4->3->2->1->NULL
+```
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+  if (head == null || head.next === null) return head;
+  let prev = null,
+    curr = head;
+  while (curr != null) {
+    // 缓存下个节点
+    const cNext = curr.next;
+    // 将下个节点指向上个节点
+    curr.next = prev === null ? null : prev;
+    prev = curr;
+    // 更新当前节点为下个节点
+    curr = cNext;
+  }
+  // 尾结点即为新的头结点
+  return prev;
+};
+```
+
+### 两数相加
+
+给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
+
+如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+
+您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+
+示例：
+
+```
+输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+输出：7 -> 0 -> 8
+原因：342 + 465 = 807
+```
+
+思路
+
+因为是逆序，所以需要 +10 向后进位
+
+代码
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function(l1, l2) {
+  // 借助哨兵节点作为头节点
+  let node = new ListNode('empty');
+  // temp从哨兵节点头节点开始
+  let temp = node,
+    sum = 0,
+    n = 0;
+  while (l1 || l2) {
+    const n1 = l1 ? l1.val : 0;
+    const n2 = l2 ? l2.val : 0;
+    // 需要加上进位
+    sum = n1 + n2 + n;
+    // 求余数
+    temp.next = new ListNode(sum % 10);
+    temp = temp.next;
+    // 求模(进位),下一位相加需要加上进位
+    n = parseInt(sum / 10);
+    if (l1) l1 = l1.next;
+    if (l2) l2 = l2.next;
+  }
+  // 需要进位
+  if (n > 0) temp.next = new ListNode(n);
+  return node.next;
+};
+```
+
+### 排序链表
+
+在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+示例 1:
+
+```
+输入: 4->2->1->3
+输出: 1->2->3->4
+```
+
+示例 2:
+
+```
+输入: -1->5->3->4->0
+输出: -1->0->3->4->5
+```
+
+思路
+
+归并排序 - 递归
+
+- 1、把长度为 n 的输入序列分成两个长度为 n/2 的子序列
+- 2、对这两个子序列分别采用归并排序
+- 3、将两个排序好的子序列合并成一个最终的排序序列
+
+代码
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var sortList = function(head) {
+  const mergeList = (leftList, rightList) => {
+    // 借助哨兵节点作为头节点
+    let res = new ListNode(0);
+    let pre = res;
+    while (leftList && rightList) {
+      if (leftList.val <= rightList.val) {
+        // 取小的数
+        pre.next = leftList;
+        // 指针前进
+        leftList = leftList.next;
+      } else {
+        // 取小的数
+        pre.next = rightList;
+        // 指针前进
+        rightList = rightList.next;
+      }
+      // 指针前进
+      pre = pre.next;
+    }
+    pre.next = leftList || rightList;
+    return res.next;
+  };
+
+  const mergeSort = node => {
+    if (node == null || node.next == null) return node;
+    let mid = node,
+      // 快节点
+      fastNode = node.next;
+    // 递归指向下个节点
+    while (fastNode && fastNode.next) {
+      mid = mid.next;
+      fastNode = fastNode.next.next;
+    }
+    let rightList = mid.next;
+    mid.next = null;
+    let left = node,
+      right = rightList;
+    // 递归左右节点排序
+    return mergeList(mergeSort(left), mergeSort(right));
+  };
+  return mergeSort(head);
+};
+```
+
+### 相交链表
+
+编写一个程序，找到两个单链表相交的起始节点。
+
+如下面的两个链表：
+
+- 如果两个链表没有交点，返回 null.
+- 在返回结果后，两个链表仍须保持原有的结构。
+- 可假定整个链表结构中没有循环。
+- 程序尽量满足 O(n) 时间复杂度，且仅用 O(1) 内存。
+
+代码
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function(headA, headB) {
+  if (headA == null || headB == null) return null;
+  let pA = headA,
+    pB = headB;
+  while (pA || pB) {
+    if (pA === pB) return pA;
+    // 遍历 A、B 链表 pA 、 pB ，直到遍历完其中一个链表（短链表）
+    // 遍历完链表 pA
+    pA = pA === null ? headB : pA.next;
+    // 遍历完链表 pB
+    pB = pB === null ? headA : pB.next;
+  }
+  return null;
+};
+```
+
+## 最后
+
+文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
