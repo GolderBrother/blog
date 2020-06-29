@@ -1066,6 +1066,209 @@ var getIntersectionNode = function(headA, headB) {
 };
 ```
 
+### 合并 K 个排序链表
+
+合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
+
+> 贼难，号称是 leetcode 目前最难的链表题，所以我是直接拷贝过来的 emmmm~~
+
+代码
+
+```js
+/*
+ * @lc app=leetcode id=23 lang=javascript
+ *
+ * [23] Merge k Sorted Lists
+ *
+ * https://leetcode.com/problems/merge-k-sorted-lists/description/
+ *
+ */
+function mergeTwoLists(l1, l2) {
+  const dummyHead = {};
+  let current = dummyHead;
+  // l1: 1 -> 3 -> 5
+  // l2: 2 -> 4 -> 6
+  while (l1 !== null && l2 !== null) {
+    if (l1.val < l2.val) {
+      current.next = l1; // 把小的添加到结果链表
+      current = current.next; // 移动结果链表的指针
+      l1 = l1.next; // 移动小的那个链表的指针
+    } else {
+      current.next = l2;
+      current = current.next;
+      l2 = l2.next;
+    }
+  }
+
+  if (l1 === null) {
+    current.next = l2;
+  } else {
+    current.next = l1;
+  }
+  return dummyHead.next;
+}
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode[]} lists
+ * @return {ListNode}
+ */
+var mergeKLists = function(lists) {
+  if (lists.length === 0) return null;
+  if (lists.length === 1) return lists[0];
+  if (lists.length === 2) {
+    return mergeTwoLists(lists[0], lists[1]);
+  }
+
+  const mid = lists.length >> 1;
+  const l1 = [];
+  for (let i = 0; i < mid; i++) {
+    l1[i] = lists[i];
+  }
+
+  const l2 = [];
+  for (let i = mid, j = 0; i < lists.length; i++, j++) {
+    l2[j] = lists[i];
+  }
+
+  return mergeTwoLists(mergeKLists(l1), mergeKLists(l2));
+};
+```
+
+### 二叉树的最近公共祖先
+
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+例如，给定如下二叉树: root = [3,5,1,6,2,0,8,null,null,7,4]
+
+![binarytree](./bytedance-algorithms/img/binarytree.png)
+
+代码
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function(root, p, q) {
+  // 如果root是None，说明我们在这条寻址线路没有找到，我们返回None表示没找到
+  if (root == null) return null;
+  // 如果左子树和右子树分别找到一个，我们就返回root
+  if (root == p || root == q) return root;
+  // 左子树
+  const leftSubTree = lowestCommonAncestor(root.left, p, q);
+  // 右子树
+  const rightSubTree = lowestCommonAncestor(root.right, p, q);
+  // 如果左子树找不到，那就从右子树上找
+  if (!leftSubTree) return rightSubTree;
+  // 同理，如果右子树找不到，那就从左子树上找
+  if (!rightSubTree) return leftSubTree;
+  return root;
+};
+```
+
+### 二叉树的锯齿形层次遍历
+
+给定一个二叉树，返回其节点值的锯齿形层次遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+
+例如：
+给定二叉树 [3,9,20,null,null,15,7],
+
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+返回锯齿形层次遍历如下：
+
+```
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+```
+
+思路
+
+广度优先通过队列处理 【深度优先用栈】
+
+- 将一层记录在数组中 并记录数组长度
+- 找下一行所有数据
+- 将数组首位弹出 将首位的左右节点追在数组后
+- 按照记录的数组长度 将上层的结点全部弹出后 此时数组只剩下下一行结点了 此时就完成了一层的遍历
+
+代码
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var zigzagLevelOrder = function(root) {
+  if (root == null) return [];
+  let arr = [root];
+  let res = [];
+  let flag = true;
+  while (arr.length > 0) {
+    let len = arr.length;
+    let temp = [];
+    if (flag) {
+      // 从左到右
+      while (len-- > 0) {
+        // 从第一个元素出栈
+        const node = arr.shift();
+        temp.push(node.val);
+        // 从左到右 取出放到尾部
+        if (node.left != null) arr.push(node.left);
+        if (node.right != null) arr.push(node.right);
+      }
+      res.push(temp);
+    } else {
+      // 从右到左
+      while (len-- > 0) {
+        // 最后一个元素出栈
+        const node = arr.pop();
+        temp.push(node.val);
+        // 从右到左 取出放到头部
+        if (node.right != null) arr.unshift(node.right);
+        if (node.left != null) arr.unshift(node.left);
+      }
+      res.push(temp);
+    }
+    // 判断当前元素个数是否为奇数
+    flag = !flag;
+  }
+  return res;
+};
+```
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)~
