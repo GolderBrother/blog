@@ -85,7 +85,9 @@ module.exports = {
                     title: '浏览器工作原理',
                     collapsable: false,
                     children: [
-                        '/views/browser/input-url-course.md'
+                        '/views/browser/input-url-course.md',
+                        '/views/browser/dom-bind-event.md'
+                        
                     ]
                 },
                 {
