@@ -226,11 +226,11 @@ module.export = {
 
 这是一款在你构建完成时，能够像`微信、Lark`这样的 APP 弹出消息的方式，提示你构建已经完成了。也就是说，当你启动构建时，就可以隐藏控制台面板，专心去做其他事情啦，到“点”了自然会来叫你，它的效果就是下面这样，同时还有提示音噢～
 
+![img](https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_jpg/meG6Vo0Mevh6Bs5M42uoQhs6aQ896lqvLm1K6gKOIgfAzbKFqPfUGaTvFmbls8He24pn9oOpfP3ZBzvnEdOsUw/640?wx_fmt=jpeg)
+
 #### webpack-dashboard
 
 [传送门](https://www.npmjs.com/package/webpack-dashboard)
-
-![img](https://ss.csdn.net/p?https://mmbiz.qpic.cn/mmbiz_jpg/meG6Vo0Mevh6Bs5M42uoQhs6aQ896lqvLm1K6gKOIgfAzbKFqPfUGaTvFmbls8He24pn9oOpfP3ZBzvnEdOsUw/640?wx_fmt=jpeg)
 
 当然，如果你对 webpack 原始的构建输出不满意的话，也可以使用这样一款 Plugin 来优化你的输出界面，它的效果就是下面这样，这里我就直接上官图啦：
 
@@ -421,7 +421,7 @@ import _ from 'lodash';
 
 针对这一条，有一个典型的例子是以体积过大而臭名昭著的 `moment.js` 模块，它仅仅用于 `DateTime` 的格式化及各种计算。但你 `import` 之后它的体积竟然达到了 `200kb+`，gzip 后仍然有 `69kb`。以至于在 `github` 上有一个仓库专门用来介绍如何优化它
 
-- How to optimize moment.js with webpack
+- [How to optimize moment.js with webpack](https://github.com/jmblog/how-to-optimize-momentjs-with-webpack)
 
 此时可以选择一个可替代它功能，但体积更小的模块。与 `moment.js API` 兼容的 `day.js`，它 `gzip` 后体积仅仅只有 `2kb`。
 
@@ -508,7 +508,7 @@ webpack4 官方提供了一个 [thread loader](https://github.com/amireh/happypa
 
 > 这个 loader 不要跟 `happypack` 混合使用，会出现编译失败的问题，webpack4 官方已经强烈推荐此方法来替代 `happypack`
 
-把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker【worker pool】 池里运行，一个 worker 就是一个 nodeJS 进程【node.js proces】，每个单独进程处理时间上限为 600ms，各个进程的数据交换也会限制在这个时间内。
+把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker【worker pool】 池里运行，一个 worker 就是一个 nodeJS 进程【node.js process】，每个单独进程处理时间上限为 `600ms`，各个进程的数据交换也会限制在这个时间内。
 
 它的配置长这样：
 

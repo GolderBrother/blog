@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script id="myWorker" type="javascript/worker">
+        self['onmessage'] = function(event) {
+          postMessage('Hello, ' + event.data.name + '!');
+        };
+     </script>
+     <script>
+        let workerScript = document.querySelector('#myWorker').textContent;
+        console.log('workerScript', workerScript);
+        let blob = new Blob(workerScript, {type: "text/javascript"});
+        let worker = new Worker(URL.createObjectURL(blob));
+        console.log('worker', worker);
+      </script>
+</body>
+</html>
