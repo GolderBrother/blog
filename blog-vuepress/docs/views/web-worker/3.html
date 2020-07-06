@@ -1,22 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
+
 <body>
-    <script id="myWorker" type="javascript/worker">
+  <script id="myWorker" type="javascript/worker">
         self['onmessage'] = function(event) {
           postMessage('Hello, ' + event.data.name + '!');
         };
      </script>
-     <script>
-        let workerScript = document.querySelector('#myWorker').textContent;
-        console.log('workerScript', workerScript);
-        let blob = new Blob(workerScript, {type: "text/javascript"});
-        let worker = new Worker(URL.createObjectURL(blob));
-        console.log('worker', worker);
-      </script>
+  <script>
+    let workerScript = document.querySelector('#myWorker').textContent;
+    console.log('workerScript', workerScript);
+    let blob = new Blob(workerScript, { type: "text/javascript" });
+    let worker = new Worker(URL.createObjectURL(blob));
+    console.log('worker', worker);
+  </script>
+
+  <script>
+    function countBignumber(numA, numB) {
+      const numAArray = numA.split('').map(n => parseInt(n)).reverse();
+      const numBArray = numB.split('').map(n => parseInt(n)).reverse();
+      const sumArray = [].fill(0, Math.max(numAArray.length + 1, numBArray.length + 1));
+      let sum = 0;
+      for (let i = 0; i < numAArray.length; i++) {
+        sumArray[i] = numAArray[i];
+      }
+
+      // 进位
+      let up = 0;
+      for (let i = 0, len = numBArray.length; i < len; i++) {
+        sumArray[i] = numBArray[i] + sumArray[i] + up;
+        if (sumArray[i] > 9) {
+          sumArray[i] = sumArray[i] % 10;
+          up = 1;
+        } else {
+          up = 0;
+        }
+      }
+      if (sumArray[sumArray.length - 1] === 0) sumArray.pop();
+      sum = sumArray.reverse().join('');
+      return sum;
+    }
+    console.log(countBignumber('12345', '12345')); // 24690
+  </script>
 </body>
+
 </html>
