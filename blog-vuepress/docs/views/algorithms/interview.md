@@ -948,6 +948,34 @@ var preorderTraversal = function(root) {
 };
 ```
 
+本质也是递归, 相对上面的可读性高点..
+
+``` js
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+// 第一种方法：递归
+// 时间复杂度：O(n) 每个节点都遍历过
+// 空间复杂度：O(n) 数组长度
+var preorderTraversal = function(root) {
+    const res = [];
+
+    function traverseNode(root) {
+        if (root) {
+            // 先处理根节点
+            res.push(root.val);
+            // 再递归遍历左节点
+            traverseNode(root.left);
+            // 接着递归遍历右节点
+            traverseNode(root.right);
+        }
+    }
+    traverseNode(root);
+    return res;
+};
+```
+
 方法二：老老实实用迭代法
 
 ``` js
@@ -1972,6 +2000,56 @@ var removeDuplicates = function(nums) {
     // 长度值需要索引+1
     return i + 1;
 }
+```
+
+### 589. N叉树的前序遍历
+
+给定一个 N 叉树，返回其节点值的前序遍历。
+
+例如，给定一个 3叉树 :
+
+![narytreeexample](./interview/narytreeexample.png)
+
+思路
+
+广度优先遍历
+
+代码
+
+``` js
+/**
+ * // Definition for a Node.
+ * function Node(val, children) {
+ *    this.val = val;
+ *    this.children = children;
+ * };
+ */
+
+/**
+ * @param {Node} root
+ * @return {number[]}
+ */
+// 时间复杂度: O(n) 每个节点都会被访问到
+// 空间复杂度: O(n) 数组res的长度
+var preorder = function(root) {
+    const res = [];
+    let nodeList = null;
+    if (root) {
+        // 前序遍历: 根结点 -> 子节点
+        res.push(root.val);
+        root.children && (nodeList = root.children);
+    }
+    if (nodeList) bfsSearch(nodeList);
+    // 广度优先遍历
+    function bfsSearch(nodeList) {
+        for (let i = 0, len = nodeList.length; i < len; i++) {
+            res.push(nodeList[i].val);
+            // 如果有孩子节点,则继续递归孩子节点
+            if (nodeList[i].children !== null) bfsSearch(nodeList[i].children);
+        }
+    }
+    return res;
+};
 ```
 
 ## 最后
