@@ -51,7 +51,7 @@ module.exports = {
 
 `target` 为 `web` 或者 `webworker` 时，值是`［'browser','module','main']`。
 `target` 为其他情况时，值是 `['module','main']`。
-以 `target` 等于 `web` 为例， `Webpack` 会先采用第三方模块中的 `browser` 宇段去寻找模块的**入口文件**，如果不存在，就采用 `module` 字段，以此类推。
+以 `target` 等于 `web` 为例， `Webpack` 会先采用第三方模块中的 `browser` 字段去寻找模块的**入口文件**，如果不存在，就采用 `module` 字段，以此类推。
 
 为了减少搜索步骤，在明确第三方模块的**入口文件**描述字段时，我们可以将它设置得尽量少。 由于大多数第三方模块都采用 `main` 宇段去描述入口文件的位置，所以可以这样配置：
 
@@ -326,7 +326,7 @@ splitChunks: {
 传统的 require.ensure
 `import()` 用于动态加载模块，其引用的模块及子模块会被分割打包成一个独立的 `chunk`。
 
-`Webpack` 还允许以**注释**的方式传参，这种专业名词为 **魔术字符串**，是用来对便编译后的代码块文件命名，进而更好的生成 `chunk`。
+`Webpack` 还允许以**注释**的方式传参，这种专业名词为 **魔术字符串**，是用来对编译后的代码块文件命名，进而更好的生成 `chunk`。
 
 ```js
 // single target

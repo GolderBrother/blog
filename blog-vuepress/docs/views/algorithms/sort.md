@@ -116,7 +116,7 @@ const bubbleSort = arr => {
 const bubbleSort2 = (arr = []) => {
   console.time(`改进后冒泡排序耗时`);
   const len = arr.length;
-  if (len <= 1) return;
+  if (len <= 1) return arr;
   for (let i = 0; i < len - 1; i++) {
     let hasChange = false; // 是否提前退出冒泡循环的标志位
     // j < length - i - 1 是因为内层的 length-i-1 到 length-1 的位置已经排好了，不需要再比较一次。
