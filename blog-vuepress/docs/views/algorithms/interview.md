@@ -2052,6 +2052,108 @@ var preorder = function(root) {
 };
 ```
 
+### 面试题 08.12. 八皇后
+
+设计一种算法，打印 N 皇后在 N × N 棋盘上的各种摆法，其中每个皇后都不同行、不同列，也不在对角线上。这里的“对角线”指的是所有的对角线，不只是平分整个棋盘的那两条对角线。
+
+示例:
+
+``` 
+ 输入：4
+ 输出：[[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+ 解释: 4 皇后问题存在如下两个不同的解法。
+[
+ [".Q..",  // 解法 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // 解法 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+
+```
+
+思路:
+
+* 1. 创建一个n*n的棋盘
+* 2. 回溯遍历棋盘
+    - (1)如果最后一个皇后已经被安排到最后一排，便把此解法放入res
+    - (2)遍历每一行的每一个元素，检查当前元素的对角线和所在行列是否冲突
+    - (3)如果冲突回到上一个状态，重复2过程
+
+代码
+
+``` js
+/**
+ * @param {number} n
+ * @return {string[][]}
+ * 思路：回溯
+ * 1.创建一个n*n的棋盘
+ * 2.回溯遍历棋盘
+ *   (1)如果最后一个皇后已经被安排到最后一排，便把此解法放入res
+ *   (2)遍历每一行的每一个元素，检查当前元素的对角线和所在行列是否冲突
+ *   (3)如果冲突回到上一个状态，重复2过程
+ */
+
+var solveNQueens = function(n) {
+    // 1. 创建一个n*n的棋盘
+    const board = new Array(n).fill('').map(i => new Array(n).fill('.'));
+    const res = [];
+    backTrace(board, 0, res);
+
+    function backTrace(board, row, res) {
+        // 1. 递归终止条件
+        const length = board.length;
+        // 判断最后一个皇后已经被安排到最后一个
+        if (length === row) {
+            // 每一行数组的每一项转换成字符串
+            const temp = board.map(item => item.join(''));
+            res.push(temp);
+            return;
+        }
+        // 2. 处理当前层逻辑
+        for (let col = 0; col < n; col++) {
+            // 检查通过 可以放入queue
+            if (check(board, row, col)) {
+                board[row][col] = 'Q';
+                // 3. 下探到下一层
+                backTrace(board, row + 1, res);
+                // 补上空位
+                board[row][col] = '.';
+            }
+        }
+        // 4. 清理当前层(可选)
+    }
+
+    function check(board, row, col) {
+        // 1. 判断同一列是否有queue
+        for (let i = 0; i < row; i++) {
+            if (board[i][col] === 'Q') return false;
+        }
+
+        // 2. 判断同一行是否有queue
+        for (let i = 0; i < col; i++) {
+            if (board[row][i] === 'Q') return false;
+        }
+        // 3. 判断对角线
+        // (1)检查左上角是否有queue
+        for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] === 'Q') return false;
+        }
+        // (2)检查右上角是否有queue
+        for (let i = row - 1, j = col + 1; i >= 0 && j <= n; i--, j++) {
+            if (board[i][j] === 'Q') return false;
+        }
+        return true;
+    }
+    return res;
+}
+console.log(solveNQueens(4));
+```
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
