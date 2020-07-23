@@ -17,7 +17,7 @@ export default {
     script.onload = () => {
       const commentConfig = {
         clientID: "c50e77b1ca610a5e634c",
-        clientSecret: "274468d97cc550289d9aa1054fffcc00227bd197",
+        clientSecret: "fb025b029d1426973a66801f8c02f40d15fba5ec",
         repo: "blog",
         owner: "GolderBrother",
         // 这里接受一个数组，可以添加多个管理员，可以是你自己
