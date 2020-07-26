@@ -189,6 +189,11 @@ module.exports = {
                     children: [
                         '/views/algorithms/sort.md',
                         '/views/algorithms/interview.md',
+                        '/views/algorithms/string.md',
+                        '/views/algorithms/array.md',
+                        '/views/algorithms/linklist.md',
+                        '/views/algorithms/tree.md',
+                        
                     ],
                 },
                 {
