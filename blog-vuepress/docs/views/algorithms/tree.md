@@ -946,6 +946,166 @@ var pathSum = function(root, sum) {
 }
 ```
 
+## 559. N叉树的最大深度
+
+### 1. 深度优先
+
+``` js
+// 即递归求出每个子树的最大深度，再加上根节点
+var maxDepth = function(root) {
+    if (root == null) return 0;
+    if (root.children == null) return 1;
+    let max = 0;
+    for (let i = 0; i < root.children.length; i++) {
+        let childDepth = maxDepth(root.children[i]);
+        // 对比之前的最大深度和现在的, 取最大值
+        max = Math.max(max, childDepth);
+    }
+    // 最后需要记得加上根节点
+    return max + 1;
+}
+```
+
+### 2. 广度优先
+
+给定一个 N 叉树，找到其最大深度。
+
+最大深度是指从根节点到最远叶子节点的最长路径上的节点总数。
+
+例如，给定一个 3叉树 :
+
+我们应返回其最大深度，3。
+
+``` 
+       1
+    /  |  \
+   3   2   4
+  / \
+ 5   6
+```
+
+``` js
+// 算出总共有几层即可
+var maxDepth = function(root) {
+    if (root == null) return 0;
+    let queue = [root],
+        level = 0,
+        length = 0;
+    while (length = queue.length) {
+        while (length--) {
+            // 队列出队
+            const node = queue.shift();
+            if (node.children) {
+                queue = queue.concat(node.children);
+            }
+        }
+        level++;
+    }
+    return level;
+}
+```
+
+## 590. N叉树的后序遍历
+
+给定一个 N 叉树，返回其节点值的后序遍历。
+
+例如，给定一个 3叉树 :
+
+``` 
+       1
+    /  |  \
+   3   2   4
+  / \
+ 5   6
+```
+
+返回其后序遍历: [5, 6, 3, 2, 4, 1].
+
+	
+
+``` js
+/**
+ * @param {Node} root
+ * @return {number[]}
+ */
+// 队列迭代法
+var postorder = function(root) {
+    if (root == null) return [];
+    const res = [root.val],
+        queue = root.children;
+    while (queue.length) {
+        // 队列: 先进先出
+        const child = queue.pop();
+        if (child == null) continue;
+        if (child.val != null) res.unshift(child.val);
+        // 有儿子节点，那就全部放到队列中
+        if (child.children != null) queue.push(...child.children);
+
+    }
+    return res;
+};
+```
+
+## 429. N叉树的层序遍历
+
+给定一个 N 叉树，返回其节点值的层序遍历。 (即从左到右，逐层遍历)。
+
+例如，给定一个 3叉树 :
+
+``` 
+       1
+    /  |  \
+   3   2   4
+  / \
+ 5   6
+```
+
+返回其层序遍历:
+
+``` 
+[
+     [1],
+     [3,2,4],
+     [5,6]
+]
+
+```
+
+``` js
+/**
+ * // Definition for a Node.
+ * function Node(val,children) {
+ *    this.val = val;
+ *    this.children = children;
+ * };
+ */
+
+/**
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var levelOrder = function(root) {
+
+    if (root == null) return [];
+    let res = [],
+        queue = [root];
+    while (queue && queue.length) {
+        let cur = [],
+            temp = [];
+        while (queue && queue.length) {
+            // 从左往右压栈(先入后出)
+            const node = queue.shift();
+            if (node.val != null) cur.push(node.val);
+            if (node.children != null) temp.push(...node.children);
+        }
+        queue = temp;
+        res.push(cur);
+    }
+    return res;
+
+}
+```
+
 ## 最后
 
 文中若有不准确或错误的地方，欢迎指出，有兴趣可以的关注下[Github](https://github.com/GolderBrother)，一起学习呀~~
