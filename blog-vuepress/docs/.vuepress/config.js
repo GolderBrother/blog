@@ -158,7 +158,8 @@ module.exports = {
                     title: 'React-Native',
                     collapsable: false,
                     children: [
-                        '/views/react-native/RN&Native-message.md'
+                        '/views/react-native/RN&Native-message.md',
+                        '/views/react-native/ReactNative&Flutter&uni-app.md',
                     ],
                 },
                 {
