@@ -169,7 +169,20 @@ module.exports = {
                         '/views/webpack/webpack1.md',
                     ],
                 },
-
+                { 
+                    title: 'vite',
+                    collapsable: false,
+                    children: [
+                        '/views/vite/vite-study.md',
+                    ],
+                },
+                { 
+                    title: 'cli',
+                    collapsable: false,
+                    children: [
+                        '/views/cli/james-cli.md',
+                    ],
+                },
                 {
                     title: 'Node.js',
                     collapsable: false,
