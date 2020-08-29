@@ -214,7 +214,8 @@ module.exports = {
                         '/views/algorithms/array.md',
                         '/views/algorithms/linklist.md',
                         '/views/algorithms/tree.md',
-                        '/views/algorithms/tencent/array&string.md'
+                        '/views/algorithms/tencent/array&string.md',
+                        '/views/algorithms/tencent/number.md'
                     ],
                 },
                 {
