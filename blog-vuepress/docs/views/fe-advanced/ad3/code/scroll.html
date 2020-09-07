@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>滚动高亮</title>
+  <style>
+    a,
+    a:visited {
+      text-decoration: none;
+      color: #000
+    }
+
+    a:hover {
+      color: #666
+    }
+
+    ul.list {
+      position: fixed;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul.list li {
+      width: 200px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .h2 {
+      padding-left: 1em;
+    }
+
+    .h3 {
+      padding-left: 2em;
+    }
+
+    .h4 {
+      padding-left: 3em;
+    }
+
+    .h5 {
+      padding-left: 4em;
+    }
+
+    .h6 {
+      padding-left: 5em;
+    }
+
+    a.highlight {
+      color: blue;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #wrap {
+      height: 100vh;
+      overflow: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <ul class="list">
+  </ul>
+  <div id="wrap" previewcontainer="true" style="padding-left: 200px;">
+    <h1 id="h1--markdown-mdeditor">欢迎使用 Markdown</h1>
+    <p><strong>Markdown是一种轻量级的「标记语言」</strong></p>
+    <p><img src="https://www.mdeditor.com/images/logos/markdown.png" alt="markdown" title="markdown">
+    </p>
+    <p>
+      Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面，Markdown文件的后缀名便是“.md”
+    </p>
+    <blockquote>
+      <p>Markdown增强版中比较有名的有Markdown Extra、MultiMarkdown、
+        Maruku等。这些衍生版本要么基于工具，如<del>Pandoc</del>，Pandao；要么基于网站，如GitHub和Wikipedia，在语法上基本兼容，但在一些语法和渲染效果上有改动。</p>
+    </blockquote>
+    <p>MdEditor源于Pandao的JavaScript开源项目，开源地址<a href="https://github.com/pandao/editor.md"
+        title="Editor.md">Editor.md</a>，并在MIT开源协议的许可范围内进行了优化，以适应广大用户群体的需求。向优秀的markdown开源编辑器原作者Pandao致敬。</p>
+    <p><img src="https://pandao.github.io/editor.md/images/logos/editormd-logo-180x180.png" alt="Pandao editor.md"
+        title="Pandao editor.md">
+    </p>
+    <h2 id="h2-mdeditor-"><a name="MdEditor的功能列表演示"></a><span></span>MdEditor的功能列表演示</h2>
+    <h1 id="h1--h1"><a name="标题H1"></a><span></span>标题H1
+    </h1>
+    <h2 id="h2--h2"><a name="标题H2"></a><span></span>标题H2
+    </h2>
+    <h3 id="h3--h3"><a name="标题H3"></a><span></span>标题H3
+    </h3>
+    <h4 id="h4--h4"><a name="标题H4"></a><span></span>标题H4
+    </h4>
+    <h5 id="h5--h5"><a name="标题H5"></a><span></span>标题H5
+    </h5>
+    <h6 id="h6--h5"><a name="标题H5"></a><span></span>标题H5
+    </h6>
+    <h3 id="h3-u5B57u7B26u6548u679Cu548Cu6A2Au7EBFu7B49"><a name="字符效果和横线等"></a><span></span>字符效果和横线等</h3>
+    <hr>
+    <p><del>删除线</del> <s>删除线（开启识别HTML标签时）</s></p>
+    <p><em>斜体字</em> <em>斜体字</em></p>
+    <p><strong>粗体</strong> <strong>粗体</strong></p>
+    <p><strong><em>粗斜体</em></strong> <strong><em>粗斜体</em></strong></p>
+    <p>上标：X<sub>2</sub>，下标：O<sup>2</sup></p>
+    <p><strong>缩写(同HTML的abbr标签)</strong></p>
+    <blockquote>
+      <p>即更长的单词或短语的缩写形式，前提是开启识别HTML标签时，已默认开启</p>
+    </blockquote>
+    <p>The <abbr title="Hyper Text Markup Language">HTML</abbr> specification is maintained by the <abbr
+        title="World Wide Web Consortium">W3C</abbr>.</p>
+    <h3 id="h3--blockquotes"><a name="引用 Blockquotes"></a><span></span>引用 Blockquotes</h3>
+    <blockquote>
+      <p>引用文本 Blockquotes</p>
+    </blockquote>
+    <p>引用的行内混合 Blockquotes</p>
+    <blockquote>
+      <p>引用：如果想要插入空白换行<code>即&lt;br /&gt;标签</code>，在插入处先键入两个以上的空格然后回车即可，<a href="https://www.mdeditor.com/">普通链接</a>。
+      </p>
+    </blockquote>
+    <h3 id="h3--links"><a name="锚点与链接 Links"></a><span></span>锚点与链接 Links</h3>
+    <p><a href="https://www.mdeditor.com/">普通链接</a><br><a href="https://www.mdeditor.com/"
+        title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com">https://www.mdeditor.com</a><br><a
+        href="https://www.mdeditor.com/">锚点链接</a></p>
+    <p><a href="mailto:test.test@gmail.com">mailto:test.test@gmail.com</a><br>GFM a-tail link <a
+        href="https://github.com/pandao" title="@pandao">@pandao</a><br>邮箱地址自动链接 <a
+        href="mailto:test.test@gmail.com">test.test@gmail.com</a> <a href="mailto:www@vip.qq.com">www@vip.qq.com</a></p>
+    <blockquote>
+      <p><a href="https://github.com/pandao" title="@pandao">@pandao</a></p>
+    </blockquote>
+    <h3 id="h3--codes"><a name="多语言代码高亮 Codes"></a><span></span>多语言代码高亮 Codes</h3>
+    <h4 id="h4--inline-code"><a name="行内代码 Inline code"></a><span></span>行内代码 Inline code</h4>
+    <p>执行命令：<code>npm install marked</code></p>
+    <p><a href="https://www.mdeditor.com/">普通链接</a><br><a href="https://www.mdeditor.com/"
+        title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com">https://www.mdeditor.com</a><br><a
+        href="https://www.mdeditor.com/">锚点链接</a></p>
+    <p><a href="mailto:test.test@gmail.com">mailto:test.test@gmail.com</a><br>GFM a-tail link <a
+        href="https://github.com/pandao" title="@pandao">@pandao</a><br>邮箱地址自动链接 <a
+        href="mailto:test.test@gmail.com">test.test@gmail.com</a> <a href="mailto:www@vip.qq.com">www@vip.qq.com</a></p>
+    <blockquote>
+      <p><a href="https://github.com/pandao" title="@pandao">@pandao</a></p>
+    </blockquote>
+    <p><a href="https://www.mdeditor.com/">普通链接</a><br><a href="https://www.mdeditor.com/"
+        title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com">https://www.mdeditor.com</a><br><a
+        href="https://www.mdeditor.com/">锚点链接</a></p>
+    <p><a href="mailto:test.test@gmail.com">mailto:test.test@gmail.com</a><br>GFM a-tail link <a
+        href="https://github.com/pandao" title="@pandao">@pandao</a><br>邮箱地址自动链接 <a
+        href="mailto:test.test@gmail.com">test.test@gmail.com</a> <a href="mailto:www@vip.qq.com">www@vip.qq.com</a></p>
+    <blockquote>
+      <p><a href="https://github.com/pandao" title="@pandao">@pandao</a></p>
+    </blockquote>
+    <p><a href="https://www.mdeditor.com/">普通链接</a><br><a href="https://www.mdeditor.com/"
+        title="普通链接带标题">普通链接带标题</a><br>直接链接：<a href="https://www.mdeditor.com">https://www.mdeditor.com</a><br><a
+        href="https://www.mdeditor.com/">锚点链接</a></p>
+    <p><a href="mailto:test.test@gmail.com">mailto:test.test@gmail.com</a><br>GFM a-tail link <a
+        href="https://github.com/pandao" title="@pandao">@pandao</a><br>邮箱地址自动链接 <a
+        href="mailto:test.test@gmail.com">test.test@gmail.com</a> <a href="mailto:www@vip.qq.com">www@vip.qq.com</a></p>
+    <blockquote>
+      <p><a href="https://github.com/pandao" title="@pandao">@pandao</a></p>
+    </blockquote>
+  </div>
+  <script>
+    const wrap = document.querySelector('#wrap')
+    const ul = document.querySelector('ul.list')
+    const eles = Array.prototype.filter.call(wrap.querySelectorAll('*'), item => ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
+      .indexOf(item.tagName) > -1)
+    let offsetMap = {}
+    eles.reduce((acc, item) => {
+      acc[item.id] = {
+        dom: item,
+        offsetTop: item.offsetTop
+      }
+      return acc
+    }, offsetMap)
+    ul.innerHTML += eles
+      .map(item => `<li class="${item.tagName.toLowerCase()}" ><a href="#${item.id}">${item.innerText}</a></li>`)
+      .reduce((acc, item) => acc += item, '')
+    wrap.addEventListener('scroll', e => {
+      let highlightId = ''
+      for (let id in offsetMap) {
+        if (e.target.scrollTop <= offsetMap[id].offsetTop) {
+          highlightId = id
+          break
+        }
+      }
+      const lastDom = document.querySelector('.highlight')
+      const currentElem = document.querySelector(`a[href="#${highlightId}"]`)
+      if (lastDom && lastDom.id !== highlightId) {
+        document.querySelector('.highlight').classList.remove('highlight')
+        currentElem.classList.add('highlight')
+      } else {
+        currentElem.classList.add('highlight')
+      }
+    })
+  </script>
+</body>
+
+</html>

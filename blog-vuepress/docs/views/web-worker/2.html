@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dedicated Worker Demo</title>
+</head>
+
+<body>
+  <h3>Dedicated Worker Demo</h3>
+  <script>
+    const worker = new Worker("task.js");
+
+    worker.postMessage({
+      id: 666,
+      msg: "Hello Semlinker",
+    });
+
+    worker.onmessage = function(message) {
+      let data = message.data;
+      console.log(`Main: Message from worker ${JSON.stringify(data)}`);
+      worker.terminate();
+    };
+
+    worker.onerror = function(error) {
+      console.log(error.filename, error.lineno, error.message);
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <p>
+    把页面上的所有盒的轮廓画到一个 canvas 元素上
+  </p>
+  <script>
+    // 1. 首先，创建一个大的canvas盒子
+    void function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = document.documentElement.getBoundingClientRect().width;
+      canvas.height = document.documentElement.getBoundingClientRect().height;
+
+      // 将canvas相对于视口区域水平垂直居中
+      canvas.style.top = 0;
+      canvas.style.left = 0;
+      canvas.style.right = 0;
+      canvas.style.bottom = 0;
+      canvas.style.position = 'absolute';
+      canvas.style.zIndex = 999999;
+      canvas.style.border = '1px solid red';
+      // 样式设置好了，将canvas放入到页面中
+      document.body.appendChild(canvas);
+
+      // 获取画布对象
+      const ctx = canvas.getContext('2d');
+
+      // 2. 将页面上的所有元素依次画到这个盒子当中
+      function draw(root, ctx) {
+        // 文本标签、canvas就不要参与画了
+        if (root.tagName && root.tagName !== 'text' && root.tagName !== 'canvas') {
+          const { x: startX, y: startY, width, height } = root.getBoundingClientRect();
+          // 开始绘制
+          ctx.beginPath();
+          ctx.lineWidth = "1";
+          ctx.strokeStyle = 'blue';
+          if (root.childNodes) {
+            root.childNodes.forEach(node => {
+              draw(node, ctx);
+            })
+          }
+          window.requestAnimationFrame(_draw);
+          function _draw() {
+            ctx.strokeRect(startX, startY, width, height);
+            window.requestAnimationFrame(_draw);
+          }
+        }
+      }
+
+      draw(document);
+    }();
+  </script>
+</body>
+
+</html>

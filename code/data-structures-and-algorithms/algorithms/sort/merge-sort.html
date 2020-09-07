@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-归并排序</title>
+</head>
+
+<body>
+  <script>
+    // 归并排序
+    const mergeSort = (array = []) => {
+      //采用自上而下的递归方法
+      const len = array.length;
+      if (len < 2) return array;
+      // length >> 1 和 Math.floor(len / 2) 等价
+      const middle = len >> 1, // 获取中间元素的索引值
+        left = array.slice(0, middle), // 左边数组(包含中间值)
+        right = array.slice(middle); // 右边数组
+      return merge(mergeSort(left), mergeSort(right));
+    }
+    const merge = (left = [], right = []) => {
+      // 存放排序后数据的数组
+      const result = [];
+      // 左边和右边的数据数据比较，哪边数据小就弹栈，并放到result中
+      while (left.length && right.length) {
+        if (left[0] <= right[0]) {
+          // 弹出第一个元素
+          result.push(left.shift());
+        } else {
+          result.push(right.shift());
+        }
+      }
+      // 剩下的数据再一次放入到result中
+      while (left.length) result.push(left.shift());
+      while (right.length) result.push(right.shift());
+      return result;
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('mergeSort 原始 array :', array);
+    console.log('mergeSort 排序后的 array :', JSON.stringify(mergeSort(array)));
+    // mergeSort 原始 array : (5) [5, 4, 3, 2, 1]
+    // mergeSort 排序后的 array : [1,2,3,4,5]
+  </script>
+</body>
+
+</html>

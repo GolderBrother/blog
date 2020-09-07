@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 数据结构与算法之美-希尔排序</title>
+</head>
+
+<body>
+  <script>
+    // 希尔排序
+    // 这是插入排序的改进版。 对间隔 gap 为一组的数进行插入排序
+    const shellSort = (array = []) => {
+
+      const length = array.length
+      let gap = Math.floor(length)
+      while (gap) {
+        for (let i = gap; i < length; i++) {
+          const current = array[i];
+          let j
+          for (j = i - gap; j >= 0 && current < array[j]; j = j - gap) {
+            array[j + gap] = array[j]
+          }
+          array[j + gap] = current
+        }
+        gap = Math.floor(gap / 2)
+      }
+      return array
+    }
+    const array = [5, 4, 3, 2, 1];
+    console.log('shellSort 原始 array :', JSON.stringify(array));
+    console.log('shellSort 排序后的 array :', JSON.stringify(shellSort(array)));
+
+    // shellSort 原始 array: (5)[5, 4, 3, 2, 1]
+    // shellSort 排序后的 array: [1, 2, 3, 4, 5]
+  </script>
+</body>
+
+</html>
