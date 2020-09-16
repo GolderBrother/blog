@@ -2,6 +2,3 @@
 
 # dependencies
 /node_modules
-
-blog-vuepress/.vuepress/node_modules
-blog-vuepress/docs/.vuepress/dist

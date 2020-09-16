@@ -1,4 +1,3 @@
-# ReactNative、uni-app 比较
 
 ## 一、技术学习成本和难度
 
