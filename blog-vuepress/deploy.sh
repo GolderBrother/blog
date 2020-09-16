@@ -29,11 +29,7 @@ git commit -m 'deploy'
 # git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
 # git push -f git@github.com:GolderBrother/blog.git master:gh-pages
 # git push -f https://github.com/GolderBrother/blog.git master:gh-pages
-<<<<<<< HEAD
 # git push -f git@github.com:GolderBrother/blog.git master:gh-pages
 git push -f git@gitee.com:GolderBrother/blog.git master:gh-pages
-=======
-git push -f git@github.com:GolderBrother/blog.git master:gh-pages
->>>>>>> 65a7a23e55f3a2ed91d97553220ec7f86dc5c9a5
 
 cd -
