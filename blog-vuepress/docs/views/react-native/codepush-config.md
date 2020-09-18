@@ -111,9 +111,9 @@ code-push release-react CodePushIos ios --d Staging --t 0.1.0 --des [test]测试
 
 参数说明：
 
-- `d`: 发布的环境，`Staging`表示开发(非生产)环境，`Production`表示生产环境
+- `d`: 发布的环境，`Staging` 表示开发人员自己调试使用的环境，`Production` 表示发布给测试人员使用的环境
 - `t`: 版本号，只支持 3 位数，跟原生应用约定好一致
-- `des`: 版本描述：其中的`test`表示发给设定了版本表示为`test`的安装包, 如果没有写, 表示通知所有安装包
+- `des`: 版本描述：其中的 `test` 表示发给设定了版本表示为 `test` 的安装包, 如果没有写, 表示通知所有安装包
 
 更新成功后, 是这样的 👇
 
