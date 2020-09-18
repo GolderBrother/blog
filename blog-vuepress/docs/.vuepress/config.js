@@ -161,6 +161,9 @@ module.exports = {
                     children: [
                         '/views/react-native/RN&Native-message.md',
                         '/views/react-native/ReactNative&Flutter&uni-app.md',
+                        '/views/react-native/ReactNative&Flutter&uni-app.md',
+                        '/views/react-native/codepush-config.md',
+                        '/views/react-native/codepush-deploy.md',
                     ],
                 },
                 {
