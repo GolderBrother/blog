@@ -162,7 +162,10 @@ module.exports = {
         {
           title: "webpack",
           collapsable: false,
-          children: ["/views/webpack/webpack1.md"],
+          children: [
+            "/views/webpack/webpack1.md",
+            "/views/webpack/webpack-optimize"
+          ],
         },
         {
           title: "前端跨域相关",
