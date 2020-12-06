@@ -2,7 +2,7 @@ const isDEV = process.env.NODE_ENV === "development";
 module.exports = {
   title: "GolderBrother",
   description: "GolderBrother的博客",
-  base: isDEV ? "/blog/" : "./",
+  base: isDEV ? "/blog/" : "/",
   head: [
     [
       "link",
