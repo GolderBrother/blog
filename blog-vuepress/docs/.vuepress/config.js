@@ -132,7 +132,8 @@ module.exports = {
           collapsable: false,
           children: [
             "/views/typescript/ts-all/1.md",
-            "/views/typescript/ts-all/2.md"
+            "/views/typescript/ts-all/2.md",
+            "/views/typescript/ts-all/3.md",
           ],
         },
         {
