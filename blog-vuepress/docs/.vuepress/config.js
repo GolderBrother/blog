@@ -124,7 +124,14 @@ module.exports = {
           children: [
             "/views/typescript/ts-demo.md",
             "/views/typescript/ts-difficult.md",
-            "/views/typescript/ts-problem.md",
+            "/views/typescript/ts-problem.md"
+          ],
+        },
+        {
+          title: "Typescript深度学习系列",
+          collapsable: false,
+          children: [
+            "/views/typescript/ts-all/1.md"
           ],
         },
         {
