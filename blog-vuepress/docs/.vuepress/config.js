@@ -131,7 +131,8 @@ module.exports = {
           title: "Typescript深度学习系列",
           collapsable: false,
           children: [
-            "/views/typescript/ts-all/1.md"
+            "/views/typescript/ts-all/1.md",
+            "/views/typescript/ts-all/2.md"
           ],
         },
         {
